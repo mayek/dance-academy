@@ -74,4 +74,14 @@ class User extends Authenticatable
     {
         return $this->payments()->where('status', 'active')->where('valid_until', '>=', now());
     }
+
+    public function attendances(): HasMany
+    {
+        return $this->hasMany(Attendance::class, 'student_id');
+    }
+
+    public function absences(): HasMany
+    {
+        return $this->attendances()->where('status', 'absent');
+    }
 }

@@ -21,8 +21,10 @@
                             <a href="{{ route('admin.categories.index') }}" class="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-gray-900">Categories</a>
                             <a href="{{ route('admin.groups.index') }}" class="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-gray-900">Groups</a>
                             <a href="{{ route('admin.payments.index') }}" class="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-gray-900">Payments</a>
+                            <a href="{{ route('admin.attendance.index') }}" class="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-gray-900">Attendance</a>
                         @elseif(auth()->user()->isTeacher())
                             <a href="{{ route('teacher.dashboard') }}" class="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-900">My Groups</a>
+                            <a href="{{ route('teacher.attendance.create') }}" class="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-gray-900">Attendance</a>
                         @elseif(auth()->user()->isStudent())
                             <a href="{{ route('student.dashboard') }}" class="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-900">My Groups</a>
                             <a href="{{ route('student.payments.index') }}" class="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-gray-900">My Passes</a>

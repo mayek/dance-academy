@@ -33,6 +33,7 @@
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $student->parent_phone_number ?? '-' }}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $student->tournament_group ?? '-' }}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm space-x-2">
+                        <a href="{{ route('admin.students.absences', $student) }}" class="text-amber-600 hover:text-amber-800">Absences</a>
                         <a href="{{ route('admin.students.edit', $student) }}" class="text-blue-600 hover:text-blue-800">Edit</a>
                         <form method="POST" action="{{ route('admin.students.destroy', $student) }}" class="inline" onsubmit="return confirm('Are you sure?')">
                             @csrf @method('DELETE')

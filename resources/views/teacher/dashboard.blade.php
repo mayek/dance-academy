@@ -68,7 +68,11 @@
                     <p class="text-sm text-gray-500">Schedule: {{ $group->schedule }}</p>
                 @endif
             </div>
-            <a href="{{ route('teacher.assign', $group) }}" class="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium py-2 px-4 rounded-lg">Assign Students</a>
+            <div class="flex gap-2">
+                <a href="{{ route('teacher.attendance.create', ['group_id' => $group->id]) }}" class="bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium py-2 px-4 rounded-lg">Record Attendance</a>
+                <a href="{{ route('teacher.attendance.history', $group) }}" class="bg-gray-200 hover:bg-gray-300 text-gray-700 text-sm font-medium py-2 px-4 rounded-lg">History</a>
+                <a href="{{ route('teacher.assign', $group) }}" class="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium py-2 px-4 rounded-lg">Assign Students</a>
+            </div>
         </div>
         <div class="mt-4">
             <h3 class="text-sm font-medium text-gray-700 mb-2">Enrolled Students ({{ $group->students->count() }})</h3>
