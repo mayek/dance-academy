@@ -7,6 +7,11 @@
         <h1 class="text-2xl font-bold text-gray-900">{{ __('Dance Groups') }}</h1>
         <a href="{{ route('admin.groups.create') }}" class="bg-orange-600 hover:bg-orange-700 text-white text-sm font-medium py-2 px-4 rounded-lg">{{ __('+ Add Group') }}</a>
     </div>
+    <div class="mb-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-3">{{ __('Weekly Schedule') }}</h2>
+        <livewire:group-calendar />
+    </div>
+
     <div class="bg-white shadow rounded-lg overflow-hidden">
         <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">

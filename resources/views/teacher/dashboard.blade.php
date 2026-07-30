@@ -5,6 +5,11 @@
 <div class="px-4 sm:px-0">
     <h1 class="text-2xl font-bold text-gray-900 mb-6">{{ __('My Dance Groups') }}</h1>
 
+    <div class="mb-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-3">{{ __('Weekly Schedule') }}</h2>
+        <livewire:group-calendar :teacher-id="auth()->id()" :key="'teacher-calendar'" />
+    </div>
+
     @if(session('success'))
         <div class="mb-4 p-4 bg-green-100 border border-green-300 text-green-800 rounded-lg">{{ session('success') }}</div>
     @endif

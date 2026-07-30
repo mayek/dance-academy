@@ -12,7 +12,14 @@ class DanceGroup extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'category_id', 'teacher_id', 'schedule'];
+    protected $fillable = ['name', 'category_id', 'teacher_id', 'schedule', 'class_times'];
+
+    protected function casts(): array
+    {
+        return [
+            'class_times' => 'array',
+        ];
+    }
 
     public function category(): BelongsTo
     {

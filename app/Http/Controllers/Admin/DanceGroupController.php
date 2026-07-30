@@ -30,12 +30,17 @@ class DanceGroupController extends Controller
             'category_id' => ['required', 'exists:dance_categories,id'],
             'teacher_id' => ['required', 'exists:users,id'],
             'schedule' => ['nullable', 'string', 'max:255'],
+            'class_times' => ['nullable', 'json'],
         ]);
+
+        if ($request->filled('class_times')) {
+            $validated['class_times'] = json_decode($request->class_times, true);
+        }
 
         DanceGroup::create($validated);
 
         return redirect()->route('admin.groups.index')
-            ->with('success', 'Dance group created successfully.');
+            ->with('success', __('Dance group created successfully'));
     }
 
     public function edit(DanceGroup $group)
@@ -52,7 +57,14 @@ class DanceGroupController extends Controller
             'category_id' => ['required', 'exists:dance_categories,id'],
             'teacher_id' => ['required', 'exists:users,id'],
             'schedule' => ['nullable', 'string', 'max:255'],
+            'class_times' => ['nullable', 'json'],
         ]);
+
+        if ($request->filled('class_times')) {
+            $validated['class_times'] = json_decode($request->class_times, true);
+        } else {
+            $validated['class_times'] = null;
+        }
 
         $group->update($validated);
 
