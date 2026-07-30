@@ -32,7 +32,7 @@
         </div>
         <div class="bg-white rounded-lg shadow p-6">
             <div class="text-sm font-medium text-gray-500">{{ __('Monthly Revenue') }}</div>
-            <div class="mt-1 text-3xl font-bold text-indigo-600">{{ number_format($stats['monthly_revenue'], 2) }} &zloty;</div>
+            <div class="mt-1 text-3xl font-bold text-indigo-600">{{ number_format($stats['monthly_revenue'], 2) }} zł</div>
             <a href="{{ route('admin.payments.index') }}" class="mt-3 inline-block text-sm text-indigo-600 hover:text-indigo-800">{{ __('Manage') }} &rarr;</a>
         </div>
     </div>

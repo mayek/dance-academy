@@ -37,6 +37,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/attendance/create', [AttendanceController::class, 'create'])->name('attendance.create');
     Route::post('/attendance', [AttendanceController::class, 'store'])->name('attendance.store');
     Route::get('/students/{student}/absences', [AttendanceController::class, 'studentAbsences'])->name('students.absences');
+    Route::patch('/attendance/{attendance}/made-up', [AttendanceController::class, 'markMadeUp'])->name('attendance.made-up');
 });
 
 Route::middleware(['auth', 'role:teacher'])->prefix('teacher')->name('teacher.')->group(function () {

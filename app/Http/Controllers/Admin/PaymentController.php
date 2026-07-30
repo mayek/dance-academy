@@ -10,28 +10,9 @@ use Illuminate\Http\Request;
 
 class PaymentController extends Controller
 {
-    public function index(Request $request)
+    public function index()
     {
-        $query = Payment::with(['student', 'danceGroup.category']);
-
-        if ($request->filled('student_id')) {
-            $query->where('student_id', $request->student_id);
-        }
-        if ($request->filled('dance_group_id')) {
-            $query->where('dance_group_id', $request->dance_group_id);
-        }
-        if ($request->filled('pass_type')) {
-            $query->where('pass_type', $request->pass_type);
-        }
-        if ($request->filled('status')) {
-            $query->where('status', $request->status);
-        }
-
-        $payments = $query->latest()->paginate(15);
-        $students = User::where('role', 'student')->orderBy('first_name')->get();
-        $groups = DanceGroup::with('category')->orderBy('name')->get();
-
-        return view('admin.payments.index', compact('payments', 'students', 'groups'));
+        return view('admin.payments.index');
     }
 
     public function create(Request $request)

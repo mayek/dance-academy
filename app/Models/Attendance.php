@@ -11,13 +11,15 @@ class Attendance extends Model
     use HasFactory;
 
     protected $fillable = [
-        'student_id', 'dance_group_id', 'date', 'status', 'notes', 'recorded_by',
+        'student_id', 'dance_group_id', 'date', 'status', 'notes', 'recorded_by', 'made_up', 'date_of_made_up',
     ];
 
     protected function casts(): array
     {
         return [
             'date' => 'date',
+            'made_up' => 'boolean',
+            'date_of_made_up' => 'date',
         ];
     }
 

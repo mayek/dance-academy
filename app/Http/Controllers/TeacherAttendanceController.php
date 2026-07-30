@@ -68,7 +68,7 @@ class TeacherAttendanceController extends Controller
         return redirect()->route('teacher.attendance.create', [
             'group_id' => $validated['dance_group_id'],
             'date' => $validated['date'],
-        ])->with('success', 'Attendance recorded successfully.');
+        ])->with('success', __('Attendance recorded successfully'));
     }
 
     public function history(DanceGroup $group)

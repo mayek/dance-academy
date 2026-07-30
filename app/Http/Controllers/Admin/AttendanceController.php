@@ -84,7 +84,7 @@ class AttendanceController extends Controller
         return redirect()->route('admin.attendance.index', [
             'dance_group_id' => $validated['dance_group_id'],
             'date' => $validated['date'],
-        ])->with('success', 'Attendance recorded successfully.');
+        ])->with('success', __('Attendance recorded successfully'));
     }
 
     public function studentAbsences(User $student)
@@ -100,5 +100,15 @@ class AttendanceController extends Controller
             ->count();
 
         return view('admin.attendance.student-absences', compact('student', 'absences', 'totalAbsences'));
+    }
+
+    public function markMadeUp(Attendance $attendance)
+    {
+        $attendance->update([
+            'made_up' => true,
+            'date_of_made_up' => now(),
+        ]);
+
+        return redirect()->back()->with('success', __('Absence marked as made up'));
     }
 }

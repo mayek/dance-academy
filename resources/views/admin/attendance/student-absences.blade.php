@@ -20,23 +20,42 @@
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ __('Category') }}</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ __('Recorded By') }}</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ __('Notes') }}</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ __('Make-up Needed') }}</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ __('Make-up') }}</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ __('Made up date') }}</th>
+                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">{{ __('Actions') }}</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-200">
                 @forelse($absences as $absence)
-                <tr>
+                <tr class="{{ $absence->made_up ? 'bg-green-50' : '' }}">
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $absence->date->format('d.m.Y') }}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $absence->danceGroup->name }}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $absence->danceGroup->category->name }}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $absence->recordedBy->full_name }}</td>
                     <td class="px-6 py-4 text-sm text-gray-500 max-w-[200px] truncate">{{ $absence->notes ?? '-' }}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm">
-                        <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-100 text-red-800">{{ __('Yes') }}</span>
+                        @if($absence->made_up)
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">{{ __('Made up') }}</span>
+                        @else
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-100 text-red-800">{{ __('No') }}</span>
+                        @endif
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {{ $absence->date_of_made_up?->format('d.m.Y') ?? '-' }}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm">
+                        @if(!$absence->made_up && $absence->date->diffInDays(now()) < 14)
+                            <form method="POST" action="{{ route('admin.attendance.made-up', $absence) }}" class="inline">
+                                @csrf @method('PATCH')
+                                <button type="submit" class="text-green-600 hover:text-green-800 font-medium" style="cursor: pointer;">{{ __('Mark made up') }}</button>
+                            </form>
+                        @elseif(!$absence->made_up)
+                            <span class="text-gray-400 text-xs">{{ __('Expired') }}</span>
+                        @endif
                     </td>
                 </tr>
                 @empty
-                <tr><td colspan="6" class="px-6 py-4 text-center text-sm text-gray-500">{{ __('No absences recorded.') }}</td></tr>
+                <tr><td colspan="8" class="px-6 py-4 text-center text-sm text-gray-500">{{ __('No absences recorded.') }}</td></tr>
                 @endforelse
             </tbody>
         </table>

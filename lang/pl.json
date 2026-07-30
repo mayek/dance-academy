@@ -179,5 +179,14 @@
     "Language": "Język",
     "English": "English",
     "Polish": "Polski",
-    "Search by name, phone, email...": "Szukaj po nazwie, telefonie, emailu..."
+    "Search by name, phone, email...": "Szukaj po nazwie, telefonie, emailu...",
+    "Search": "Szukaj",
+    "Clear": "Wyczyść",
+    "Make-up": "Odpracowanie",
+    "Made up": "Odpracowane",
+    "Made up date": "Data odpracowania",
+    "Mark made up": "Oznacz jako odpracowane",
+    "Attendance recorded successfully": "Nieobecność dodana pomyślnie.",
+    "Absence marked as made up": "Nieobecność oznaczona jako odrobiona.",
+    "Search by name or email...": "Szukaj po nazwie lub emailu..."
 }
