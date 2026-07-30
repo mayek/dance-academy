@@ -1,17 +1,22 @@
-//
+import { Chart, BarController, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
+
+Chart.register(BarController, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+
 document.addEventListener('DOMContentLoaded', function () {
     initStudentSearch();
     initPassTypeAutoAmount();
+    initRevenueChart();
 });
 
 function initStudentSearch() {
     const searchInput = document.getElementById('student_search');
-    if (!searchInput) return;
-
-    const students = window.studentSearchData || [];
     const hiddenInput = document.getElementById('student_id');
     const dropdown = document.getElementById('student_dropdown');
     const clearBtn = document.getElementById('student_clear');
+
+    if (!searchInput || !hiddenInput || !dropdown || !clearBtn) return;
+
+    const students = window.studentSearchData || [];
 
     function renderDropdown(query) {
         const q = query.toLowerCase().trim();
@@ -90,5 +95,52 @@ function initPassTypeAutoAmount() {
 
     passType.addEventListener('change', function () {
         amount.value = this.value === 'monthly' ? '150.00' : '25.00';
+    });
+}
+
+function initRevenueChart() {
+    const canvas = document.getElementById('revenueChart');
+    if (!canvas) return;
+
+    const labels = JSON.parse(canvas.dataset.labels);
+    const data = JSON.parse(canvas.dataset.revenue);
+
+    new Chart(canvas, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: canvas.dataset.label || '',
+                data: data,
+                backgroundColor: 'rgba(16, 185, 129, 0.6)',
+                borderColor: 'rgba(16, 185, 129, 1)',
+                borderWidth: 1,
+                borderRadius: 4,
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: function (ctx) {
+                            return ctx.parsed.y.toFixed(2) + ' z\u0142';
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function (value) {
+                            return value.toFixed(2) + ' z\u0142';
+                        }
+                    }
+                }
+            }
+        }
     });
 }

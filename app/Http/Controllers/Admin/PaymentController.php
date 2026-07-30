@@ -12,7 +12,25 @@ class PaymentController extends Controller
 {
     public function index()
     {
-        return view('admin.payments.index');
+        $months = 12;
+        $revenue = [];
+        $labels = [];
+
+        for ($i = $months - 1; $i >= 0; $i--) {
+            $date = now()->subMonths($i);
+            $month = $date->month;
+            $year = $date->year;
+
+            $total = Payment::whereMonth('created_at', $month)
+                ->whereYear('created_at', $year)
+                ->where('status', '!=', 'cancelled')
+                ->sum('amount');
+
+            $revenue[] = (float) $total;
+            $labels[] = $date->translatedFormat('M Y');
+        }
+
+        return view('admin.payments.index', compact('revenue', 'labels'));
     }
 
     public function create(Request $request)

@@ -37,6 +37,21 @@
         </div>
     </div>
 
+    <div class="mt-8 bg-white shadow rounded-lg p-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">{{ __('Revenue') }}</h2>
+        <div class="relative" style="height: 280px;">
+            <canvas id="revenueChart"
+                    data-labels='{{ json_encode($labels) }}'
+                    data-revenue='{{ json_encode($revenue) }}'
+                    data-label="{{ __('Revenue') }}"></canvas>
+        </div>
+    </div>
+
+    <div class="mt-8">
+        <h2 class="text-lg font-semibold text-gray-900 mb-3">{{ __('Weekly Schedule') }}</h2>
+        <livewire:dashboard-calendar />
+    </div>
+
     @if($expiringPasses->isNotEmpty())
     <div class="mt-8">
         <div class="flex items-center gap-2 mb-4">

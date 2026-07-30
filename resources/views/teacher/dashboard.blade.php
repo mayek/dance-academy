@@ -7,7 +7,7 @@
 
     <div class="mb-6">
         <h2 class="text-lg font-semibold text-gray-900 mb-3">{{ __('Weekly Schedule') }}</h2>
-        <livewire:group-calendar :teacher-id="auth()->id()" :key="'teacher-calendar'" />
+        <livewire:dashboard-calendar :teacher-id="auth()->id()" :key="'teacher-dashboard-calendar'" />
     </div>
 
     @if(session('success'))

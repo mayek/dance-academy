@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\AttendanceController;
 use App\Http\Controllers\Admin\DanceCategoryController;
 use App\Http\Controllers\Admin\DanceGroupController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\EventController;
 use App\Http\Controllers\Admin\PaymentController;
 use App\Http\Controllers\Admin\StudentController;
 use App\Http\Controllers\Admin\TeacherController;
@@ -13,6 +14,7 @@ use App\Http\Controllers\StudentDashboardController;
 use App\Http\Controllers\StudentPaymentController;
 use App\Http\Controllers\TeacherAttendanceController;
 use App\Http\Controllers\TeacherDashboardController;
+use App\Http\Controllers\TeacherEventController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', fn () => redirect()->route('login'));
@@ -38,6 +40,9 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::post('/attendance', [AttendanceController::class, 'store'])->name('attendance.store');
     Route::get('/students/{student}/absences', [AttendanceController::class, 'studentAbsences'])->name('students.absences');
     Route::patch('/attendance/{attendance}/made-up', [AttendanceController::class, 'markMadeUp'])->name('attendance.made-up');
+    Route::resource('events', EventController::class)->except(['show']);
+    Route::get('/events/{event}/assign', [EventController::class, 'assignStudents'])->name('events.assign');
+    Route::put('/events/{event}/students', [EventController::class, 'updateStudents'])->name('events.update-students');
 });
 
 Route::middleware(['auth', 'role:teacher'])->prefix('teacher')->name('teacher.')->group(function () {
@@ -47,6 +52,9 @@ Route::middleware(['auth', 'role:teacher'])->prefix('teacher')->name('teacher.')
     Route::get('/attendance/create', [TeacherAttendanceController::class, 'create'])->name('attendance.create');
     Route::post('/attendance', [TeacherAttendanceController::class, 'store'])->name('attendance.store');
     Route::get('/groups/{group}/attendance', [TeacherAttendanceController::class, 'history'])->name('attendance.history');
+    Route::resource('events', TeacherEventController::class)->except(['show']);
+    Route::get('/events/{event}/assign', [TeacherEventController::class, 'assignStudents'])->name('events.assign');
+    Route::put('/events/{event}/students', [TeacherEventController::class, 'updateStudents'])->name('events.update-students');
 });
 
 Route::middleware(['auth', 'role:student'])->prefix('student')->name('student.')->group(function () {

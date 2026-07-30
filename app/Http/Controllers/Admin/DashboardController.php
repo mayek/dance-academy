@@ -31,6 +31,24 @@ class DashboardController extends Controller
             ->orderBy('valid_until')
             ->get();
 
-        return view('admin.dashboard', compact('stats', 'expiringPasses'));
+        $months = 12;
+        $revenue = [];
+        $labels = [];
+
+        for ($i = $months - 1; $i >= 0; $i--) {
+            $date = now()->subMonths($i);
+            $month = $date->month;
+            $year = $date->year;
+
+            $total = Payment::whereMonth('created_at', $month)
+                ->whereYear('created_at', $year)
+                ->where('status', '!=', 'cancelled')
+                ->sum('amount');
+
+            $revenue[] = (float) $total;
+            $labels[] = $date->translatedFormat('M Y');
+        }
+
+        return view('admin.dashboard', compact('stats', 'expiringPasses', 'revenue', 'labels'));
     }
 }
