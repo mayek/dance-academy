@@ -1,9 +1,9 @@
 @extends('layouts.app')
-@section('title', 'Student Dashboard')
+@section('title', __('Student Dashboard'))
 
 @section('content')
 <div class="px-4 sm:px-0">
-    <h1 class="text-2xl font-bold text-gray-900 mb-6">My Dance Groups</h1>
+    <h1 class="text-2xl font-bold text-gray-900 mb-6">{{ __('My Dance Groups') }}</h1>
 
     @forelse($groups as $group)
     <div class="bg-white shadow rounded-lg p-6 mb-4">
@@ -16,7 +16,7 @@
     </div>
     @empty
     <div class="bg-white shadow rounded-lg p-6">
-        <p class="text-gray-500 text-center">You are not enrolled in any dance groups yet.</p>
+        <p class="text-gray-500 text-center">{{ __('You are not enrolled in any dance groups yet.') }}</p>
     </div>
     @endforelse
 </div>
