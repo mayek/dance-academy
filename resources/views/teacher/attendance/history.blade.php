@@ -23,6 +23,7 @@
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ __('Date') }}</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ __('Student') }}</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ __('Status') }}</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ __('Lesson Duration') }}</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ __('Remaining Hours') }}</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ __('Recorded By') }}</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ __('Notes') }}</th>
@@ -42,6 +43,7 @@
                             <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-yellow-100 text-yellow-800">{{ __('Excused') }}</span>
                         @endif
                     </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $attendance->lessonHours() }}h</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm">
                         @if($attendance->payment)
                             @php $remaining = $attendance->payment->remainingHours(); @endphp
@@ -56,7 +58,7 @@
                     <td class="px-6 py-4 text-sm text-gray-500 max-w-[200px] truncate">{{ $attendance->notes ?? '-' }}</td>
                 </tr>
                 @empty
-                <tr><td colspan="6" class="px-6 py-4 text-center text-sm text-gray-500">{{ __('No attendance records found.') }}</td></tr>
+                <tr><td colspan="7" class="px-6 py-4 text-center text-sm text-gray-500">{{ __('No attendance records found.') }}</td></tr>
                 @endforelse
             </tbody>
         </table>

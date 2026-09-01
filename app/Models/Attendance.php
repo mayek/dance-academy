@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Services\PassHoursService;
 
 class Attendance extends Model
 {
@@ -48,5 +49,10 @@ class Attendance extends Model
     public function isAbsent(): bool
     {
         return $this->status === 'absent';
+    }
+
+    public function lessonHours(): float
+    {
+        return app(PassHoursService::class)->lessonHours($this);
     }
 }

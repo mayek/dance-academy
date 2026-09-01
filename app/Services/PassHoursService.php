@@ -87,7 +87,7 @@ class PassHoursService
             ->first();
     }
 
-    private function lessonHours(Attendance $attendance): float
+    public function lessonHours(Attendance $attendance): float
     {
         $group = $attendance->danceGroup;
         $dayOfWeek = $attendance->date->dayOfWeek == Carbon::SUNDAY ? 7 : $attendance->date->dayOfWeek;
