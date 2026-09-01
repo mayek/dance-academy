@@ -63,7 +63,7 @@
     <div class="bg-white shadow rounded-lg p-6 mb-4">
         <div class="flex justify-between items-start">
             <div>
-                <h2 class="text-lg font-semibold text-gray-900" title="{{ $group->name }}">{{ \Illuminate\Support\Str::limit($group->name, 100) }}</h2>
+                <h2 class="text-lg font-semibold text-gray-900" title="{{ $group->name }}">{{ \Illuminate\Support\Str::limit($group->name, 60) }}</h2>
                 <p class="text-sm text-gray-500">Category: {{ $group->category->name }}</p>
                 @if($group->schedule)
                     <p class="text-sm text-gray-500">Schedule: {{ $group->schedule }}</p>
