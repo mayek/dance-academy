@@ -3,18 +3,18 @@
 
 @section('content')
 <div class="px-4 sm:px-0">
-    <div class="flex items-center gap-4 mb-6">
-        <a href="{{ route('admin.students.index') }}" class="text-gray-400 hover:text-gray-600">&larr; {{ __('Back') }}</a>
-        <div>
-            <h1 class="text-2xl font-bold text-gray-900">{{ $student->full_name }} &mdash; {{ __('Payments') }}</h1>
-            <p class="text-sm text-gray-500">{{ __('Total payments:') }} <span class="font-semibold text-gray-900">{{ $payments->total() }}</span></p>
+    <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+        <div class="flex items-center gap-4">
+            <a href="{{ route('admin.students.index') }}" class="text-gray-400 hover:text-gray-600">&larr; {{ __('Back') }}</a>
+            <div>
+                <h1 class="text-2xl font-bold text-gray-900">{{ $student->full_name }} &mdash; {{ __('Payments') }}</h1>
+                <p class="text-sm text-gray-500">{{ __('Total payments:') }} <span class="font-semibold text-gray-900">{{ $payments->total() }}</span></p>
+            </div>
         </div>
-        <div class="ml-auto">
-            <button type="button" id="open_buy_pass_modal"
-                    class="bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium py-2 px-4 rounded-lg cursor-pointer">
-                {{ __('+ Record Payment') }}
-            </button>
-        </div>
+        <button type="button" id="open_buy_pass_modal"
+                class="bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium py-2 px-4 rounded-lg cursor-pointer">
+            {{ __('+ Record Payment') }}
+        </button>
     </div>
 
     <div class="bg-white shadow rounded-lg overflow-x-auto">
