@@ -30,7 +30,7 @@
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900" title="{{ $group->name }}">{{ \Illuminate\Support\Str::limit($group->name, 60) }}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $group->category->name }}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $group->teacher->name }}</td>
-                    <td class="px-6 py-4 text-sm text-gray-500 max-w-[240px] whitespace-normal break-words">{{ $group->schedule ?? '-' }}</td>
+                    <td class="px-6 py-4 text-sm text-gray-500 max-w-[240px] whitespace-normal break-words" title="{{ $group->schedule ?? '' }}">{{ $group->schedule ? \Illuminate\Support\Str::limit($group->schedule, 60) : '-' }}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $group->students->count() }}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm space-x-2">
                         <a href="{{ route('admin.groups.assign', $group) }}" class="text-indigo-600 hover:text-indigo-800 inline-flex align-middle">

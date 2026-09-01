@@ -66,7 +66,7 @@
                 <h2 class="text-lg font-semibold text-gray-900" title="{{ $group->name }}">{{ \Illuminate\Support\Str::limit($group->name, 60) }}</h2>
                 <p class="text-sm text-gray-500">Category: {{ $group->category->name }}</p>
                 @if($group->schedule)
-                    <p class="text-sm text-gray-500">Schedule: {{ $group->schedule }}</p>
+                    <p class="text-sm text-gray-500" title="{{ $group->schedule }}">Schedule: {{ \Illuminate\Support\Str::limit($group->schedule, 60) }}</p>
                 @endif
             </div>
             <div class="flex gap-2">
