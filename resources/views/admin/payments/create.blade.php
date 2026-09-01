@@ -37,10 +37,16 @@
                     <select name="pass_type_id" id="pass_type_id" required
                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm border p-2">
                         @foreach($passTypes as $passType)
-                            <option value="{{ $passType->id }}" data-price="{{ $passType->price }}" {{ old('pass_type_id') == $passType->id ? 'selected' : '' }}>{{ $passType->display_name }} ({{ number_format($passType->price, 2) }} zł)</option>
+                            <option value="{{ $passType->id }}" data-price="{{ $passType->price }}" data-hours="{{ $passType->hours ?? '' }}" {{ old('pass_type_id') == $passType->id ? 'selected' : '' }}>{{ $passType->display_name }} ({{ number_format($passType->price, 2) }} zł)</option>
                         @endforeach
                     </select>
                     @error('pass_type_id') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
+                </div>
+                <div>
+                    <label for="total_hours" class="block text-sm font-medium text-gray-700">{{ __('Hours') }}</label>
+                    <input type="number" name="total_hours" id="total_hours" step="0.5" min="0"
+                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm border p-2">
+                    @error('total_hours') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
                 </div>
                 <div>
                     <label for="amount" class="block text-sm font-medium text-gray-700">{{ __('Amount (PLN)') }}</label>
@@ -91,9 +97,11 @@ $studentData = $students->map(fn($s) => (object) [
 <script>
     const passTypeSelect = document.getElementById('pass_type_id');
     const amountField = document.getElementById('amount');
+    const hoursField = document.getElementById('total_hours');
     const updateAmount = () => {
         const opt = passTypeSelect.selectedOptions[0];
         amountField.value = opt ? Number(opt.dataset.price).toFixed(2) : '';
+        hoursField.value = opt && opt.dataset.hours ? opt.dataset.hours : '';
     };
     passTypeSelect.addEventListener('change', updateAmount);
     updateAmount();

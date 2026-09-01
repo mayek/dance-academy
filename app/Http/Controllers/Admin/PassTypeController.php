@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\PassType;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 class PassTypeController extends Controller
 {
@@ -57,6 +58,7 @@ class PassTypeController extends Controller
             'name' => ['nullable', 'string', 'max:255'],
             'duration' => ['required', 'in:single,1,2,3,6,12'],
             'price' => ['required', 'numeric', 'min:0'],
+            'hours' => ['nullable', 'numeric', 'min:0', 'max:9999'],
         ]);
 
         $validated['name'] = trim($validated['name'] ?? '') ?: null;
@@ -64,10 +66,21 @@ class PassTypeController extends Controller
         if ($validated['duration'] === 'single') {
             $validated['type'] = 'single';
             $validated['duration_months'] = null;
+            $validated['hours'] = null;
         } else {
             $validated['type'] = 'monthly';
             $validated['duration_months'] = (int) $validated['duration'];
+
+            if (($validated['hours'] ?? null) === null || $validated['hours'] === '') {
+                throw ValidationException::withMessages([
+                    'hours' => __('Podaj liczbę godzin dla karnetu miesięcznego.'),
+                ]);
+            }
         }
+
+        $validated['hours'] = $validated['hours'] === null || $validated['hours'] === ''
+            ? null
+            : (float) $validated['hours'];
 
         unset($validated['duration']);
 

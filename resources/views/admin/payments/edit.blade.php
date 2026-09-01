@@ -58,6 +58,21 @@
                        value="{{ old('valid_from', $payment->valid_from->format('Y-m-d')) }}" required
                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm border p-2">
             </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div>
+                    <label for="total_hours" class="block text-sm font-medium text-gray-700">{{ __('Total Hours') }}</label>
+                    <input type="number" name="total_hours" id="total_hours" step="0.5" min="0"
+                           value="{{ old('total_hours', $payment->total_hours) }}"
+                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm border p-2">
+                    <p class="mt-1 text-xs text-gray-500">{{ __('Leave empty for unlimited (legacy).') }}</p>
+                </div>
+                <div>
+                    <label for="used_hours" class="block text-sm font-medium text-gray-700">{{ __('Used Hours') }}</label>
+                    <input type="number" name="used_hours" id="used_hours" step="0.5" min="0"
+                           value="{{ old('used_hours', $payment->used_hours) }}"
+                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm border p-2">
+                </div>
+            </div>
             <div class="mb-4">
                 <label for="is_paid" class="block text-sm font-medium text-gray-700">{{ __('Payment') }}</label>
                 <select name="is_paid" id="is_paid"

@@ -50,6 +50,7 @@ class StudentPaymentController extends Controller
         $validated['pass_type'] = $passType->type;
         $validated['pass_type_id'] = $passType->id;
         $validated['amount'] = $passType->price;
+        $validated['total_hours'] = $passType->hours;
         $validated['valid_from'] = $validity['valid_from'];
         $validated['valid_until'] = $validity['valid_until'];
 

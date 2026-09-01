@@ -12,13 +12,15 @@ class Payment extends Model
 
     protected $fillable = [
         'student_id', 'dance_group_id', 'event_id', 'pass_type', 'pass_type_id',
-        'amount', 'valid_from', 'valid_until', 'status', 'is_paid', 'notes', 'recorded_by',
+        'amount', 'total_hours', 'used_hours', 'valid_from', 'valid_until', 'status', 'is_paid', 'notes', 'recorded_by',
     ];
 
     protected function casts(): array
     {
         return [
             'amount' => 'decimal:2',
+            'total_hours' => 'decimal:2',
+            'used_hours' => 'decimal:2',
             'valid_from' => 'date',
             'valid_until' => 'date',
             'is_paid' => 'boolean',
@@ -65,6 +67,31 @@ class Payment extends Model
         return $this->status === 'active'
             && $this->valid_until !== null
             && $this->valid_until->gte(now()->startOfDay());
+    }
+
+    public function remainingHours(): ?float
+    {
+        if ($this->total_hours === null) {
+            return null;
+        }
+
+        return round((float) $this->total_hours - (float) $this->used_hours, 2);
+    }
+
+    public function hasHoursRemaining(): bool
+    {
+        return $this->total_hours === null || $this->remainingHours() > 0;
+    }
+
+    public function hoursLabel(): ?string
+    {
+        $remaining = $this->remainingHours();
+
+        if ($remaining === null) {
+            return null;
+        }
+
+        return (string) $remaining;
     }
 
     public function daysLeft(): int

@@ -41,6 +41,9 @@
                                 {{ __('Valid for') }} {{ $passType->duration_label }}
                             @endif
                         </div>
+                        @if($passType->hours !== null)
+                            <div class="text-xs font-medium text-emerald-600 mt-1">{{ $passType->hours }}h {{ __('included') }}</div>
+                        @endif
                     </label>
                     @endforeach
                 </div>

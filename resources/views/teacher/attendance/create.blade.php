@@ -49,9 +49,20 @@
 
                 <div class="space-y-3">
                     @foreach($group->students as $student)
+                    @php
+                        $activePass = $activePassByStudent[$student->id] ?? null;
+                        $remainingHours = $activePass?->remainingHours();
+                    @endphp
                     <div class="flex items-center gap-4 p-3 rounded-lg border border-gray-200 hover:bg-gray-50">
                         <div class="flex-1 min-w-0">
-                            <div class="text-sm font-medium text-gray-900">{{ $student->full_name }}</div>
+                            <div class="flex items-center gap-2">
+                                <div class="text-sm font-medium text-gray-900">{{ $student->full_name }}</div>
+                                @if($activePass && $remainingHours > 0)
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">{{ __('Pozostało') }}: {{ $remainingHours }}h</span>
+                                @else
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">{{ __('Brak godzin') }}</span>
+                                @endif
+                            </div>
                             <div class="text-xs text-gray-500">{{ $student->email }}</div>
                         </div>
                         <div class="flex items-center gap-1">

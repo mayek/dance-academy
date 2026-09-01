@@ -13,6 +13,7 @@
                 <tr>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ __('Pass Type') }}</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ __('Duration') }}</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ __('Hours') }}</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ __('Price') }}</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ __('Payments') }}</th>
                     <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">{{ __('Actions') }}</th>
@@ -23,6 +24,7 @@
                 <tr>
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $pass->display_name }}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $pass->duration_label ?? '-' }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $pass->hours !== null ? $pass->hours . 'h' : '-' }}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ number_format($pass->price, 2) }} zł</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $pass->payments_count }}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm space-x-2">
@@ -38,7 +40,7 @@
                     </td>
                 </tr>
                 @empty
-                <tr><td colspan="5" class="px-6 py-4 text-center text-sm text-gray-500">{{ __('No passes found.') }}</td></tr>
+                <tr><td colspan="6" class="px-6 py-4 text-center text-sm text-gray-500">{{ __('No passes found.') }}</td></tr>
                 @endforelse
             </tbody>
         </table>

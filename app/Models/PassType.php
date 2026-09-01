@@ -12,7 +12,7 @@ class PassType extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name', 'type', 'duration_months', 'price',
+        'name', 'type', 'duration_months', 'price', 'hours',
     ];
 
     protected function casts(): array
@@ -20,6 +20,7 @@ class PassType extends Model
         return [
             'price' => 'decimal:2',
             'duration_months' => 'integer',
+            'hours' => 'decimal:2',
         ];
     }
 

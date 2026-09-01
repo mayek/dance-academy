@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Attendance;
 use App\Models\DanceGroup;
+use App\Models\Payment;
 use App\Models\User;
+use App\Services\PassHoursService;
 use Illuminate\Http\Request;
 
 class AttendanceController extends Controller
@@ -37,14 +39,30 @@ class AttendanceController extends Controller
         $selectedDate = $request->get('date', now()->format('Y-m-d'));
 
         $existingRecords = collect();
+        $activePassByStudent = collect();
         if ($selectedGroup) {
             $group = DanceGroup::findOrFail($selectedGroup);
             $existingRecords = Attendance::where('dance_group_id', $selectedGroup)
                 ->whereDate('date', $selectedDate)
                 ->pluck('status', 'student_id');
+
+            $studentIds = $group->students->pluck('id');
+            if ($studentIds->isNotEmpty()) {
+                $activePassByStudent = Payment::query()
+                    ->where('dance_group_id', $selectedGroup)
+                    ->whereIn('student_id', $studentIds)
+                    ->where('status', 'active')
+                    ->where('valid_until', '>=', now()->startOfDay())
+                    ->whereNotNull('total_hours')
+                    ->orderBy('valid_from')
+                    ->orderBy('id')
+                    ->get()
+                    ->groupBy('student_id')
+                    ->map->first();
+            }
         }
 
-        return view('admin.attendance.create', compact('groups', 'selectedGroup', 'selectedDate', 'existingRecords'));
+        return view('admin.attendance.create', compact('groups', 'selectedGroup', 'selectedDate', 'existingRecords', 'activePassByStudent'));
     }
 
     public function store(Request $request)
@@ -61,13 +79,15 @@ class AttendanceController extends Controller
         $group = DanceGroup::findOrFail($validated['dance_group_id']);
         $studentIds = $group->students->pluck('id');
         $recordedBy = auth()->id();
+        $passHours = app(PassHoursService::class);
+        $warnings = [];
 
         foreach ($validated['statuses'] as $studentId => $status) {
             if (!in_array((int) $studentId, $studentIds->toArray())) {
                 continue;
             }
 
-            Attendance::updateOrCreate(
+            $attendance = Attendance::updateOrCreate(
                 [
                     'student_id' => $studentId,
                     'dance_group_id' => $validated['dance_group_id'],
@@ -79,12 +99,20 @@ class AttendanceController extends Controller
                     'recorded_by' => $recordedBy,
                 ]
             );
+
+            $warnings = array_merge($warnings, $passHours->apply($attendance));
         }
 
-        return redirect()->route('admin.attendance.index', [
+        $result = redirect()->route('admin.attendance.index', [
             'dance_group_id' => $validated['dance_group_id'],
             'date' => $validated['date'],
         ])->with('success', __('Attendance recorded successfully'));
+
+        if (!empty($warnings)) {
+            $result->with('warning', array_unique($warnings));
+        }
+
+        return $result;
     }
 
     public function studentAbsences(User $student)

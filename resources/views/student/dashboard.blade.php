@@ -22,6 +22,11 @@
                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
                     {{ __('Aktywny karnet') }}: {{ $pass->daysLeft() }} {{ __('dni') }}
                 </span>
+                @if($pass->total_hours !== null)
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $pass->remainingHours() > 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
+                        {{ __('Godziny') }}: {{ $pass->remainingHours() }} / {{ $pass->total_hours }}h
+                    </span>
+                @endif
                 @if($pass->is_paid)
                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
                         {{ __('Opłacony') }}

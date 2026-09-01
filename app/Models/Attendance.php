@@ -12,6 +12,7 @@ class Attendance extends Model
 
     protected $fillable = [
         'student_id', 'dance_group_id', 'date', 'status', 'notes', 'recorded_by', 'made_up', 'date_of_made_up',
+        'payment_id', 'hours_consumed',
     ];
 
     protected function casts(): array
@@ -20,6 +21,7 @@ class Attendance extends Model
             'date' => 'date',
             'made_up' => 'boolean',
             'date_of_made_up' => 'date',
+            'hours_consumed' => 'decimal:2',
         ];
     }
 
@@ -36,6 +38,11 @@ class Attendance extends Model
     public function recordedBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'recorded_by');
+    }
+
+    public function payment(): BelongsTo
+    {
+        return $this->belongsTo(Payment::class, 'payment_id');
     }
 
     public function isAbsent(): bool

@@ -62,6 +62,7 @@ class PaymentController extends Controller
             'dance_group_id' => ['required', 'exists:dance_groups,id'],
             'pass_type_id' => ['required', 'exists:pass_types,id'],
             'valid_from' => ['required', 'date'],
+            'total_hours' => ['nullable', 'numeric', 'min:0', 'max:9999'],
             'notes' => ['nullable', 'string'],
             'is_paid' => ['nullable', 'boolean'],
         ]);
@@ -72,6 +73,9 @@ class PaymentController extends Controller
         $validated['pass_type'] = $passType->type;
         $validated['pass_type_id'] = $passType->id;
         $validated['amount'] = $passType->price;
+        $validated['total_hours'] = $request->filled('total_hours')
+            ? (float) $validated['total_hours']
+            : $passType->hours;
         $validated['valid_from'] = $validity['valid_from'];
         $validated['valid_until'] = $validity['valid_until'];
         $validated['status'] = $validated['valid_until']->lt(now()->startOfDay()) ? 'expired' : 'active';
@@ -90,6 +94,7 @@ class PaymentController extends Controller
             'student_id' => ['required', 'exists:users,id'],
             'dance_group_id' => ['required', 'exists:dance_groups,id'],
             'pass_type_id' => ['required', 'exists:pass_types,id'],
+            'total_hours' => ['nullable', 'numeric', 'min:0', 'max:9999'],
             'is_paid' => ['nullable', 'boolean'],
         ]);
 
@@ -99,6 +104,9 @@ class PaymentController extends Controller
         $validated['pass_type'] = $passType->type;
         $validated['pass_type_id'] = $passType->id;
         $validated['amount'] = $passType->price;
+        $validated['total_hours'] = $request->filled('total_hours')
+            ? (float) $validated['total_hours']
+            : $passType->hours;
         $validated['valid_from'] = $validity['valid_from'];
         $validated['valid_until'] = $validity['valid_until'];
         $validated['status'] = 'active';
@@ -127,6 +135,8 @@ class PaymentController extends Controller
             'pass_type' => ['required', 'in:monthly,single'],
             'amount' => ['required', 'numeric', 'min:0'],
             'valid_from' => ['required', 'date'],
+            'total_hours' => ['nullable', 'numeric', 'min:0', 'max:9999'],
+            'used_hours' => ['nullable', 'numeric', 'min:0', 'max:9999'],
             'status' => ['required', 'in:active,expired,cancelled'],
             'notes' => ['nullable', 'string'],
             'is_paid' => ['nullable', 'boolean'],
@@ -138,6 +148,17 @@ class PaymentController extends Controller
             $validated['valid_until'] = \Carbon\Carbon::parse($validated['valid_from'])->endOfMonth();
         } else {
             $validated['valid_until'] = \Carbon\Carbon::parse($validated['valid_from'])->endOfDay();
+        }
+
+        if (!$request->filled('total_hours')) {
+            $validated['total_hours'] = null;
+            $validated['used_hours'] = 0;
+        }
+
+        if ($validated['total_hours'] !== null) {
+            $total = (float) $validated['total_hours'];
+            $used = (float) ($request->filled('used_hours') ? $validated['used_hours'] : $payment->used_hours);
+            $validated['used_hours'] = min($used, $total);
         }
 
         $payment->update($validated);
