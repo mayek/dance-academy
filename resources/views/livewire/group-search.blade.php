@@ -27,7 +27,7 @@
             <tbody class="divide-y divide-gray-200">
                 @forelse($groups as $group)
                 <tr wire:key="group-{{ $group->id }}">
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $group->name }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900" title="{{ $group->name }}">{{ \Illuminate\Support\Str::limit($group->name, 100) }}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $group->category->name }}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $group->teacher->name }}</td>
                     <td class="px-6 py-4 text-sm text-gray-500 max-w-[240px] whitespace-normal break-words">{{ $group->schedule ?? '-' }}</td>
