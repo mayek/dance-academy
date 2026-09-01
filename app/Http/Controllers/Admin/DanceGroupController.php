@@ -86,8 +86,10 @@ class DanceGroupController extends Controller
 
     public function assignStudents(DanceGroup $group)
     {
-        $students = User::where('role', 'student')->get();
         $enrolledIds = $group->students->pluck('id')->toArray();
+        $students = User::where('role', 'student')
+            ->orderByRaw('FIELD(id, ' . implode(',', $enrolledIds ?: [0]) . ') DESC')
+            ->get();
         return view('admin.groups.assign', compact('group', 'students', 'enrolledIds'));
     }
 
