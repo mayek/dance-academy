@@ -18,7 +18,13 @@ class PaymentController extends Controller
             ->orderBy('valid_from', 'desc')
             ->paginate(20);
 
-        return view('admin.payments.student', compact('student', 'payments'));
+        $studentGroups = $student->enrolledGroups()->with('category')->orderBy('name')->get();
+        $groups = $studentGroups->isEmpty()
+            ? DanceGroup::with('category')->orderBy('name')->get()
+            : $studentGroups;
+        $passTypes = PassType::orderBy('type')->orderBy('duration_months')->get();
+
+        return view('admin.payments.student', compact('student', 'payments', 'groups', 'passTypes'));
     }
 
     public function index()
@@ -84,7 +90,7 @@ class PaymentController extends Controller
 
         Payment::create($validated);
 
-        return redirect()->route('admin.payments.index')
+        return redirect()->route('admin.students.payments', $validated['student_id'])
             ->with('success', __('Payment recorded successfully.'));
     }
 

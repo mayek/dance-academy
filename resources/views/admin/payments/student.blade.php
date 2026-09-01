@@ -9,6 +9,12 @@
             <h1 class="text-2xl font-bold text-gray-900">{{ $student->full_name }} &mdash; {{ __('Payments') }}</h1>
             <p class="text-sm text-gray-500">{{ __('Total payments:') }} <span class="font-semibold text-gray-900">{{ $payments->total() }}</span></p>
         </div>
+        <div class="ml-auto">
+            <button type="button" id="open_buy_pass_modal"
+                    class="bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium py-2 px-4 rounded-lg cursor-pointer">
+                {{ __('+ Record Payment') }}
+            </button>
+        </div>
     </div>
 
     <div class="bg-white shadow rounded-lg overflow-x-auto">
@@ -102,4 +108,109 @@
     </div>
     <div class="mt-4">{{ $payments->links() }}</div>
 </div>
+
+<div id="buy_pass_modal" class="fixed inset-0 z-50 overflow-y-auto hidden" role="dialog" aria-modal="true">
+    <div class="flex items-end sm:items-center justify-center min-h-screen p-4 sm:p-6">
+        <div class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm" data-close-buy-pass-modal></div>
+        <div class="relative w-full max-w-2xl max-h-[85vh] flex flex-col bg-white rounded-2xl shadow-2xl overflow-hidden">
+            <div class="flex items-start justify-between gap-4 px-5 py-4 border-b border-gray-100 bg-gray-50">
+                <h3 class="text-base font-semibold text-gray-900">{{ __('Record Payment') }} &mdash; {{ $student->full_name }}</h3>
+                <button type="button" data-close-buy-pass-modal
+                        class="flex-shrink-0 p-1.5 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition cursor-pointer"
+                        aria-label="{{ __('Close') }}">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+            <div class="px-5 py-4 flex-1 overflow-y-auto">
+                <form method="POST" action="{{ route('admin.payments.store') }}" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    @csrf
+                    <input type="hidden" name="student_id" value="{{ $student->id }}">
+                    <div>
+                        <label for="buy_pass_group_id" class="block text-sm font-medium text-gray-700">{{ __('Dance Group') }}</label>
+                        <select name="dance_group_id" id="buy_pass_group_id" required
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm border p-2">
+                            @foreach($groups as $group)
+                                <option value="{{ $group->id }}">{{ \Illuminate\Support\Str::limit($group->name, 60) }} ({{ $group->category->name }})</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div>
+                        <label for="buy_pass_pass_type_id" class="block text-sm font-medium text-gray-700">{{ __('Pass Type') }}</label>
+                        <select name="pass_type_id" id="buy_pass_pass_type_id" required
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm border p-2">
+                            @foreach($passTypes as $passType)
+                                <option value="{{ $passType->id }}" data-hours="{{ $passType->hours ?? '' }}">{{ $passType->display_name }} ({{ number_format($passType->price, 2) }} zł)</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div>
+                        <label for="buy_pass_hours" class="block text-sm font-medium text-gray-700">{{ __('Hours') }}</label>
+                        <input type="number" name="total_hours" id="buy_pass_hours" step="0.5" min="0"
+                               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm border p-2">
+                    </div>
+                    <div>
+                        <label for="buy_pass_valid_from" class="block text-sm font-medium text-gray-700">{{ __('Valid From') }}</label>
+                        <input type="date" name="valid_from" id="buy_pass_valid_from"
+                               value="{{ now()->format('Y-m-d') }}" required
+                               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm border p-2">
+                    </div>
+                    <div>
+                        <label for="buy_pass_is_paid" class="block text-sm font-medium text-gray-700">{{ __('Payment') }}</label>
+                        <select name="is_paid" id="buy_pass_is_paid"
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm border p-2">
+                            <option value="1">{{ __('Paid') }}</option>
+                            <option value="0">{{ __('Unpaid') }}</option>
+                        </select>
+                    </div>
+                    <div class="md:col-span-2">
+                        <label for="buy_pass_notes" class="block text-sm font-medium text-gray-700">{{ __('Notes') }}</label>
+                        <input type="text" name="notes" id="buy_pass_notes"
+                               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm border p-2">
+                    </div>
+                    <div class="md:col-span-2 flex justify-end gap-2 mt-2">
+                        <button type="button" data-close-buy-pass-modal
+                                class="bg-gray-200 hover:bg-gray-300 text-gray-700 text-sm font-medium py-2 px-4 rounded-lg cursor-pointer">{{ __('Cancel') }}</button>
+                        <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium py-2 px-4 rounded-lg cursor-pointer">{{ __('Record Payment') }}</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const modal = document.getElementById('buy_pass_modal');
+    const openBtn = document.getElementById('open_buy_pass_modal');
+    const passType = document.getElementById('buy_pass_pass_type_id');
+    const hoursField = document.getElementById('buy_pass_hours');
+
+    if (!modal || !openBtn) return;
+
+    function toggleModal(open) {
+        modal.classList.toggle('hidden', !open);
+        if (open && passType) {
+            const opt = passType.selectedOptions[0];
+            hoursField.value = opt && opt.dataset.hours ? opt.dataset.hours : '';
+        }
+    }
+
+    openBtn.addEventListener('click', function () { toggleModal(true); });
+
+    modal.querySelectorAll('[data-close-buy-pass-modal]').forEach(function (el) {
+        el.addEventListener('click', function () { toggleModal(false); });
+    });
+
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && !modal.classList.contains('hidden')) toggleModal(false);
+    });
+
+    if (passType) {
+        passType.addEventListener('change', function () {
+            const opt = passType.selectedOptions[0];
+            hoursField.value = opt && opt.dataset.hours ? opt.dataset.hours : '';
+        });
+    }
+});
+</script>
 @endsection
