@@ -6,10 +6,13 @@ use App\Http\Controllers\Admin\DanceGroupController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\EventController;
 use App\Http\Controllers\Admin\PaymentController;
+use App\Http\Controllers\Admin\PassTypeController;
 use App\Http\Controllers\Admin\StudentController;
-use App\Http\Controllers\Admin\TeacherController;
+use App\Http\Controllers\Admin\StaffController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CronController;
 use App\Http\Controllers\LocaleController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StudentDashboardController;
 use App\Http\Controllers\StudentPaymentController;
 use App\Http\Controllers\TeacherAttendanceController;
@@ -19,42 +22,60 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', fn () => redirect()->route('login'));
 Route::get('/language/{locale}', [LocaleController::class, 'switch'])->name('language.switch');
+Route::get('/cron/expiring-pass-reminders', [CronController::class, 'expiringPassReminders'])->name('cron.expiring-pass-reminders');
 
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::get('/forgot-password', [AuthController::class, 'showForgotPassword'])->name('password.request');
 
-Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware('auth')->prefix('profile')->name('profile.')->group(function () {
+    Route::get('/', [ProfileController::class, 'edit'])->name('edit');
+    Route::put('/', [ProfileController::class, 'update'])->name('update');
+    Route::put('/password', [ProfileController::class, 'updatePassword'])->name('password');
+});
+Route::post('/forgot-password', [AuthController::class, 'sendResetLink'])->name('password.email');
+Route::get('/reset-password/{token}', [AuthController::class, 'showResetForm'])->name('password.reset');
+Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('password.store');
+
+Route::middleware(['auth', 'role:admin,reception'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    Route::resource('teachers', TeacherController::class)->except(['show']);
+    Route::resource('staff', StaffController::class)->except(['show']);
+    Route::resource('teachers', \App\Http\Controllers\Admin\TeacherController::class)->except(['show']);
     Route::resource('students', StudentController::class)->except(['show']);
     Route::resource('categories', DanceCategoryController::class)->except(['show']);
+    Route::resource('passes', PassTypeController::class)->except(['show']);
     Route::resource('groups', DanceGroupController::class)->except(['show']);
     Route::get('/groups/{group}/assign', [DanceGroupController::class, 'assignStudents'])->name('groups.assign');
     Route::put('/groups/{group}/students', [DanceGroupController::class, 'updateStudents'])->name('groups.update-students');
     Route::resource('payments', PaymentController::class)->except(['show']);
+    Route::post('/payments/buy-pass', [PaymentController::class, 'buyPass'])->name('payments.buy-pass');
     Route::get('/attendance', [AttendanceController::class, 'index'])->name('attendance.index');
     Route::get('/attendance/create', [AttendanceController::class, 'create'])->name('attendance.create');
     Route::post('/attendance', [AttendanceController::class, 'store'])->name('attendance.store');
     Route::get('/students/{student}/absences', [AttendanceController::class, 'studentAbsences'])->name('students.absences');
+    Route::get('/students/{student}/payments', [PaymentController::class, 'studentPayments'])->name('students.payments');
     Route::patch('/attendance/{attendance}/made-up', [AttendanceController::class, 'markMadeUp'])->name('attendance.made-up');
     Route::resource('events', EventController::class)->except(['show']);
     Route::get('/events/{event}/assign', [EventController::class, 'assignStudents'])->name('events.assign');
     Route::put('/events/{event}/students', [EventController::class, 'updateStudents'])->name('events.update-students');
+    Route::post('/events/buy-pass', [EventController::class, 'buyPass'])->name('events.buy-pass');
 });
 
 Route::middleware(['auth', 'role:teacher'])->prefix('teacher')->name('teacher.')->group(function () {
     Route::get('/dashboard', [TeacherDashboardController::class, 'dashboard'])->name('dashboard');
     Route::get('/groups/{group}/assign', [TeacherDashboardController::class, 'assignStudents'])->name('assign');
     Route::put('/groups/{group}/students', [TeacherDashboardController::class, 'updateStudents'])->name('update-students');
+    Route::post('/groups/{group}/students/{student}/pass', [TeacherDashboardController::class, 'storePass'])->name('passes.store');
     Route::get('/attendance/create', [TeacherAttendanceController::class, 'create'])->name('attendance.create');
     Route::post('/attendance', [TeacherAttendanceController::class, 'store'])->name('attendance.store');
     Route::get('/groups/{group}/attendance', [TeacherAttendanceController::class, 'history'])->name('attendance.history');
     Route::resource('events', TeacherEventController::class)->except(['show']);
     Route::get('/events/{event}/assign', [TeacherEventController::class, 'assignStudents'])->name('events.assign');
     Route::put('/events/{event}/students', [TeacherEventController::class, 'updateStudents'])->name('events.update-students');
+    Route::post('/events/buy-pass', [TeacherEventController::class, 'buyPass'])->name('events.buy-pass');
 });
 
 Route::middleware(['auth', 'role:student'])->prefix('student')->name('student.')->group(function () {

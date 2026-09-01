@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Attendance;
 use App\Models\DanceCategory;
 use App\Models\DanceGroup;
+use App\Models\PassType;
 use App\Models\Payment;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -53,30 +54,47 @@ class DatabaseSeeder extends Seeder
             'role' => 'teacher',
         ]);
 
+        // ── Reception ──
+        User::create([
+            'first_name' => 'Katarzyna', 'last_name' => 'Wiśniewska',
+            'name' => 'Katarzyna Wiśniewska',
+            'email' => 'kasia@danceacademy.pl',
+            'password' => Hash::make('password'),
+            'role' => 'reception',
+        ]);
+
+        User::create([
+            'first_name' => 'Magdalena', 'last_name' => 'Kowalczyk',
+            'name' => 'Magdalena Kowalczyk',
+            'email' => 'magda@danceacademy.pl',
+            'password' => Hash::make('password'),
+            'role' => 'reception',
+        ]);
+
         // ── Students ──
         $studentDefs = [
-            ['first_name' => 'Zofia',     'last_name' => 'Wiśniewska',    'email' => 'zofia@student.pl',     'dob' => '2010-03-15', 'pesel' => '10301512345', 'phone' => '500 100 201', 'parent_phone' => '600 100 201', 'tournament' => 'Junior A',   'notes' => null],
-            ['first_name' => 'Jan',        'last_name' => 'Zieliński',     'email' => 'jan@student.pl',       'dob' => '2009-07-22', 'pesel' => '09220712345', 'phone' => '500 100 202', 'parent_phone' => '600 100 202', 'tournament' => 'Junior A',   'notes' => null],
-            ['first_name' => 'Maria',      'last_name' => 'Lewandowska',   'email' => 'maria@student.pl',     'dob' => '2011-01-10', 'pesel' => '11101012345', 'phone' => '500 100 203', 'parent_phone' => '600 100 203', 'tournament' => 'Junior B',   'notes' => null],
-            ['first_name' => 'Piotr',      'last_name' => 'Szymański',     'email' => 'piotr@student.pl',     'dob' => '2008-11-05', 'pesel' => '08110512345', 'phone' => '500 100 204', 'parent_phone' => '600 100 204', 'tournament' => 'Senior A',   'notes' => null],
-            ['first_name' => 'Kasia',      'last_name' => 'Wójcik',        'email' => 'kasia@student.pl',     'dob' => '2010-06-18', 'pesel' => '10180612345', 'phone' => '500 100 205', 'parent_phone' => '600 100 205', 'tournament' => 'Junior A',   'notes' => 'Prefers solo performances'],
-            ['first_name' => 'Tomasz',     'last_name' => 'Dąbrowski',     'email' => 'tomasz@student.pl',    'dob' => '2009-09-30', 'pesel' => '09300912345', 'phone' => '500 100 206', 'parent_phone' => '600 100 206', 'tournament' => 'Junior A',   'notes' => null],
-            ['first_name' => 'Agnieszka',  'last_name' => 'Kozłowska',     'email' => 'agnieszka@student.pl', 'dob' => '2012-04-12', 'pesel' => '12041212345', 'phone' => '500 100 207', 'parent_phone' => '600 100 207', 'tournament' => 'Junior B',   'notes' => null],
-            ['first_name' => 'Kamil',      'last_name' => 'Jankowski',     'email' => 'kamil@student.pl',     'dob' => '2007-08-25', 'pesel' => '07250812345', 'phone' => '500 100 208', 'parent_phone' => '600 100 208', 'tournament' => 'Senior B',   'notes' => 'Team captain'],
-            ['first_name' => 'Oliwia',     'last_name' => 'Mazur',         'email' => 'oliwia@student.pl',    'dob' => '2011-05-20', 'pesel' => '11052012345', 'phone' => '500 100 209', 'parent_phone' => '600 100 209', 'tournament' => 'Junior B',   'notes' => null],
-            ['first_name' => 'Jakub',      'last_name' => 'Krawczyk',      'email' => 'jakub@student.pl',     'dob' => '2008-12-01', 'pesel' => '08120112345', 'phone' => '500 100 210', 'parent_phone' => '600 100 210', 'tournament' => 'Senior A',   'notes' => null],
-            ['first_name' => 'Natalia',    'last_name' => 'Pawlak',        'email' => 'natalia@student.pl',   'dob' => '2010-08-14', 'pesel' => '10081412345', 'phone' => '500 100 211', 'parent_phone' => '600 100 211', 'tournament' => 'Junior A',   'notes' => null],
-            ['first_name' => 'Filip',      'last_name' => 'Michalski',     'email' => 'filip@student.pl',     'dob' => '2009-02-28', 'pesel' => '09022812345', 'phone' => '500 100 212', 'parent_phone' => '600 100 212', 'tournament' => 'Junior A',   'notes' => null],
-            ['first_name' => 'Weronika',   'last_name' => 'Sikora',        'email' => 'weronika@student.pl',  'dob' => '2011-11-03', 'pesel' => '11110312345', 'phone' => '500 100 213', 'parent_phone' => '600 100 213', 'tournament' => 'Junior B',   'notes' => null],
-            ['first_name' => 'Bartek',     'last_name' => 'Wozniak',       'email' => 'bartek@student.pl',    'dob' => '2007-04-17', 'pesel' => '07041712345', 'phone' => '500 100 214', 'parent_phone' => '600 100 214', 'tournament' => 'Senior B',   'notes' => null],
-            ['first_name' => 'Karolina',   'last_name' => 'Czajka',        'email' => 'karolina@student.pl',  'dob' => '2010-01-09', 'pesel' => '10010912345', 'phone' => '500 100 215', 'parent_phone' => '600 100 215', 'tournament' => 'Junior A',   'notes' => null],
-            ['first_name' => 'Dawid',      'last_name' => 'Lis',           'email' => 'dawid@student.pl',     'dob' => '2008-06-26', 'pesel' => '08062612345', 'phone' => '500 100 216', 'parent_phone' => '600 100 216', 'tournament' => 'Senior A',   'notes' => null],
-            ['first_name' => 'Maja',       'last_name' => 'Górska',        'email' => 'maja@student.pl',      'dob' => '2012-09-11', 'pesel' => '12091112345', 'phone' => '500 100 217', 'parent_phone' => '600 100 217', 'tournament' => 'Junior B',   'notes' => null],
-            ['first_name' => 'Szymon',     'last_name' => 'Chmielewski',   'email' => 'szymon@student.pl',    'dob' => '2009-03-04', 'pesel' => '09030412345', 'phone' => '500 100 218', 'parent_phone' => '600 100 218', 'tournament' => 'Junior A',   'notes' => null],
-            ['first_name' => 'Julia',      'last_name' => 'Borkowska',     'email' => 'julia@student.pl',     'dob' => '2011-07-30', 'pesel' => '11073012345', 'phone' => '500 100 219', 'parent_phone' => '600 100 219', 'tournament' => 'Junior B',   'notes' => null],
-            ['first_name' => 'Maciej',     'last_name' => 'Kamiński',      'email' => 'maciej@student.pl',    'dob' => '2006-10-15', 'pesel' => '06101512345', 'phone' => '500 100 220', 'parent_phone' => '600 100 220', 'tournament' => 'Senior A',   'notes' => 'Competition team leader'],
-            ['first_name' => 'Lena',       'last_name' => 'Błaszczyk',     'email' => 'lena@student.pl',      'dob' => '2012-02-19', 'pesel' => '12021912345', 'phone' => '500 100 221', 'parent_phone' => '600 100 221', 'tournament' => 'Junior B',   'notes' => null],
-            ['first_name' => 'Adrian',     'last_name' => 'Pietrzak',      'email' => 'adrian@student.pl',    'dob' => '2008-05-07', 'pesel' => '08050712345', 'phone' => '500 100 222', 'parent_phone' => '600 100 222', 'tournament' => 'Senior B',   'notes' => null],
+            ['first_name' => 'Zofia',     'last_name' => 'Wiśniewska',    'email' => 'zofia@student.pl',     'dob' => '2010-03-15', 'phone' => '500 100 201', 'parent_phone' => '600 100 201', 'tournament' => 'Junior A',   'notes' => null],
+            ['first_name' => 'Jan',        'last_name' => 'Zieliński',     'email' => 'jan@student.pl',       'dob' => '2009-07-22', 'phone' => '500 100 202', 'parent_phone' => '600 100 202', 'tournament' => 'Junior A',   'notes' => null],
+            ['first_name' => 'Maria',      'last_name' => 'Lewandowska',   'email' => 'maria@student.pl',     'dob' => '2011-01-10', 'phone' => '500 100 203', 'parent_phone' => '600 100 203', 'tournament' => 'Junior B',   'notes' => null],
+            ['first_name' => 'Piotr',      'last_name' => 'Szymański',     'email' => 'piotr@student.pl',     'dob' => '2008-11-05', 'phone' => '500 100 204', 'parent_phone' => '600 100 204', 'tournament' => 'Senior A',   'notes' => null],
+            ['first_name' => 'Kasia',      'last_name' => 'Wójcik',        'email' => 'kasia@student.pl',     'dob' => '2010-06-18', 'phone' => '500 100 205', 'parent_phone' => '600 100 205', 'tournament' => 'Junior A',   'notes' => 'Prefers solo performances'],
+            ['first_name' => 'Tomasz',     'last_name' => 'Dąbrowski',     'email' => 'tomasz@student.pl',    'dob' => '2009-09-30', 'phone' => '500 100 206', 'parent_phone' => '600 100 206', 'tournament' => 'Junior A',   'notes' => null],
+            ['first_name' => 'Agnieszka',  'last_name' => 'Kozłowska',     'email' => 'agnieszka@student.pl', 'dob' => '2012-04-12', 'phone' => '500 100 207', 'parent_phone' => '600 100 207', 'tournament' => 'Junior B',   'notes' => null],
+            ['first_name' => 'Kamil',      'last_name' => 'Jankowski',     'email' => 'kamil@student.pl',     'dob' => '2007-08-25', 'phone' => '500 100 208', 'parent_phone' => '600 100 208', 'tournament' => 'Senior B',   'notes' => 'Team captain'],
+            ['first_name' => 'Oliwia',     'last_name' => 'Mazur',         'email' => 'oliwia@student.pl',    'dob' => '2011-05-20', 'phone' => '500 100 209', 'parent_phone' => '600 100 209', 'tournament' => 'Junior B',   'notes' => null],
+            ['first_name' => 'Jakub',      'last_name' => 'Krawczyk',      'email' => 'jakub@student.pl',     'dob' => '2008-12-01', 'phone' => '500 100 210', 'parent_phone' => '600 100 210', 'tournament' => 'Senior A',   'notes' => null],
+            ['first_name' => 'Natalia',    'last_name' => 'Pawlak',        'email' => 'natalia@student.pl',   'dob' => '2010-08-14', 'phone' => '500 100 211', 'parent_phone' => '600 100 211', 'tournament' => 'Junior A',   'notes' => null],
+            ['first_name' => 'Filip',      'last_name' => 'Michalski',     'email' => 'filip@student.pl',     'dob' => '2009-02-28', 'phone' => '500 100 212', 'parent_phone' => '600 100 212', 'tournament' => 'Junior A',   'notes' => null],
+            ['first_name' => 'Weronika',   'last_name' => 'Sikora',        'email' => 'weronika@student.pl',  'dob' => '2011-11-03', 'phone' => '500 100 213', 'parent_phone' => '600 100 213', 'tournament' => 'Junior B',   'notes' => null],
+            ['first_name' => 'Bartek',     'last_name' => 'Wozniak',       'email' => 'bartek@student.pl',    'dob' => '2007-04-17', 'phone' => '500 100 214', 'parent_phone' => '600 100 214', 'tournament' => 'Senior B',   'notes' => null],
+            ['first_name' => 'Karolina',   'last_name' => 'Czajka',        'email' => 'karolina@student.pl',  'dob' => '2010-01-09', 'phone' => '500 100 215', 'parent_phone' => '600 100 215', 'tournament' => 'Junior A',   'notes' => null],
+            ['first_name' => 'Dawid',      'last_name' => 'Lis',           'email' => 'dawid@student.pl',     'dob' => '2008-06-26', 'phone' => '500 100 216', 'parent_phone' => '600 100 216', 'tournament' => 'Senior A',   'notes' => null],
+            ['first_name' => 'Maja',       'last_name' => 'Górska',        'email' => 'maja@student.pl',      'dob' => '2012-09-11', 'phone' => '500 100 217', 'parent_phone' => '600 100 217', 'tournament' => 'Junior B',   'notes' => null],
+            ['first_name' => 'Szymon',     'last_name' => 'Chmielewski',   'email' => 'szymon@student.pl',    'dob' => '2009-03-04', 'phone' => '500 100 218', 'parent_phone' => '600 100 218', 'tournament' => 'Junior A',   'notes' => null],
+            ['first_name' => 'Julia',      'last_name' => 'Borkowska',     'email' => 'julia@student.pl',     'dob' => '2011-07-30', 'phone' => '500 100 219', 'parent_phone' => '600 100 219', 'tournament' => 'Junior B',   'notes' => null],
+            ['first_name' => 'Maciej',     'last_name' => 'Kamiński',      'email' => 'maciej@student.pl',    'dob' => '2006-10-15', 'phone' => '500 100 220', 'parent_phone' => '600 100 220', 'tournament' => 'Senior A',   'notes' => 'Competition team leader'],
+            ['first_name' => 'Lena',       'last_name' => 'Błaszczyk',     'email' => 'lena@student.pl',      'dob' => '2012-02-19', 'phone' => '500 100 221', 'parent_phone' => '600 100 221', 'tournament' => 'Junior B',   'notes' => null],
+            ['first_name' => 'Adrian',     'last_name' => 'Pietrzak',      'email' => 'adrian@student.pl',    'dob' => '2008-05-07', 'phone' => '500 100 222', 'parent_phone' => '600 100 222', 'tournament' => 'Senior B',   'notes' => null],
         ];
 
         $students = [];
@@ -89,7 +107,6 @@ class DatabaseSeeder extends Seeder
                 'password'            => Hash::make('password'),
                 'role'                => 'student',
                 'date_of_birth'       => $d['dob'],
-                'pesel'               => $d['pesel'],
                 'phone_number'        => $d['phone'],
                 'parent_phone_number' => $d['parent_phone'],
                 'tournament_group'    => $d['tournament'],
@@ -131,12 +148,21 @@ class DatabaseSeeder extends Seeder
         $g9->students()->attach([$students[16]->id, $students[20]->id, $students[17]->id]);
         $g10->students()->attach([$students[0]->id, $students[1]->id, $students[3]->id, $students[15]->id, $students[19]->id]);
 
+        // ── Pass Types ──
+        $singlePass = PassType::create(['type' => 'single', 'duration_months' => null, 'price' => 25.00]);
+        $monthly1   = PassType::create(['type' => 'monthly', 'duration_months' => 1,  'price' => 150.00]);
+        $monthly2   = PassType::create(['type' => 'monthly', 'duration_months' => 2,  'price' => 280.00]);
+        $monthly3   = PassType::create(['type' => 'monthly', 'duration_months' => 3,  'price' => 400.00]);
+        $monthly6   = PassType::create(['type' => 'monthly', 'duration_months' => 6,  'price' => 750.00]);
+        $monthly12  = PassType::create(['type' => 'monthly', 'duration_months' => 12, 'price' => 1400.00]);
+
         // ── Payments ──
         $monthly = fn ($student, $group, $from, $until) =>
             Payment::create([
                 'student_id'  => $student->id,
                 'dance_group_id' => $group->id,
                 'pass_type'   => 'monthly',
+                'pass_type_id' => $monthly1->id,
                 'amount'      => 150.00,
                 'valid_from'  => $from,
                 'valid_until' => $until,
@@ -148,9 +174,10 @@ class DatabaseSeeder extends Seeder
                 'student_id'  => $student->id,
                 'dance_group_id' => $group->id,
                 'pass_type'   => 'single',
+                'pass_type_id' => $singlePass->id,
                 'amount'      => 25.00,
                 'valid_from'  => $date,
-                'valid_until' => $date,
+                'valid_until' => $date->copy()->endOfDay(),
                 'status'      => $date->isFuture() || $date->isToday() ? 'active' : 'expired',
             ]);
 

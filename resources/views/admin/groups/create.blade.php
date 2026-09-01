@@ -35,11 +35,37 @@
                 </select>
                 @error('teacher_id') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
             </div>
+            <div class="mb-4">
+                <label for="room" class="block text-sm font-medium text-gray-700">{{ __('Room') }}</label>
+                <select name="room" id="room"
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500 sm:text-sm border p-2">
+                    <option value="">{{ __('Select room') }}</option>
+                    <option value="górna" {{ old('room') == 'górna' ? 'selected' : '' }}>{{ __('Upper') }}</option>
+                    <option value="dolna" {{ old('room') == 'dolna' ? 'selected' : '' }}>{{ __('Lower') }}</option>
+                </select>
+                @error('room') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
+            </div>
             <div class="mb-6">
                 <label for="schedule" class="block text-sm font-medium text-gray-700">{{ __('Schedule (description)') }}</label>
                 <input type="text" name="schedule" id="schedule" value="{{ old('schedule') }}"
                        placeholder="e.g. Monday & Wednesday, 18:00-19:30"
                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500 sm:text-sm border p-2">
+            </div>
+
+            <div class="mb-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label for="start_date" class="block text-sm font-medium text-gray-700">{{ __('Start Date') }}</label>
+                    <input type="date" name="start_date" id="start_date" value="{{ old('start_date') }}"
+                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500 sm:text-sm border p-2">
+                    @error('start_date') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
+                </div>
+                <div>
+                    <label for="end_date" class="block text-sm font-medium text-gray-700">{{ __('End Date') }}</label>
+                    <input type="date" name="end_date" id="end_date" value="{{ old('end_date') }}"
+                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500 sm:text-sm border p-2">
+                    @error('end_date') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
+                </div>
+                <p class="text-sm text-gray-500 md:col-span-2">{{ __('Leave blank to keep the group active indefinitely.') }}</p>
             </div>
 
             <div class="mb-6">
@@ -70,7 +96,9 @@
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const hidden = document.getElementById('class_times');
+    const scheduleInput = document.getElementById('schedule');
     const checkboxes = document.querySelectorAll('.day-checkbox');
+    let lastAuto = '';
 
     function serialize() {
         const times = [];
@@ -84,6 +112,32 @@ document.addEventListener('DOMContentLoaded', function () {
         hidden.value = JSON.stringify(times);
     }
 
+    function autoSchedule() {
+        if (scheduleInput.value.trim() !== '' && scheduleInput.value.trim() !== lastAuto) return;
+
+        const days = [];
+        checkboxes.forEach(function (cb) {
+            if (!cb.checked) return;
+            const row = cb.closest('.flex');
+            days.push(row.querySelector('span.w-24').textContent.trim());
+        });
+
+        if (days.length === 0) {
+            if (scheduleInput.value === lastAuto) scheduleInput.value = '';
+            lastAuto = '';
+            return;
+        }
+
+        const value = days.join(', ');
+        lastAuto = value;
+        scheduleInput.value = value;
+    }
+
+    function refresh() {
+        serialize();
+        autoSchedule();
+    }
+
     checkboxes.forEach(function (cb) {
         cb.addEventListener('change', function () {
             const row = this.closest('.flex');
@@ -91,11 +145,11 @@ document.addEventListener('DOMContentLoaded', function () {
             const end = row.querySelector('.end-time');
             start.disabled = !this.checked;
             end.disabled = !this.checked;
-            serialize();
+            refresh();
         });
         const row = cb.closest('.flex');
-        row.querySelector('.start-time').addEventListener('change', serialize);
-        row.querySelector('.end-time').addEventListener('change', serialize);
+        row.querySelector('.start-time').addEventListener('change', refresh);
+        row.querySelector('.end-time').addEventListener('change', refresh);
     });
 });
 </script>

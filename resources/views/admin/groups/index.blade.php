@@ -12,41 +12,6 @@
         <livewire:group-calendar />
     </div>
 
-    <div class="bg-white shadow rounded-lg overflow-hidden">
-        <table class="min-w-full divide-y divide-gray-200">
-            <thead class="bg-gray-50">
-                <tr>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ __('Name') }}</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ __('Category') }}</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ __('Teacher') }}</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ __('Schedule') }}</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ __('Students') }}</th>
-                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">{{ __('Actions') }}</th>
-                </tr>
-            </thead>
-            <tbody class="divide-y divide-gray-200">
-                @forelse($groups as $group)
-                <tr>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $group->name }}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $group->category->name }}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $group->teacher->name }}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $group->schedule ?? '-' }}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $group->students->count() }}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm space-x-2">
-                        <a href="{{ route('admin.groups.assign', $group) }}" class="text-indigo-600 hover:text-indigo-800">{{ __('Assign') }}</a>
-                        <a href="{{ route('admin.groups.edit', $group) }}" class="text-orange-600 hover:text-orange-800">{{ __('Edit') }}</a>
-                        <form method="POST" action="{{ route('admin.groups.destroy', $group) }}" class="inline" onsubmit="return confirm('{{ __('Are you sure?') }}')">
-                            @csrf @method('DELETE')
-                            <button type="submit" class="text-red-600 hover:text-red-800">{{ __('Delete') }}</button>
-                        </form>
-                    </td>
-                </tr>
-                @empty
-                <tr><td colspan="6" class="px-6 py-4 text-center text-sm text-gray-500">{{ __('No groups found.') }}</td></tr>
-                @endforelse
-            </tbody>
-        </table>
-    </div>
-    <div class="mt-4">{{ $groups->links() }}</div>
+    <livewire:group-search />
 </div>
 @endsection

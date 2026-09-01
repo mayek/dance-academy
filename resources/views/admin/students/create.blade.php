@@ -30,18 +30,12 @@
                 </div>
                 <div>
                     <label for="date_of_birth" class="block text-sm font-medium text-gray-700">{{ __('Date of Birth') }}</label>
-                    <input type="date" name="date_of_birth" id="date_of_birth" value="{{ old('date_of_birth') }}" required
+                    <input type="date" name="date_of_birth" id="date_of_birth" value="{{ old('date_of_birth') }}"
                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm border p-2">
                     @error('date_of_birth') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
                 </div>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                <div>
-                    <label for="pesel" class="block text-sm font-medium text-gray-700">{{ __('PESEL') }}</label>
-                    <input type="text" name="pesel" id="pesel" placeholder="00301512345" value="{{ old('pesel') }}" required maxlength="11"
-                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm border p-2">
-                    @error('pesel') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
-                </div>
                 <div>
                     <label for="phone_number" class="block text-sm font-medium text-gray-700">{{ __('Phone Number') }}</label>
                     <input type="text" name="phone_number" id="phone_number" placeholder="500 100 200" value="{{ old('phone_number') }}" required
@@ -69,16 +63,21 @@
                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm border p-2">{{ old('notes') }}</textarea>
                 @error('notes') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
             </div>
+            <div class="mb-4">
+                <livewire:group-picker />
+                @error('group_ids') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
+            </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                 <div>
                     <label for="password" class="block text-sm font-medium text-gray-700">{{ __('Password') }}</label>
-                    <input type="password" name="password" id="password" placeholder="Min. 8 characters" required
+                    <input type="password" name="password" id="password" placeholder="Min. 8 characters"
                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm border p-2">
+                    <p class="mt-1 text-sm text-gray-500">{{ __('Leave blank to use phone number as password.') }}</p>
                     @error('password') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
                 </div>
                 <div>
                     <label for="password_confirmation" class="block text-sm font-medium text-gray-700">{{ __('Confirm Password') }}</label>
-                    <input type="password" name="password_confirmation" id="password_confirmation" placeholder="Re-enter password" required
+                    <input type="password" name="password_confirmation" id="password_confirmation" placeholder="Re-enter password"
                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm border p-2">
                 </div>
             </div>

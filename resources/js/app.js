@@ -13,10 +13,28 @@ function initStudentSearch() {
     const hiddenInput = document.getElementById('student_id');
     const dropdown = document.getElementById('student_dropdown');
     const clearBtn = document.getElementById('student_clear');
+    const groupSelect = document.querySelector('[data-group-filter]');
 
     if (!searchInput || !hiddenInput || !dropdown || !clearBtn) return;
 
     const students = window.studentSearchData || [];
+
+    function filterGroups(studentId) {
+        if (!groupSelect) return;
+        const student = students.find(s => String(s.id) === String(studentId));
+        const allowed = student ? (student.group_ids || []).map(String) : null;
+
+        Array.from(groupSelect.options).forEach(o => {
+            if (!o.value) return;
+            o.hidden = allowed !== null && !allowed.includes(o.value);
+        });
+
+        if (allowed && groupSelect.value && !allowed.includes(String(groupSelect.value))) {
+            groupSelect.value = '';
+        }
+    }
+
+    window.filterStudentGroups = filterGroups;
 
     function renderDropdown(query) {
         const q = query.toLowerCase().trim();
@@ -28,7 +46,6 @@ function initStudentSearch() {
         const matches = students.filter(s =>
             (s.full_name && s.full_name.toLowerCase().includes(q)) ||
             (s.email && s.email.toLowerCase().includes(q)) ||
-            (s.pesel && s.pesel.includes(q)) ||
             (s.phone && s.phone.replace(/\s/g, '').includes(q.replace(/\s/g, ''))) ||
             (s.parent_phone && s.parent_phone.replace(/\s/g, '').includes(q.replace(/\s/g, '')))
         );
@@ -41,7 +58,6 @@ function initStudentSearch() {
 
         dropdown.innerHTML = matches.map(s => {
             const parts = [];
-            if (s.pesel) parts.push('PESEL: ' + s.pesel);
             if (s.phone) parts.push('Tel: ' + s.phone);
             if (s.email) parts.push(s.email);
             const meta = parts.join(' &middot; ');
@@ -60,6 +76,7 @@ function initStudentSearch() {
                 searchInput.value = this.dataset.name;
                 dropdown.classList.add('hidden');
                 clearBtn.classList.remove('hidden');
+                filterGroups(this.dataset.id);
             });
         });
     }
@@ -67,6 +84,7 @@ function initStudentSearch() {
     searchInput.addEventListener('input', function () {
         hiddenInput.value = '';
         clearBtn.classList.add('hidden');
+        filterGroups(null);
         renderDropdown(this.value);
     });
 
@@ -79,6 +97,7 @@ function initStudentSearch() {
         hiddenInput.value = '';
         dropdown.classList.add('hidden');
         clearBtn.classList.add('hidden');
+        filterGroups(null);
     });
 
     document.addEventListener('click', function (e) {
@@ -86,6 +105,10 @@ function initStudentSearch() {
             dropdown.classList.add('hidden');
         }
     });
+
+    if (hiddenInput.value) {
+        filterGroups(hiddenInput.value);
+    }
 }
 
 function initPassTypeAutoAmount() {

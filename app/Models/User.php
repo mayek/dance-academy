@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Notifications\ResetPassword;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
@@ -13,7 +14,7 @@ use Illuminate\Notifications\Notifiable;
 
 #[Fillable([
     'name', 'first_name', 'last_name', 'email', 'password', 'role',
-    'date_of_birth', 'pesel', 'phone_number', 'parent_phone_number',
+    'date_of_birth', 'phone_number', 'parent_phone_number',
     'tournament_group', 'notes',
 ])]
 #[Hidden(['password', 'remember_token'])]
@@ -29,6 +30,11 @@ class User extends Authenticatable
             'password' => 'hashed',
             'date_of_birth' => 'date',
         ];
+    }
+
+    public function sendPasswordResetNotification($token): void
+    {
+        $this->notify(new ResetPassword($token));
     }
 
     public function getFullNameAttribute(): string
@@ -50,6 +56,16 @@ class User extends Authenticatable
         return $this->role === 'teacher';
     }
 
+    public function isReception(): bool
+    {
+        return $this->role === 'reception';
+    }
+
+    public function isStaff(): bool
+    {
+        return in_array($this->role, ['teacher', 'reception']);
+    }
+
     public function isStudent(): bool
     {
         return $this->role === 'student';
@@ -65,6 +81,11 @@ class User extends Authenticatable
         return $this->belongsToMany(DanceGroup::class, 'dance_group_student', 'student_id', 'dance_group_id');
     }
 
+    public function events(): BelongsToMany
+    {
+        return $this->belongsToMany(Event::class, 'event_student', 'student_id', 'event_id');
+    }
+
     public function payments(): HasMany
     {
         return $this->hasMany(Payment::class, 'student_id');
@@ -72,7 +93,7 @@ class User extends Authenticatable
 
     public function activePayments(): HasMany
     {
-        return $this->payments()->where('status', 'active')->where('valid_until', '>=', now());
+        return $this->payments()->where('status', 'active')->where('valid_until', '>=', now()->startOfDay());
     }
 
     public function attendances(): HasMany

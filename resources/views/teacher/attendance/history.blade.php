@@ -11,6 +11,11 @@
         </div>
     </div>
 
+    <div class="mb-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-3">{{ __('Absences') }}</h2>
+        <livewire:attendance-calendar :group-id="$group->id" :key="'attendance-calendar-' . $group->id" />
+    </div>
+
     <div class="bg-white shadow rounded-lg overflow-hidden">
         <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">

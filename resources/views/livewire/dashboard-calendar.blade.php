@@ -24,10 +24,10 @@
                 </div>
                 <div class="p-1 space-y-1">
                     @forelse($combined[$i] as $slot)
-                        <a href="{{ $slot['route'] }}" class="block text-xs rounded px-1.5 py-1 {{ $slot['color'] }} hover:opacity-80">
+                        <button type="button" wire:click="{{ $slot['type'] === 'group' ? 'openGroup' : 'openEvent' }}({{ $slot['id'] }})" class="block w-full text-left text-xs rounded px-1.5 py-1 {{ $slot['color'] }} hover:opacity-80 cursor-pointer">
                             <div class="font-medium truncate">{{ $slot['title'] }}</div>
                             <div class="opacity-75">{{ $slot['subtitle'] }}</div>
-                        </a>
+                        </button>
                     @empty
                         <div class="text-xs text-gray-300 text-center py-4">{{ __('—') }}</div>
                     @endforelse
@@ -35,4 +35,5 @@
             </div>
         @endforeach
     </div>
+    @include('livewire.partials.calendar-students-modal')
 </div>

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules\Password;
 
 class TeacherController extends Controller
 {
@@ -25,7 +26,7 @@ class TeacherController extends Controller
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'password' => ['required', 'string', Password::min(8)->numbers(), 'confirmed'],
         ]);
 
         User::create([
@@ -36,7 +37,7 @@ class TeacherController extends Controller
         ]);
 
         return redirect()->route('admin.teachers.index')
-            ->with('success', 'Teacher created successfully.');
+            ->with('success', __('Teacher created successfully.'));
     }
 
     public function edit(User $teacher)
@@ -54,13 +55,13 @@ class TeacherController extends Controller
         $teacher->update($validated);
 
         return redirect()->route('admin.teachers.index')
-            ->with('success', 'Teacher updated successfully.');
+            ->with('success', __('Teacher updated successfully.'));
     }
 
     public function destroy(User $teacher)
     {
         $teacher->delete();
         return redirect()->route('admin.teachers.index')
-            ->with('success', 'Teacher deleted successfully.');
+            ->with('success', __('Teacher deleted successfully.'));
     }
 }

@@ -19,6 +19,27 @@
                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm border p-2">
                 @error('date') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
             </div>
+            <div class="mb-4">
+                <label for="teacher_id" class="block text-sm font-medium text-gray-700">{{ __('Instructor') }}</label>
+                <select name="teacher_id" id="teacher_id" required
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm border p-2">
+                    <option value="">{{ __('Select instructor') }}</option>
+                    @foreach($teachers as $teacher)
+                        <option value="{{ $teacher->id }}" {{ old('teacher_id', $event->teacher_id) == $teacher->id ? 'selected' : '' }}>{{ $teacher->name }}</option>
+                    @endforeach
+                </select>
+                @error('teacher_id') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
+            </div>
+            <div class="mb-4">
+                <label for="room" class="block text-sm font-medium text-gray-700">{{ __('Room') }}</label>
+                <select name="room" id="room"
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm border p-2">
+                    <option value="">{{ __('Select room') }}</option>
+                    <option value="górna" {{ old('room', $event->room) == 'górna' ? 'selected' : '' }}>{{ __('Upper') }}</option>
+                    <option value="dolna" {{ old('room', $event->room) == 'dolna' ? 'selected' : '' }}>{{ __('Lower') }}</option>
+                </select>
+                @error('room') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
+            </div>
             <div class="grid grid-cols-2 gap-4 mb-6">
                 <div>
                     <label for="start_time" class="block text-sm font-medium text-gray-700">{{ __('Start Time') }}</label>

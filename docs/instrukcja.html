@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<title>Instrukcja obsługi aplikacji Akademia Tańca</title>
+<style>
+  @page {
+    size: A4;
+    margin: 16mm 14mm 18mm 14mm;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    font-size: 10.5pt;
+    line-height: 1.5;
+    color: #1f2937;
+    margin: 0;
+  }
+  h1, h2, h3, h4 { color: #0f2a43; }
+  h1 { font-size: 20pt; margin: 0 0 4pt 0; }
+  h2 {
+    font-size: 14pt;
+    border-bottom: 2px solid #2563eb;
+    padding-bottom: 3pt;
+    margin: 20pt 0 8pt 0;
+  }
+  h3 { font-size: 12pt; margin: 14pt 0 5pt 0; color: #1e40af; }
+  h4 { font-size: 11pt; margin: 10pt 0 4pt 0; color: #374151; }
+  p { margin: 5pt 0; }
+  ul, ol { margin: 5pt 0 5pt 0; padding-left: 18pt; }
+  li { margin: 2.5pt 0; }
+  a { color: #2563eb; text-decoration: none; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 8pt 0;
+    font-size: 9.5pt;
+  }
+  th {
+    background: #0f2a43;
+    color: #fff;
+    text-align: left;
+    padding: 5pt 7pt;
+    border: 1px solid #0f2a43;
+  }
+  td {
+    padding: 5pt 7pt;
+    border: 1px solid #d1d5db;
+    vertical-align: top;
+  }
+  tr:nth-child(even) td { background: #f3f4f6; }
+  .cover {
+    text-align: center;
+    padding: 90pt 20pt 60pt 20pt;
+  }
+  .cover .logo {
+    font-size: 30pt;
+    font-weight: 700;
+    color: #0f2a43;
+    letter-spacing: 1pt;
+  }
+  .cover .subtitle {
+    font-size: 15pt;
+    color: #2563eb;
+    margin-top: 8pt;
+  }
+  .cover .meta {
+    margin-top: 60pt;
+    font-size: 11pt;
+    color: #4b5563;
+  }
+  .toc {
+    page-break-after: always;
+  }
+  .toc ul { list-style: none; padding-left: 0; }
+  .toc ul ul { padding-left: 16pt; }
+  .toc a { color: #1f2937; }
+  .badge {
+    display: inline-block;
+    padding: 1pt 6pt;
+    border-radius: 8pt;
+    font-size: 8.5pt;
+    font-weight: 600;
+  }
+  .b-blue   { background: #dbeafe; color: #1e40af; }
+  .b-green  { background: #dcfce7; color: #166534; }
+  .b-red    { background: #fee2e2; color: #991b1b; }
+  .b-amber  { background: #fef3c7; color: #92400e; }
+  .b-gray   { background: #e5e7eb; color: #374151; }
+  .note {
+    background: #eff6ff;
+    border-left: 4pt solid #2563eb;
+    padding: 6pt 10pt;
+    margin: 8pt 0;
+  }
+  .warn {
+    background: #fef3c7;
+    border-left: 4pt solid #d97706;
+    padding: 6pt 10pt;
+    margin: 8pt 0;
+  }
+  .newpage { page-break-before: always; }
+  .avoid { page-break-inside: avoid; }
+  .rolebox {
+    background: #f0fdf4;
+    border: 1px solid #86efac;
+    border-radius: 4pt;
+    padding: 8pt 12pt;
+    margin: 10pt 0;
+  }
+  code {
+    background: #f3f4f6;
+    padding: 0 3pt;
+    border-radius: 3pt;
+    font-size: 9pt;
+  }
+  .footer-note {
+    font-size: 8.5pt;
+    color: #6b7280;
+    text-align: center;
+    margin-top: 14pt;
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ OKŁADKA ============ -->
+<div class="cover">
+  <div class="logo">Akademia Tańca</div>
+  <div class="subtitle">Instrukcja obsługi aplikacji</div>
+  <div style="margin-top:20pt; font-size:12pt; color:#374151;">Części: Administrator oraz Nauczyciel</div>
+  <div class="meta">
+    Wersja dokumentu: 1.0<br>
+    Data: sierpień 2026
+  </div>
+</div>
+
+<!-- ============ SPIS TREŚCI ============ -->
+<div class="toc">
+  <h2 style="border:none;">Spis treści</h2>
+  <ul>
+    <li><strong>1. Informacje ogólne</strong>
+      <ul>
+        <li>1.1. Logowanie do systemu</li>
+        <li>1.2. Pierwsze logowanie i zmiana hasła</li>
+        <li>1.3. Nawigacja i role w systemie</li>
+        <li>1.4. Zmiana języka (PL/EN)</li>
+        <li>1.5. Wylogowanie</li>
+      </ul>
+    </li>
+    <li><strong>2. Część Administratora</strong>
+      <ul>
+        <li>2.1. Panel administratora (Dashboard)</li>
+        <li>2.2. Instruktorzy</li>
+        <li>2.3. Uczniowie</li>
+        <li>2.4. Kategorie</li>
+        <li>2.5. Karnety (rodzaje karnetów)</li>
+        <li>2.6. Grupy taneczne</li>
+        <li>2.7. Płatności</li>
+        <li>2.8. Obecności i odpracowania</li>
+        <li>2.9. Wydarzenia</li>
+      </ul>
+    </li>
+    <li><strong>3. Część Nauczyciela</strong>
+      <ul>
+        <li>3.1. Panel nauczyciela</li>
+        <li>3.2. Moje grupy taneczne</li>
+        <li>3.3. Obecności</li>
+        <li>3.4. Moje wydarzenia</li>
+        <li>3.5. Sprzedaż karnetów przez nauczyciela</li>
+      </ul>
+    </li>
+    <li><strong>4. Funkcje wspólne</strong>
+      <ul>
+        <li>4.1. Profil użytkownika</li>
+        <li>4.2. Zmiana hasła</li>
+        <li>4.3. Harmonogram tygodniowy</li>
+        <li>4.4. Powiadomienia e-mail o kończących się karnetach</li>
+      </ul>
+    </li>
+    <li><strong>5. Słownik pojęć i statusy</strong></li>
+  </ul>
+</div>
+
+<!-- ============ 1. INFORMACJE OGÓLNE ============ -->
+<h2>1. Informacje ogólne</h2>
+
+<h3>1.1. Logowanie do systemu</h3>
+<p>Wejdź na stronę logowania systemu i podaj swój <strong>adres e-mail</strong> oraz <strong>hasło</strong>, a następnie kliknij przycisk <strong>Zaloguj się</strong>.</p>
+<p>Po zalogowaniu system automatycznie przekierowuje użytkownika do panelu właściwego dla jego roli:</p>
+<table>
+  <tr><th>Rola</th><th>Po zalogowaniu trafiasz do</th></tr>
+  <tr><td>Administrator</td><td>Panel Administratora (<code>/admin/dashboard</code>)</td></tr>
+  <tr><td>Nauczyciel</td><td>Panel Instruktora (<code>/teacher/dashboard</code>)</td></tr>
+  <tr><td>Uczeń</td><td>Panel Ucznia</td></tr>
+</table>
+<p>Jeśli podano błędny adres e-mail lub hasło, system wyświetli komunikat o błędzie i nie zaloguje użytkownika.</p>
+
+<div class="note"><strong>Ważne:</strong> dostęp do panelu administracyjnego ma wyłącznie administrator, a do panelu nauczyciela wyłącznie nauczyciel. Próba wejścia w nieodpowiednią sekcję kończy się komunikatem o braku uprawnień (403).</div>
+
+<h3>1.2. Pierwsze logowanie i zmiana hasła</h3>
+<ol>
+  <li>Konto tworzy administrator (zob. punkt 2.2 „Instruktorzy” i 2.3 „Uczniowie”).</li>
+  <li>Po otrzymaniu danych logowania zaloguj się do systemu.</li>
+  <li>Otwórz <strong>Mój Profil</strong> (kliknij swoją nazwę użytkownika w górnym pasku).</li>
+  <li>W sekcji <strong>Zmień hasło</strong> podaj obecne hasło, nowe hasło i jego potwierdzenie, a następnie kliknij <strong>Zaktualizuj hasło</strong>.</li>
+</ol>
+<div class="warn"><strong>Hasło musi spełniać wymagania:</strong> co najmniej 8 znaków oraz zawierać cyfry.</div>
+
+<h3>1.3. Nawigacja i role w systemie</h3>
+<p>W górnym pasku aplikacji znajduje się menu nawigacyjne, które zależy od roli zalogowanego użytkownika.</p>
+
+<h4>Menu administratora</h4>
+<table>
+  <tr><th>Pozycja menu</th><th>Do czego służy</th></tr>
+  <tr><td>Panel</td><td>Główny ekran z statystykami, harmonogramem i wygasającymi karnetami</td></tr>
+  <tr><td>Instruktorzy</td><td>Zarządzanie kontami nauczycieli</td></tr>
+  <tr><td>Uczniowie</td><td>Zarządzanie kontami uczniów</td></tr>
+  <tr><td>Kategorie</td><td>Kategorie taneczne grup (np. Jazz, Hip-hop)</td></tr>
+  <tr><td>Płatności</td><td>Lista i rejestrowanie płatności / karnetów</td></tr>
+  <tr><td>Karnety</td><td>Rodzaje karnetów (jednorazowe i miesięczne) z cenami</td></tr>
+  <tr><td>Obecności</td><td>Lista obecności oraz nieobecności uczniów</td></tr>
+  <tr><td>Grupy</td><td>Grupy taneczne, ich terminy i przypisywanie uczniów</td></tr>
+  <tr><td>Wydarzenia</td><td>Wydarzenia (pokazy, występy) i sprzedaż karnetów na wydarzenia</td></tr>
+</table>
+
+<h4>Menu nauczyciela</h4>
+<table>
+  <tr><th>Pozycja menu</th><th>Do czego służy</th></tr>
+  <tr><td>Moje Grupy</td><td>Grupy przypisane do nauczyciela</td></tr>
+  <tr><td>Wydarzenia</td><td>Wydarzenia utworzone przez nauczyciela</td></tr>
+  <tr><td>Obecności</td><td>Dodawanie obecności na zajęciach i ich historia</td></tr>
+</table>
+
+<h3>1.4. Zmiana języka (PL/EN)</h3>
+<p>W górnym pasku znajduje się przełącznik języka <strong>EN / PL</strong>. Kliknięcie natychmiast przełącza język całej aplikacji. Wybór jest zapamiętywany.</p>
+
+<h3>1.5. Wylogowanie</h3>
+<p>Kliknij przycisk <strong>Wyloguj</strong> w górnym pasku, aby bezpiecznie zakończyć sesję.</p>
+
+<!-- ============ 2. CZĘŚĆ ADMINISTRATORA ============ -->
+<div class="newpage"></div>
+<h2>2. Część Administratora</h2>
+
+<div class="rolebox"><strong>Zakres uprawnień administratora:</strong> pełny dostęp do wszystkich funkcji systemu – zarządzanie instruktorami, uczniami, kategoriami, grupami, karnetami, płatnościami, obecnościami oraz wydarzeniami.</div>
+
+<h3>2.1. Panel administratora (Dashboard)</h3>
+<p>Główny ekran administratora składa się z kilku elementów:</p>
+<ul>
+  <li><strong>Statystyki</strong> – karty z liczbami: instruktorzy, uczniowie, kategorie, grupy taneczne, aktywne karnety oraz miesięczny przychód. Kliknięcie karty przenosi do strony „Zarządzaj”.</li>
+  <li><strong>Harmonogram tygodniowy</strong> – kalendarz z zajęciami grup (niebieskie bloki) i wydarzeniami (zielone bloki). Przeglądaj tygodnie przyciskami <em>Poprzedni</em>, <em>Następny</em>, <em>Dzisiaj</em>. Kliknięcie bloku pokazuje listę zapisanych uczniów (z telefonami) oraz linki <em>Przypisz uczniów</em> i <em>Edytuj</em>.</li>
+  <li><strong>Karnety wygasające (7 dni)</strong> – tabela karnetów, które wygasną w ciągu najbliższych 7 dni: uczeń, grupa, rodzaj karnetu, data wygaśnięcia i liczba pozostałych dni. Kolor licznika dni: czerwony (≤1 dzień), pomarańczowy (≤3 dni), bursztynowy (pozostałe). Przy każdym wierszu jest przycisk <strong>Kup karnet</strong>, który pozwala od razu sprzedać nowy karnet temu uczniowi.</li>
+  <li><strong>Przychód</strong> – wykres słupkowy przychodów z ostatnich 12 miesięcy.</li>
+</ul>
+
+<h4>Kupno karnetu z panelu (szybka sprzedaż)</h4>
+<ol>
+  <li>Kliknij przycisk <strong>Kup karnet</strong> (górny prawy róg sekcji lub w wierszu wygasającego karnetu).</li>
+  <li>W oknie <strong>Wyszukaj ucznia</strong> zacznij wpisywać imię, nazwisko, e-mail lub telefon – wybierz ucznia z listy.</li>
+  <li>Wybierz <strong>grupę taneczną</strong> z listy rozwijanej.</li>
+  <li>Wybierz <strong>rodzaj karnetu</strong> (karta z nazwą, ceną i opisem ważności).</li>
+  <li>Kliknij <strong>Kup karnet</strong>. Karnet zostanie zarejestrowany jako aktywny (ważność liczona od bieżącego dnia).</li>
+</ol>
+<div class="note">Karnet <strong>miesięczny</strong> jest ważny przez pełne miesiące kalendarzowe (np. zakupiony w trakcie miesiąca i tak ważny do końca danego miesiąca). Karnet <strong>jednorazowy</strong> jest ważny przez jeden dzień (na jedne zajęcia).</div>
+
+<h3>2.2. Instruktorzy</h3>
+<p>Menu <strong>Instruktorzy</strong> pozwala dodawać, edytować i usuwać konta nauczycieli.</p>
+
+<h4>Dodawanie instruktora</h4>
+<ol>
+  <li>Kliknij przycisk <strong>+ Dodaj instruktora</strong>.</li>
+  <li>Wypełnij formularz: <strong>Imię i nazwisko</strong>, <strong>Adres e-mail</strong>, <strong>Hasło</strong> i <strong>Potwierdź hasło</strong>.</li>
+  <li>Kliknij <strong>Utwórz instruktora</strong>.</li>
+</ol>
+
+<h4>Edycja</h4>
+<p>Przy koncie instruktora kliknij <strong>Edytuj</strong>. Możesz zmienić imię i nazwisko oraz adres e-mail. Hasła nie zmienia się tutaj – instruktor robi to sam w swoim profilu (punkt 4.2).</p>
+
+<h4>Usuwanie</h4>
+<p>Kliknij <strong>Usuń</strong> i potwierdź operację.</p>
+<div class="warn"><strong>Uwaga:</strong> usunięcie instruktora usuwa również grupy taneczne, które były mu przypisane! Przed usunięciem upewnij się, że grupy zostały przeniesione do innego instruktora.</div>
+
+<h3>2.3. Uczniowie</h3>
+<p>Menu <strong>Uczniowie</strong> pozwala zarządzać kontami uczniów. Lista ma wbudowaną wyszukiwarkę (imię, nazwisko, e-mail, telefon, telefon rodzica).</p>
+
+<h4>Dodawanie ucznia</h4>
+<ol>
+  <li>Kliknij <strong>+ Dodaj ucznia</strong>.</li>
+  <li>Wypełnij formularz: <strong>Imię</strong>, <strong>Nazwisko</strong>, <strong>Adres e-mail</strong>, <strong>Data urodzenia</strong> (musi być wcześniejsza niż dzisiaj), <strong>Numer telefonu</strong> (wymagany), <strong>Telefon rodzica</strong> (opcjonalny), <strong>Grupa turniejowa</strong> (opcjonalna), <strong>Uwagi</strong> (opcjonalne), <strong>Hasło</strong> i <strong>Potwierdź hasło</strong>.</li>
+  <li>Kliknij <strong>Utwórz ucznia</strong>.</li>
+</ol>
+
+<h4>Edycja i usuwanie</h4>
+<p>Przy uczniu kliknij <strong>Edytuj</strong>, aby zmienić dane (bez hasła – uczeń zmienia je w swoim profilu), lub <strong>Usuń</strong> i potwierdź operację.</p>
+<p>Przycisk <strong>Nieobecności</strong> przy uczniu otwiera listę jego nieobecności z możliwością oznaczania odpracowań (szczegóły w punkcie 2.8).</p>
+
+<h3>2.4. Kategorie</h3>
+<p>Kategorie porządkują grupy taneczne (np. „Jazz”, „Taniec towarzyski”, „Hip-hop”).</p>
+<ol>
+  <li>Kliknij <strong>+ Dodaj kategorię</strong>.</li>
+  <li>Podaj <strong>Nazwę</strong> i opcjonalny <strong>Opis</strong>.</li>
+  <li>Kliknij <strong>Utwórz kategorię</strong>.</li>
+</ol>
+<p>Kategorie można edytować (Edytuj) i usuwać (Usuń).</p>
+
+<h3>2.5. Karnety (rodzaje karnetów)</h3>
+<p>Menu <strong>Karnety</strong> definiuje rodzaje karnetów sprzedawanych uczniom. Każdy rodzaj ma długość, cenę i automatycznie generowaną nazwę.</p>
+
+<h4>Dodawanie karnetu</h4>
+<ol>
+  <li>Kliknij <strong>+ Dodaj karnet</strong>.</li>
+  <li>Podaj opcjonalną <strong>Nazwę</strong> (jeśli pole będzie puste, nazwa wygeneruje się automatycznie, np. „Karnet miesięczny (2 miesiące)”).</li>
+  <li>Wybierz <strong>Długość</strong>: karnet jednorazowy (<strong>Pojedynczy</strong>) albo 1 / 2 / 3 / 6 / 12 miesięcy.</li>
+  <li>Podaj <strong>Cenę</strong> w złotych.</li>
+  <li>Kliknij <strong>Utwórz karnet</strong>.</li>
+</ol>
+
+<h4>Rodzaje karnetów a ich ważność</h4>
+<table>
+  <tr><th>Rodzaj</th><th>Okres ważności</th></tr>
+  <tr><td>Karnet jednorazowy (Pojedynczy)</td><td>Jeden dzień – uprawnia do udziału w jednych zajęciach</td></tr>
+  <tr><td>Karnet miesięczny (1–12 mies.)</td><td>Pełne miesiące kalendarzowe (np. karnet 1-miesięczny ważny do końca bieżącego miesiąca)</td></tr>
+</table>
+<p>Karnety można edytować i usuwać. Przy każdym rodzaju widnieje liczba zarejestrowanych płatności.</p>
+
+<h3>2.6. Grupy taneczne</h3>
+<p>Grupa łączy kategorię, nauczyciela i uczniów oraz określa terminy zajęć.</p>
+
+<h4>Dodawanie grupy</h4>
+<ol>
+  <li>Kliknij <strong>+ Dodaj grupę</strong>.</li>
+  <li>Podaj <strong>Nazwę grupy</strong>.</li>
+  <li>Wybierz <strong>Kategorię</strong> i <strong>Instruktora</strong> (nauczyciela prowadzącego).</li>
+  <li>W polu <strong>Harmonogram (opis)</strong> możesz wpisać opis tekstowy (np. „Poniedziałki i środy 17:00”).</li>
+  <li>W sekcji <strong>Godziny zajęć</strong> zaznacz dni tygodnia (poniedziałek–niedziela) i podaj dla każdego dzień <strong>godzinę rozpoczęcia</strong> i <strong>zakończenia</strong>. Zaznaczone terminy pojawiają się w harmonogramie tygodniowym.</li>
+  <li>Kliknij <strong>Utwórz grupę</strong>.</li>
+</ol>
+
+<h4>Przypisywanie uczniów do grupy</h4>
+<ol>
+  <li>Przy grupie kliknij <strong>Przypisz</strong>.</li>
+  <li>Użyj wyszukiwarki (imię, nazwisko, e-mail, telefon), aby znaleźć ucznia.</li>
+  <li>Zaznacz pole przy wybranych uczniach (zaznaczeni = zapisani do grupy).</li>
+  <li>Kliknij <strong>Zapisz przydziały</strong>.</li>
+</ol>
+<p>Lista grup zawiera również kalendarz harmonogramu oraz liczbę zapisanych uczniów.</p>
+
+<h3>2.7. Płatności</h3>
+<p>Menu <strong>Płatności</strong> zawiera pełną listę zarejestrowanych płatności / wydanych karnetów, z filtrami i wykresem przychodów.</p>
+
+<h4>Filtry listy</h4>
+<ul>
+  <li>Wyszukiwarka ucznia (imię/e-mail),</li>
+  <li>Grupa (wszystkie / wybrana),</li>
+  <li>Rodzaj karnetu (wszystkie / miesięczny / pojedynczy),</li>
+  <li>Status (wszystkie / aktywny / wygasły / anulowany),</li>
+  <li>Przycisk <strong>Wyczyść</strong> – resetuje filtry.</li>
+</ul>
+
+<h4>Rejestrowanie płatności ręcznie</h4>
+<ol>
+  <li>Kliknij <strong>+ Dodaj płatność</strong>.</li>
+  <li>Wyszukaj i wybierz <strong>ucznia</strong>.</li>
+  <li>Wybierz <strong>grupę taneczną</strong> oraz <strong>rodzaj karnetu</strong> (kwota wypełni się automatycznie – pole jest do odczytu).</li>
+  <li>Ustaw <strong>Ważny od</strong> (data rozpoczęcia, domyślnie dzisiaj).</li>
+  <li>Wpisz ewentualne <strong>Uwagi</strong> i kliknij <strong>Dodaj płatność</strong>.</li>
+</ol>
+<p>System sam wylicza datę ważności (koniec dnia dla karnetu jednorazowego, koniec ostatniego miesiąca dla karnetu miesięcznego) oraz status (aktywny / wygasły).</p>
+
+<h4>Edycja płatności</h4>
+<p>Przy płatności kliknij <strong>Edytuj</strong>. Możesz zmienić ucznia, grupę, rodzaj karnetu, kwotę, status (aktywny / wygasły / anulowany), datę rozpoczęcia i uwagi. Przy zapisie system ponownie przelicza datę ważności.</p>
+
+<h4>Kupno karnetu (skrót)</h4>
+<p>Przyciskiem <strong>Kup karnet</strong> (na panelu lub przy wygasającym karnecie) można szybko sprzedać karnet – szczegóły w punkcie 2.1.</p>
+
+<div class="note">Kolumna <strong>Dokonał</strong> na liście płatności pokazuje, kto (który użytkownik) zarejestrował daną płatność.</div>
+
+<h3>2.8. Obecności i odpracowania</h3>
+
+<h4>Lista obecności</h4>
+<p>Menu <strong>Obecności</strong> pokazuje wszystkie wpisy obecności z filtrami: grupa, data, status (<em>Obecny / Nieobecny / Usprawiedliwiony</em>).</p>
+
+<h4>Dodawanie obecności</h4>
+<ol>
+  <li>Kliknij <strong>+ Dodaj obecność</strong>.</li>
+  <li>Wybierz <strong>grupę</strong> i <strong>datę</strong> zajęć, następnie kliknij <strong>Wczytaj uczniów</strong>.</li>
+  <li>Dla każdego ucznia ustaw status (domyślnie <strong>Obecny</strong>) i opcjonalnie wpisz <strong>uwagę</strong>.</li>
+  <li>Kliknij <strong>Zapisz obecność</strong>.</li>
+</ol>
+<p>Ponowne zapisanie obecności dla tej samej grupy i daty zaktualizuje istniejące wpisy.</p>
+
+<h4>Nieobecności i odpracowania</h4>
+<ol>
+  <li>Przy uczniu na liście Uczniowie kliknij <strong>Nieobecności</strong>.</li>
+  <li>Zobaczysz listę nieobecności ucznia z datami i sumą nieobecności.</li>
+  <li>Przy nieobecności, która nie została jeszcze odpracowana, kliknij <strong>Oznacz jako odpracowane</strong>.</li>
+</ol>
+<div class="warn"><strong>Odpracowanie możliwe jest tylko w ciągu 14 dni</strong> od nieobecności. Po tym czasie przy wpisie pojawi się status „Wygasły” i nie będzie można go oznaczyć.</div>
+<p>Odpracowania oznacza wyłącznie administrator – nauczyciele tego nie robią.</p>
+
+<h3>2.9. Wydarzenia</h3>
+<p>Wydarzenia to pokazy, występy i inne okazje, na które można sprzedawać karnety jednorazowe.</p>
+
+<h4>Dodawanie wydarzenia</h4>
+<ol>
+  <li>Kliknij <strong>+ Dodaj wydarzenie</strong>.</li>
+  <li>Podaj <strong>Nazwę wydarzenia</strong>, <strong>datę</strong>, <strong>godzinę rozpoczęcia</strong> i <strong>godzinę zakończenia</strong> (musi być późniejsza niż rozpoczęcie).</li>
+  <li>Kliknij <strong>Utwórz wydarzenie</strong>.</li>
+</ol>
+
+<h4>Przypisywanie uczniów do wydarzenia</h4>
+<p>Kliknij <strong>Przypisz</strong> przy wydarzeniu, wyszukaj i zaznacz uczniów, a następnie <strong>Zapisz przydziały</strong>.</p>
+
+<h4>Kupno karnetu na wydarzenie</h4>
+<ol>
+  <li>Przy wydarzeniu, które odbywa się <strong>dzisiaj lub w przyszłości</strong>, kliknij <strong>Kup karnet</strong>.</li>
+  <li>W oknie wyszukaj i wybierz ucznia.</li>
+  <li>Wybierz karnet <strong>jednorazowy</strong> (miesięczne nie są dostępne na wydarzenia).</li>
+  <li>Kliknij <strong>Kup karnet</strong>.</li>
+</ol>
+<p>System automatycznie:</p>
+<ul>
+  <li>zapisze płatność z karnetem jednorazowym ważnym w dniu wydarzenia,</li>
+  <li><strong>przypisze ucznia do wydarzenia</strong> (jeśli nie był jeszcze przypisany),</li>
+  <li>nie pozwoli sprzedać drugiego aktywnego karnetu temu samemu uczniowi na to samo wydarzenie (komunikat o błędzie).</li>
+</ul>
+<div class="note">Karnet na wydarzenie jest widoczny na liście płatności z oznaczeniem <strong>„Wydarzenie”</strong> i nazwą wydarzenia (zamiast grupy).</div>
+
+<!-- ============ 3. CZĘŚĆ NAUCZYCIELA ============ -->
+<div class="newpage"></div>
+<h2>3. Część Nauczyciela</h2>
+
+<div class="rolebox"><strong>Zakres uprawnień nauczyciela:</strong> nauczyciel zarządza wyłącznie <strong>własnymi grupami</strong> i <strong>własnymi wydarzeniami</strong> (tymi, które sam utworzył). Dostęp do cudzych grup lub wydarzeń kończy się komunikatem o braku uprawnień (403).</div>
+
+<h3>3.1. Panel nauczyciela</h3>
+<p>Główny ekran nauczyciela zawiera:</p>
+<ul>
+  <li><strong>Harmonogram tygodniowy</strong> – kalendarz pokazujący wyłącznie zajęcia grup przypisanych do nauczyciela oraz jego własne wydarzenia (niebieskie = zajęcia, zielone = wydarzenia).</li>
+  <li><strong>Karnety wygasające (7 dni)</strong> – wygasające karnety uczniów z grup nauczyciela, z liczbą pozostałych dni.</li>
+  <li><strong>Moje grupy taneczne</strong> – karty grup z nazwą, kategorią i harmonogramem oraz przyciskami: <em>Dodaj obecność</em>, <em>Historia</em>, <em>Przypisz uczniów</em>.</li>
+  <li><strong>Zapisani uczniowie</strong> – dla każdej grupy lista uczniów z oznaczeniem aktywnego karnetu (liczba dni do wygaśnięcia) albo komunikatem <strong>„Brak aktywnego karnetu”</strong>.</li>
+</ul>
+
+<h3>3.2. Moje grupy taneczne</h3>
+
+<h4>Przypisywanie uczniów</h4>
+<ol>
+  <li>Przy grupie kliknij <strong>Przypisz uczniów</strong>.</li>
+  <li>Wyszukaj ucznia (imię, nazwisko, e-mail, telefon) i zaznacz wybranych.</li>
+  <li>Kliknij <strong>Zapisz przydziały</strong>.</li>
+</ol>
+
+<h4>Sprzedaż karnetu uczniowi bez karnetu</h4>
+<ol>
+  <li>Na panelu znajdź ucznia z oznaczeniem <strong>„Brak aktywnego karnetu”</strong> i kliknij przy jego wierszu <strong>Kup karnet</strong>.</li>
+  <li>Wybierz rodzaj karnetu (karta z nazwą, ceną i ważnością).</li>
+  <li>Kliknij <strong>Kup karnet</strong>.</li>
+</ol>
+<div class="note">Nauczyciel może sprzedać karnet tylko uczniowi z <strong>własnej</strong> grupy. Nowy karnet jest rejestrowany jako aktywny, a jego ważność liczona jest od bieżącego dnia.</div>
+
+<h3>3.3. Obecności</h3>
+
+<h4>Dodawanie obecności</h4>
+<ol>
+  <li>Z menu <strong>Obecności</strong> lub przycisku <strong>Dodaj obecność</strong> przy grupie.</li>
+  <li>Wybierz <strong>grupę</strong> (tylko własne) i <strong>datę</strong>, kliknij <strong>Wczytaj uczniów</strong>.</li>
+  <li>Ustaw status dla każdego ucznia: <span class="badge b-green">Obecny</span> <span class="badge b-red">Nieobecny</span> <span class="badge b-gray">Usprawiedliwiony</span> oraz opcjonalną uwagę.</li>
+  <li>Kliknij <strong>Zapisz obecność</strong>.</li>
+</ol>
+
+<h4>Historia obecności</h4>
+<p>Przy grupie kliknij <strong>Historia</strong>. Zobaczysz kalendarz z nieobecnościami w poszczególnych tygodniach oraz tabelę wpisów (data, uczeń, status, kto zapisał, uwagi).</p>
+<div class="note">Oznaczanie odpracowań nieobecności jest dostępne wyłącznie dla administratora (punkt 2.8).</div>
+
+<h3>3.4. Moje wydarzenia</h3>
+<p>Menu <strong>Wydarzenia</strong> pokazuje wydarzenia utworzone przez danego nauczyciela.</p>
+
+<h4>Dodawanie wydarzenia</h4>
+<ol>
+  <li>Kliknij <strong>+ Dodaj wydarzenie</strong>.</li>
+  <li>Podaj nazwę, datę oraz godziny rozpoczęcia i zakończenia (zakończenie musi być późniejsze).</li>
+  <li>Kliknij <strong>Utwórz wydarzenie</strong>.</li>
+</ol>
+
+<h4>Przypisywanie uczniów i sprzedaż karnetów</h4>
+<ul>
+  <li><strong>Przypisz</strong> – wyszukaj i zaznacz uczniów biorących udział, zapisz przydziały.</li>
+  <li><strong>Kup karnet</strong> – dostępny dla wydarzeń, które odbędą się dzisiaj lub w przyszłości. Wybierasz ucznia i karnet <strong>jednorazowy</strong>; system przypisze ucznia do wydarzenia i nie pozwoli sprzedać drugiego aktywnego karnetu na to samo wydarzenie.</li>
+</ul>
+<p>Edycja i usuwanie wydarzenia działają tak samo jak w panelu administratora, ale wyłącznie dla wydarzeń utworzonych przez nauczyciela.</p>
+
+<h3>3.5. Sprzedaż karnetów przez nauczyciela</h3>
+<p>Nauczyciel może sprzedać karnety w dwóch miejscach:</p>
+<table>
+  <tr><th>Miejsce</th><th>Rodzaj karnetu</th><th>Dla kogo</th></tr>
+  <tr><td>Panel / lista uczniów bez karnetu</td><td>Dowolny karnet (jednorazowy lub miesięczny)</td><td>Uczniowie z własnych grup</td></tr>
+  <tr><td>Wydarzenie („Kup karnet”)</td><td>Wyłącznie jednorazowy</td><td>Dowolny uczeń (przypisywany do wydarzenia)</td></tr>
+</table>
+
+<!-- ============ 4. FUNKCJE WSPÓLNE ============ -->
+<div class="newpage"></div>
+<h2>4. Funkcje wspólne</h2>
+
+<h3>4.1. Profil użytkownika</h3>
+<p>Kliknij swoją nazwę użytkownika w górnym pasku, aby otworzyć <strong>Mój Profil</strong>. Administrator i nauczyciel mogą tam zmienić:</p>
+<ul>
+  <li>imię i nazwisko,</li>
+  <li>adres e-mail,</li>
+  <li>numer telefonu.</li>
+</ul>
+<p>Po zmianach kliknij <strong>Zaktualizuj profil</strong>.</p>
+
+<h3>4.2. Zmiana hasła</h3>
+<ol>
+  <li>W profilu przejdź do sekcji <strong>Zmień hasło</strong>.</li>
+  <li>Podaj <strong>obecne hasło</strong>, <strong>nowe hasło</strong> (min. 8 znaków z cyframi) i <strong>potwierdź nowe hasło</strong>.</li>
+  <li>Kliknij <strong>Zaktualizuj hasło</strong>.</li>
+</ol>
+
+<h3>4.3. Harmonogram tygodniowy</h3>
+<p>Harmonogram dostępny jest na panelu administratora i nauczyciela oraz na stronach grup i wydarzeń.</p>
+<ul>
+  <li>Przyciski <strong>Poprzedni / Następny</strong> – zmiana wyświetlanego tygodnia; <strong>Dzisiaj</strong> – powrót do bieżącego tygodnia.</li>
+  <li><span class="badge b-blue">Zajęcia</span> niebieskie bloki = terminy zajęć grup; <span class="badge b-green">Wydarzenia</span> zielone bloki = wydarzenia.</li>
+  <li>Kliknięcie bloku otwiera okno z listą zapisanych uczniów oraz linkami do przypisania uczniów i edycji.</li>
+</ul>
+
+<h3>4.4. Powiadomienia e-mail o kończących się karnetach</h3>
+<p>System automatycznie wysyła przypomnienia e-mail dla karnetów miesięcznych, które wygasają dokładnie za 7 dni. Wysyłka jest uruchamiana przez zadanie cron (cykliczne) na serwerze, dzięki czemu nie wymaga żadnych działań ze strony użytkowników.</p>
+<div class="note">Na środowisku produkcyjnym maile trafiają na adresy przypisane do kont (rodziców/opiekunów). W wersji testowej powiadomienia są wysyłane na adres techniczny administratora.</div>
+
+<!-- ============ 5. SŁOWNIK ============ -->
+<h2>5. Słownik pojęć i statusy</h2>
+
+<h3>Statusy karnetów / płatności</h3>
+<table>
+  <tr><th>Status</th><th>Znaczenie</th></tr>
+  <tr><td><span class="badge b-green">Aktywny</span></td><td>Karnet ważny – data ważności nie minęła</td></tr>
+  <tr><td><span class="badge b-amber">Wygasły</span></td><td>Karnet, którego okres ważności minął</td></tr>
+  <tr><td><span class="badge b-red">Anulowany</span></td><td>Karnet anulowany (np. zwrot)</td></tr>
+</table>
+
+<h3>Statusy obecności</h3>
+<table>
+  <tr><th>Status</th><th>Znaczenie</th></tr>
+  <tr><td><span class="badge b-green">Obecny</span></td><td>Uczeń był na zajęciach</td></tr>
+  <tr><td><span class="badge b-red">Nieobecny</span></td><td>Uczeń nie był na zajęciach (możliwe odpracowanie w ciągu 14 dni)</td></tr>
+  <tr><td><span class="badge b-gray">Usprawiedliwiony</span></td><td>Nieobecność usprawiedliwiona</td></tr>
+</table>
+
+<h3>Rodzaje karnetów</h3>
+<table>
+  <tr><th>Rodzaj</th><th>Opis</th></tr>
+  <tr><td>Jednorazowy (Pojedynczy)</td><td>Ważny 1 dzień – na jedne zajęcia lub jedno wydarzenie</td></tr>
+  <tr><td>Miesięczny</td><td>Ważny przez 1, 2, 3, 6 lub 12 pełnych miesięcy kalendarzowych</td></tr>
+</table>
+
+<h3>Najważniejsze role w systemie</h3>
+<table>
+  <tr><th>Rola</th><th>Zakres działań</th></tr>
+  <tr><td>Administrator</td><td>Pełny dostęp – wszystkie sekcje, sprzedaż karnetów, odpracowania, zarządzanie kontami</td></tr>
+  <tr><td>Nauczyciel</td><td>Tylko własne grupy i wydarzenia, obecności, sprzedaż karnetów uczniom z własnych grup</td></tr>
+  <tr><td>Uczeń</td><td>Własny panel, podgląd płatności/karnetów</td></tr>
+</table>
+
+<div class="footer-note">Akademia Tańca – instrukcja obsługi aplikacji (części: Administrator, Nauczyciel). Dokument wygenerowany automatycznie.</div>
+
+</body>
+</html>

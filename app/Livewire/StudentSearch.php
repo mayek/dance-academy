@@ -29,8 +29,7 @@ class StudentSearch extends Component
                   ->orWhere('last_name', 'like', "%{$search}%")
                   ->orWhere('email', 'like', "%{$search}%")
                   ->orWhere('phone_number', 'like', "%{$search}%")
-                  ->orWhere('parent_phone_number', 'like', "%{$search}%")
-                  ->orWhere('pesel', 'like', "%{$search}%");
+                  ->orWhere('parent_phone_number', 'like', "%{$search}%");
             });
         }
 

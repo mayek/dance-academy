@@ -4,12 +4,23 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\DanceGroup;
+use App\Models\PassType;
 use App\Models\Payment;
 use App\Models\User;
 use Illuminate\Http\Request;
 
 class PaymentController extends Controller
 {
+    public function studentPayments(User $student)
+    {
+        $payments = Payment::with(['danceGroup.category', 'event', 'recordedBy'])
+            ->where('student_id', $student->id)
+            ->orderBy('valid_from', 'desc')
+            ->paginate(20);
+
+        return view('admin.payments.student', compact('student', 'payments'));
+    }
+
     public function index()
     {
         $months = 12;
@@ -35,12 +46,13 @@ class PaymentController extends Controller
 
     public function create(Request $request)
     {
-        $students = User::where('role', 'student')->orderBy('first_name')->get();
+        $students = User::where('role', 'student')->with('enrolledGroups')->orderBy('first_name')->get();
         $groups = DanceGroup::with(['category', 'teacher'])->orderBy('name')->get();
+        $passTypes = PassType::orderBy('type')->orderBy('duration_months')->get();
         $selectedStudent = $request->get('student_id');
         $selectedGroup = $request->get('group_id');
 
-        return view('admin.payments.create', compact('students', 'groups', 'selectedStudent', 'selectedGroup'));
+        return view('admin.payments.create', compact('students', 'groups', 'passTypes', 'selectedStudent', 'selectedGroup'));
     }
 
     public function store(Request $request)
@@ -48,24 +60,55 @@ class PaymentController extends Controller
         $validated = $request->validate([
             'student_id' => ['required', 'exists:users,id'],
             'dance_group_id' => ['required', 'exists:dance_groups,id'],
-            'pass_type' => ['required', 'in:monthly,single'],
-            'amount' => ['required', 'numeric', 'min:0'],
+            'pass_type_id' => ['required', 'exists:pass_types,id'],
             'valid_from' => ['required', 'date'],
             'notes' => ['nullable', 'string'],
+            'is_paid' => ['nullable', 'boolean'],
         ]);
 
-        if ($validated['pass_type'] === 'monthly') {
-            $validated['valid_until'] = \Carbon\Carbon::parse($validated['valid_from'])->endOfMonth();
-        } else {
-            $validated['valid_until'] = $validated['valid_from'];
-        }
+        $passType = PassType::findOrFail($validated['pass_type_id']);
+        $validity = $passType->computeValidity(\Carbon\Carbon::parse($validated['valid_from']));
 
-        $validated['status'] = $validated['valid_until']->isPast() ? 'expired' : 'active';
+        $validated['pass_type'] = $passType->type;
+        $validated['pass_type_id'] = $passType->id;
+        $validated['amount'] = $passType->price;
+        $validated['valid_from'] = $validity['valid_from'];
+        $validated['valid_until'] = $validity['valid_until'];
+        $validated['status'] = $validated['valid_until']->lt(now()->startOfDay()) ? 'expired' : 'active';
+        $validated['recorded_by'] = auth()->id();
+        $validated['is_paid'] = $request->boolean('is_paid', true);
 
         Payment::create($validated);
 
         return redirect()->route('admin.payments.index')
-            ->with('success', 'Payment recorded successfully.');
+            ->with('success', __('Payment recorded successfully.'));
+    }
+
+    public function buyPass(Request $request)
+    {
+        $validated = $request->validate([
+            'student_id' => ['required', 'exists:users,id'],
+            'dance_group_id' => ['required', 'exists:dance_groups,id'],
+            'pass_type_id' => ['required', 'exists:pass_types,id'],
+            'is_paid' => ['nullable', 'boolean'],
+        ]);
+
+        $passType = PassType::findOrFail($validated['pass_type_id']);
+        $validity = $passType->computeValidity(\Carbon\Carbon::now());
+
+        $validated['pass_type'] = $passType->type;
+        $validated['pass_type_id'] = $passType->id;
+        $validated['amount'] = $passType->price;
+        $validated['valid_from'] = $validity['valid_from'];
+        $validated['valid_until'] = $validity['valid_until'];
+        $validated['status'] = 'active';
+        $validated['recorded_by'] = auth()->id();
+        $validated['is_paid'] = $request->boolean('is_paid', true);
+
+        Payment::create($validated);
+
+        return redirect()->route('admin.dashboard')
+            ->with('success', __('Pass purchased successfully.'));
     }
 
     public function edit(Payment $payment)
@@ -86,24 +129,27 @@ class PaymentController extends Controller
             'valid_from' => ['required', 'date'],
             'status' => ['required', 'in:active,expired,cancelled'],
             'notes' => ['nullable', 'string'],
+            'is_paid' => ['nullable', 'boolean'],
         ]);
+
+        $validated['is_paid'] = $request->boolean('is_paid', $payment->is_paid);
 
         if ($validated['pass_type'] === 'monthly') {
             $validated['valid_until'] = \Carbon\Carbon::parse($validated['valid_from'])->endOfMonth();
         } else {
-            $validated['valid_until'] = $validated['valid_from'];
+            $validated['valid_until'] = \Carbon\Carbon::parse($validated['valid_from'])->endOfDay();
         }
 
         $payment->update($validated);
 
         return redirect()->route('admin.payments.index')
-            ->with('success', 'Payment updated successfully.');
+            ->with('success', __('Payment updated successfully.'));
     }
 
     public function destroy(Payment $payment)
     {
         $payment->delete();
         return redirect()->route('admin.payments.index')
-            ->with('success', 'Payment deleted successfully.');
+            ->with('success', __('Payment deleted successfully.'));
     }
 }

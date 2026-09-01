@@ -29,7 +29,7 @@ class DanceCategoryController extends Controller
         DanceCategory::create($validated);
 
         return redirect()->route('admin.categories.index')
-            ->with('success', 'Category created successfully.');
+            ->with('success', __('Category created successfully.'));
     }
 
     public function edit(DanceCategory $category)
@@ -47,13 +47,13 @@ class DanceCategoryController extends Controller
         $category->update($validated);
 
         return redirect()->route('admin.categories.index')
-            ->with('success', 'Category updated successfully.');
+            ->with('success', __('Category updated successfully.'));
     }
 
     public function destroy(DanceCategory $category)
     {
         $category->delete();
         return redirect()->route('admin.categories.index')
-            ->with('success', 'Category deleted successfully.');
+            ->with('success', __('Category deleted successfully.'));
     }
 }

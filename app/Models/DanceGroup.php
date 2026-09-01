@@ -12,12 +12,14 @@ class DanceGroup extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'category_id', 'teacher_id', 'schedule', 'class_times'];
+    protected $fillable = ['name', 'category_id', 'teacher_id', 'room', 'schedule', 'class_times', 'start_date', 'end_date'];
 
     protected function casts(): array
     {
         return [
             'class_times' => 'array',
+            'start_date' => 'date',
+            'end_date' => 'date',
         ];
     }
 
@@ -44,5 +46,16 @@ class DanceGroup extends Model
     public function attendances(): HasMany
     {
         return $this->hasMany(Attendance::class);
+    }
+
+    public function scopeActiveForWeek($query, $weekStart, $weekEnd)
+    {
+        return $query
+            ->where(function ($q) use ($weekEnd) {
+                $q->whereNull('start_date')->orWhere('start_date', '<=', $weekEnd);
+            })
+            ->where(function ($q) use ($weekStart) {
+                $q->whereNull('end_date')->orWhere('end_date', '>=', $weekStart);
+            });
     }
 }

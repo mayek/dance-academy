@@ -11,7 +11,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 <div class="relative">
                     <label class="block text-sm font-medium text-gray-700">{{ __('Student') }}</label>
-                    <input type="text" id="student_search" placeholder="{{ __('Search by name, PESEL, or phone...') }}"
+                    <input type="text" id="student_search" placeholder="{{ __('Search by name, phone, email...') }}"
                            autocomplete="off"
                            value="{{ $payment->student->full_name }}"
                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm border p-2">
@@ -58,6 +58,14 @@
                        value="{{ old('valid_from', $payment->valid_from->format('Y-m-d')) }}" required
                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm border p-2">
             </div>
+            <div class="mb-4">
+                <label for="is_paid" class="block text-sm font-medium text-gray-700">{{ __('Payment') }}</label>
+                <select name="is_paid" id="is_paid"
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm border p-2">
+                    <option value="1" {{ old('is_paid', $payment->is_paid) ? 'selected' : '' }}>{{ __('Paid') }}</option>
+                    <option value="0" {{ old('is_paid', $payment->is_paid) ? '' : 'selected' }}>{{ __('Unpaid') }}</option>
+                </select>
+            </div>
             <div class="mb-6">
                 <label for="notes" class="block text-sm font-medium text-gray-700">{{ __('Notes') }}</label>
                 <textarea name="notes" id="notes" rows="2"
@@ -76,7 +84,6 @@ $studentData = $students->map(fn($s) => (object) [
     'id' => $s->id,
     'full_name' => $s->full_name,
     'email' => $s->email,
-    'pesel' => $s->pesel,
     'phone' => $s->phone_number,
     'parent_phone' => $s->parent_phone_number,
 ])->values();

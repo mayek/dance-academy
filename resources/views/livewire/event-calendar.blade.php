@@ -25,10 +25,10 @@
                 <div class="p-1 space-y-1">
                     @php $eventsOnDay = $grouped[$day['date']] ?? []; @endphp
                     @forelse($eventsOnDay as $event)
-                        <div class="text-xs rounded px-1.5 py-1 bg-emerald-100 text-emerald-800">
+                        <button type="button" wire:click="openEvent({{ $event->id }})" class="w-full text-left text-xs rounded px-1.5 py-1 bg-emerald-100 text-emerald-800 hover:opacity-80 cursor-pointer">
                             <div class="font-medium truncate">{{ $event->name }}</div>
                             <div class="opacity-75">{{ \Carbon\Carbon::parse($event->start_time)->format('H:i') }} - {{ \Carbon\Carbon::parse($event->end_time)->format('H:i') }}</div>
-                        </div>
+                        </button>
                     @empty
                         <div class="text-xs text-gray-300 text-center py-4">{{ __('—') }}</div>
                     @endforelse
@@ -36,4 +36,5 @@
             </div>
         @endforeach
     </div>
+    @include('livewire.partials.calendar-students-modal')
 </div>

@@ -11,9 +11,21 @@ class EventCalendar extends Component
 
     public ?int $teacherId = null;
 
+    public ?int $selectedEventId = null;
+
     public function mount(?int $teacherId = null)
     {
         $this->teacherId = $teacherId;
+    }
+
+    public function openEvent(int $eventId)
+    {
+        $this->selectedEventId = $eventId;
+    }
+
+    public function closeModal()
+    {
+        $this->selectedEventId = null;
     }
 
     public function previousWeek()
@@ -48,9 +60,9 @@ class EventCalendar extends Component
             ];
         }
 
-        $query = Event::with(['creator', 'students'])
+        $query = Event::with(['creator', 'teacher', 'students'])
             ->whereBetween('date', [$monday->format('Y-m-d'), $sunday->format('Y-m-d')])
-            ->when($this->teacherId, fn ($q) => $q->where('created_by', $this->teacherId))
+            ->when($this->teacherId, fn ($q) => $q->where('teacher_id', $this->teacherId))
             ->orderBy('date')
             ->orderBy('start_time');
 
@@ -65,6 +77,36 @@ class EventCalendar extends Component
         $weekLabel = $monday->format('j') . ' ' . $monday->translatedFormat('F') . ' - '
             . $sunday->format('j') . ' ' . $sunday->translatedFormat('F Y');
 
-        return view('livewire.event-calendar', compact('days', 'grouped', 'weekLabel'));
+        $modalTitle = null;
+        $modalSubtitle = null;
+        $modalStudents = collect();
+        $modalEditRoute = null;
+        $modalAssignRoute = null;
+        $modalPassStatus = [];
+        $modalEventId = null;
+        $modalBuyPassRoute = null;
+        $modalPassTypes = collect();
+        if ($this->selectedEventId) {
+            $event = Event::with('students')->find($this->selectedEventId);
+            $modalTitle = $event?->name;
+            $modalSubtitle = $event
+                ? $event->date->format('Y-m-d') . ' ' . \Carbon\Carbon::parse($event->start_time)->format('H:i') . ' - ' . \Carbon\Carbon::parse($event->end_time)->format('H:i')
+                : null;
+            $modalStudents = $event?->students ?? collect();
+            $modalEditRoute = $event
+                ? ($this->teacherId ? route('teacher.events.edit', $event) : route('admin.events.edit', $event))
+                : null;
+            $modalAssignRoute = $event
+                ? ($this->teacherId ? route('teacher.events.assign', $event) : route('admin.events.assign', $event))
+                : null;
+            $modalEventId = $event?->id;
+            $modalPassStatus = $event?->passStatusByStudent() ?? [];
+            $modalBuyPassRoute = $event
+                ? ($this->teacherId ? route('teacher.events.buy-pass') : route('admin.events.buy-pass'))
+                : null;
+            $modalPassTypes = $event ? \App\Models\PassType::where('type', 'single')->orderBy('price')->get() : collect();
+        }
+
+        return view('livewire.event-calendar', compact('days', 'grouped', 'weekLabel', 'modalTitle', 'modalSubtitle', 'modalStudents', 'modalEditRoute', 'modalAssignRoute', 'modalPassStatus', 'modalEventId', 'modalBuyPassRoute', 'modalPassTypes'));
     }
 }

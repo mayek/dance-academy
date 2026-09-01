@@ -32,6 +32,9 @@
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
                 </div>
+                <div class="mb-4 text-right">
+                    <a href="{{ route('password.request') }}" class="text-sm text-purple-600 hover:text-purple-800 font-medium">{{ __('Forgot your password?') }}</a>
+                </div>
                 <button type="submit"
                         class="w-full bg-purple-600 hover:bg-purple-700 text-white font-medium py-2 px-4 rounded-lg transition">
                     {{ __('Sign In') }}

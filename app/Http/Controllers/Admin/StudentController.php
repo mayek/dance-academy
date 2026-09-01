@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules\Password;
 
 class StudentController extends Controller
 {
@@ -25,26 +26,36 @@ class StudentController extends Controller
             'first_name' => ['required', 'string', 'max:255'],
             'last_name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
-            'date_of_birth' => ['required', 'date', 'before:today'],
-            'pesel' => ['required', 'string', 'size:11', 'unique:users,pesel'],
+            'password' => ['nullable', 'string', Password::min(8)->numbers(), 'confirmed'],
+            'date_of_birth' => ['nullable', 'date', 'before:today'],
             'phone_number' => ['required', 'string', 'max:20'],
             'parent_phone_number' => ['nullable', 'string', 'max:20'],
             'tournament_group' => ['nullable', 'string', 'max:255'],
             'notes' => ['nullable', 'string'],
+            'group_ids' => ['nullable', 'array'],
+            'group_ids.*' => ['integer', 'exists:dance_groups,id'],
         ]);
 
         $name = $validated['first_name'] . ' ' . $validated['last_name'];
 
-        User::create([
+        if (empty($validated['password'])) {
+            $validated['password'] = $validated['phone_number'];
+        }
+
+        $groupIds = $validated['group_ids'] ?? [];
+        unset($validated['group_ids']);
+
+        $student = User::create([
             ...$validated,
             'name' => $name,
             'password' => Hash::make($validated['password']),
             'role' => 'student',
         ]);
 
+        $student->enrolledGroups()->sync($groupIds);
+
         return redirect()->route('admin.students.index')
-            ->with('success', 'Student created successfully.');
+            ->with('success', __('Student created successfully.'));
     }
 
     public function edit(User $student)
@@ -58,26 +69,38 @@ class StudentController extends Controller
             'first_name' => ['required', 'string', 'max:255'],
             'last_name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,' . $student->id],
-            'date_of_birth' => ['required', 'date', 'before:today'],
-            'pesel' => ['required', 'string', 'size:11', 'unique:users,pesel,' . $student->id],
+            'password' => ['nullable', 'string', Password::min(8)->numbers(), 'confirmed'],
+            'date_of_birth' => ['nullable', 'date', 'before:today'],
             'phone_number' => ['required', 'string', 'max:20'],
             'parent_phone_number' => ['nullable', 'string', 'max:20'],
             'tournament_group' => ['nullable', 'string', 'max:255'],
             'notes' => ['nullable', 'string'],
+            'group_ids' => ['nullable', 'array'],
+            'group_ids.*' => ['integer', 'exists:dance_groups,id'],
         ]);
 
         $validated['name'] = $validated['first_name'] . ' ' . $validated['last_name'];
 
+        if (!empty($validated['password'])) {
+            $validated['password'] = Hash::make($validated['password']);
+        } else {
+            unset($validated['password']);
+        }
+
+        $groupIds = $validated['group_ids'] ?? [];
+        unset($validated['group_ids']);
+
         $student->update($validated);
+        $student->enrolledGroups()->sync($groupIds);
 
         return redirect()->route('admin.students.index')
-            ->with('success', 'Student updated successfully.');
+            ->with('success', __('Student updated successfully.'));
     }
 
     public function destroy(User $student)
     {
         $student->delete();
         return redirect()->route('admin.students.index')
-            ->with('success', 'Student deleted successfully.');
+            ->with('success', __('Student deleted successfully.'));
     }
 }

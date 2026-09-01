@@ -15,6 +15,7 @@ class PaymentSearch extends Component
     public $dance_group_id = '';
     public $pass_type = '';
     public $status = '';
+    public $is_paid = '';
 
     public function updatingSearch()
     {
@@ -36,9 +37,14 @@ class PaymentSearch extends Component
         $this->resetPage();
     }
 
+    public function updatingIsPaid()
+    {
+        $this->resetPage();
+    }
+
     public function render()
     {
-        $query = Payment::with(['student', 'danceGroup.category']);
+        $query = Payment::with(['student', 'danceGroup.category', 'recordedBy', 'passType', 'event']);
 
         if ($this->search) {
             $search = $this->search;
@@ -60,6 +66,10 @@ class PaymentSearch extends Component
 
         if ($this->status) {
             $query->where('status', $this->status);
+        }
+
+        if ($this->is_paid !== '') {
+            $query->where('is_paid', (bool) $this->is_paid);
         }
 
         $payments = $query->latest()->paginate(15);

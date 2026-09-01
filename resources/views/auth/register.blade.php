@@ -70,15 +70,6 @@
                     @enderror
                 </div>
 
-                <div class="mb-4">
-                    <label for="pesel" class="block text-sm font-medium text-gray-700">{{ __('PESEL') }}</label>
-                    <input type="text" name="pesel" id="pesel" value="{{ old('pesel') }}" required maxlength="11"
-                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm border p-2" placeholder="11-digit PESEL number">
-                    @error('pesel')
-                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                    @enderror
-                </div>
-
                 <div class="grid grid-cols-2 gap-4 mb-6">
                     <div>
                         <label for="phone_number" class="block text-sm font-medium text-gray-700">{{ __('Phone number') }}</label>

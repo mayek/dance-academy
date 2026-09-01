@@ -12,8 +12,7 @@ class DanceGroupController extends Controller
 {
     public function index()
     {
-        $groups = DanceGroup::with(['category', 'teacher', 'students'])->latest()->paginate(10);
-        return view('admin.groups.index', compact('groups'));
+        return view('admin.groups.index');
     }
 
     public function create()
@@ -29,8 +28,11 @@ class DanceGroupController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'category_id' => ['required', 'exists:dance_categories,id'],
             'teacher_id' => ['required', 'exists:users,id'],
+            'room' => ['nullable', 'string', 'in:górna,dolna'],
             'schedule' => ['nullable', 'string', 'max:255'],
             'class_times' => ['nullable', 'json'],
+            'start_date' => ['nullable', 'date'],
+            'end_date' => ['nullable', 'date', 'after_or_equal:start_date'],
         ]);
 
         if ($request->filled('class_times')) {
@@ -56,8 +58,11 @@ class DanceGroupController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'category_id' => ['required', 'exists:dance_categories,id'],
             'teacher_id' => ['required', 'exists:users,id'],
+            'room' => ['nullable', 'string', 'in:górna,dolna'],
             'schedule' => ['nullable', 'string', 'max:255'],
             'class_times' => ['nullable', 'json'],
+            'start_date' => ['nullable', 'date'],
+            'end_date' => ['nullable', 'date', 'after_or_equal:start_date'],
         ]);
 
         if ($request->filled('class_times')) {
@@ -69,14 +74,14 @@ class DanceGroupController extends Controller
         $group->update($validated);
 
         return redirect()->route('admin.groups.index')
-            ->with('success', 'Dance group updated successfully.');
+            ->with('success', __('Dance group updated successfully.'));
     }
 
     public function destroy(DanceGroup $group)
     {
         $group->delete();
         return redirect()->route('admin.groups.index')
-            ->with('success', 'Dance group deleted successfully.');
+            ->with('success', __('Dance group deleted successfully.'));
     }
 
     public function assignStudents(DanceGroup $group)
@@ -97,6 +102,6 @@ class DanceGroupController extends Controller
         $group->students()->sync($studentIds);
 
         return redirect()->route('admin.groups.index')
-            ->with('success', 'Students assigned successfully.');
+            ->with('success', __('Students assigned successfully.'));
     }
 }

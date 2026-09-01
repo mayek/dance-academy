@@ -11,9 +11,21 @@ class GroupCalendar extends Component
 
     public ?int $teacherId = null;
 
+    public ?int $selectedGroupId = null;
+
     public function mount(?int $teacherId = null)
     {
         $this->teacherId = $teacherId;
+    }
+
+    public function openGroup(int $groupId)
+    {
+        $this->selectedGroupId = $groupId;
+    }
+
+    public function closeModal()
+    {
+        $this->selectedGroupId = null;
     }
 
     public function previousWeek()
@@ -34,6 +46,7 @@ class GroupCalendar extends Component
     public function render()
     {
         $monday = now()->startOfWeek()->addWeeks($this->weekOffset);
+        $sunday = $monday->copy()->addDays(6);
         $days = [];
         for ($i = 0; $i < 7; $i++) {
             $date = $monday->copy()->addDays($i);
@@ -49,6 +62,7 @@ class GroupCalendar extends Component
         $groups = DanceGroup::with(['category', 'teacher'])
             ->whereNotNull('class_times')
             ->when($this->teacherId, fn ($q) => $q->where('teacher_id', $this->teacherId))
+            ->activeForWeek($monday, $sunday)
             ->orderBy('name')
             ->get();
 
@@ -67,9 +81,28 @@ class GroupCalendar extends Component
             }
         }
 
+        foreach ($schedule as &$daySlots) {
+            usort($daySlots, fn ($a, $b) => strcmp($a['start'], $b['start']));
+        }
+        unset($daySlots);
+
         $weekLabel = $monday->format('j') . ' ' . $monday->translatedFormat('F') . ' - '
             . $monday->copy()->addDays(6)->format('j') . ' ' . $monday->copy()->addDays(6)->translatedFormat('F Y');
 
-        return view('livewire.group-calendar', compact('days', 'schedule', 'weekLabel'));
+        $modalTitle = null;
+        $modalSubtitle = null;
+        $modalStudents = collect();
+        $modalEditRoute = null;
+        $modalAssignRoute = null;
+        if ($this->selectedGroupId) {
+            $group = DanceGroup::with(['category', 'teacher', 'students'])->find($this->selectedGroupId);
+            $modalTitle = $group?->name;
+            $modalSubtitle = $group?->category?->name;
+            $modalStudents = $group?->students ?? collect();
+            $modalEditRoute = $group ? route('admin.groups.edit', $group) : null;
+            $modalAssignRoute = $group ? route('admin.groups.assign', $group) : null;
+        }
+
+        return view('livewire.group-calendar', compact('days', 'schedule', 'weekLabel', 'modalTitle', 'modalSubtitle', 'modalStudents', 'modalEditRoute', 'modalAssignRoute'));
     }
 }

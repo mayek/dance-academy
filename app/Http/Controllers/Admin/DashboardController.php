@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\DanceCategory;
 use App\Models\DanceGroup;
+use App\Models\PassType;
 use App\Models\Payment;
 use App\Models\User;
 
@@ -14,6 +15,7 @@ class DashboardController extends Controller
     {
         $stats = [
             'teachers' => User::where('role', 'teacher')->count(),
+            'reception' => User::where('role', 'reception')->count(),
             'students' => User::where('role', 'student')->count(),
             'categories' => DanceCategory::count(),
             'groups' => DanceGroup::count(),
@@ -26,7 +28,8 @@ class DashboardController extends Controller
 
         $expiringPasses = Payment::with(['student', 'danceGroup.category'])
             ->where('status', 'active')
-            ->where('valid_until', '>=', now())
+            ->whereNull('event_id')
+            ->where('valid_until', '>=', now()->startOfDay())
             ->where('valid_until', '<=', now()->addDays(7))
             ->orderBy('valid_until')
             ->get();
@@ -49,6 +52,10 @@ class DashboardController extends Controller
             $labels[] = $date->translatedFormat('M Y');
         }
 
-        return view('admin.dashboard', compact('stats', 'expiringPasses', 'revenue', 'labels'));
+        $passTypes = PassType::orderBy('type')->orderBy('duration_months')->get();
+        $students = User::where('role', 'student')->with('enrolledGroups')->orderBy('first_name')->get();
+        $groups = DanceGroup::with('category')->orderBy('name')->get();
+
+        return view('admin.dashboard', compact('stats', 'expiringPasses', 'revenue', 'labels', 'passTypes', 'students', 'groups'));
     }
 }

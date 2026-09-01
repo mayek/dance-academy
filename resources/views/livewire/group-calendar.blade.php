@@ -25,10 +25,10 @@
                 <div class="p-1 space-y-1">
                     @php $dayNum = $loop->iteration; @endphp
                     @forelse(($schedule[$dayNum] ?? []) as $slot)
-                        <div class="text-xs rounded px-1.5 py-1 {{ $slot['group']->category->name === 'Taniec' ? 'bg-blue-100 text-blue-800' : 'bg-purple-100 text-purple-800' }}">
+                        <button type="button" wire:click="openGroup({{ $slot['group']->id }})" class="w-full text-left text-xs rounded px-1.5 py-1 bg-blue-100 text-blue-800 hover:opacity-80 cursor-pointer">
                             <div class="font-medium truncate">{{ $slot['group']->name }}</div>
                             <div class="opacity-75">{{ $slot['start'] }}{{ $slot['end'] ? ' - ' . $slot['end'] : '' }}</div>
-                        </div>
+                        </button>
                     @empty
                         <div class="text-xs text-gray-300 text-center py-4">{{ __('—') }}</div>
                     @endforelse
@@ -36,4 +36,5 @@
             </div>
         @endforeach
     </div>
+    @include('livewire.partials.calendar-students-modal')
 </div>

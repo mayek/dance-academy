@@ -11,8 +11,8 @@ class Payment extends Model
     use HasFactory;
 
     protected $fillable = [
-        'student_id', 'dance_group_id', 'pass_type', 'amount',
-        'valid_from', 'valid_until', 'status', 'notes',
+        'student_id', 'dance_group_id', 'event_id', 'pass_type', 'pass_type_id',
+        'amount', 'valid_from', 'valid_until', 'status', 'is_paid', 'notes', 'recorded_by',
     ];
 
     protected function casts(): array
@@ -21,6 +21,7 @@ class Payment extends Model
             'amount' => 'decimal:2',
             'valid_from' => 'date',
             'valid_until' => 'date',
+            'is_paid' => 'boolean',
         ];
     }
 
@@ -32,6 +33,21 @@ class Payment extends Model
     public function danceGroup(): BelongsTo
     {
         return $this->belongsTo(DanceGroup::class, 'dance_group_id');
+    }
+
+    public function event(): BelongsTo
+    {
+        return $this->belongsTo(Event::class, 'event_id');
+    }
+
+    public function recordedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'recorded_by');
+    }
+
+    public function passType(): BelongsTo
+    {
+        return $this->belongsTo(PassType::class, 'pass_type_id');
     }
 
     public function isMonthly(): bool
@@ -46,19 +62,30 @@ class Payment extends Model
 
     public function isActive(): bool
     {
-        return $this->status === 'active' && $this->valid_until?->isFuture();
+        return $this->status === 'active'
+            && $this->valid_until !== null
+            && $this->valid_until->gte(now()->startOfDay());
+    }
+
+    public function daysLeft(): int
+    {
+        if ($this->valid_until === null) {
+            return 0;
+        }
+
+        return (int) now()->startOfDay()->diffInDays($this->valid_until->copy()->startOfDay());
     }
 
     public function scopeActive($query)
     {
-        return $query->where('status', 'active')->where('valid_until', '>=', now());
+        return $query->where('status', 'active')->where('valid_until', '>=', now()->startOfDay());
     }
 
     public function scopeExpired($query)
     {
         return $query->where('status', 'expired')
             ->orWhere(function ($q) {
-                $q->where('status', 'active')->where('valid_until', '<', now());
+                $q->where('status', 'active')->where('valid_until', '<', now()->startOfDay());
             });
     }
 }

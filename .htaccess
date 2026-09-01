@@ -1,0 +1,7 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Wszystkie żądania kierujemy do katalogu public (ukrywa /public w adresie).
+    # Wykluczamy "public" i "public/...", żeby stary adres z /public nadal działał.
+    RewriteRule ^(?!public(?:/|$))(.*)$ public/$1 [L]
+</IfModule>

@@ -11,7 +11,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 <div class="relative">
                     <label class="block text-sm font-medium text-gray-700">{{ __('Student') }}</label>
-                    <input type="text" id="student_search" placeholder="{{ __('Search by name, PESEL, or phone...') }}"
+                    <input type="text" id="student_search" placeholder="{{ __('Search by name, phone, email...') }}"
                            autocomplete="off"
                            value="{{ old('student_id') ? $students->firstWhere('id', old('student_id'))?->full_name : '' }}"
                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm border p-2">
@@ -21,7 +21,7 @@
                 </div>
                 <div>
                     <label for="dance_group_id" class="block text-sm font-medium text-gray-700">{{ __('Dance Group') }}</label>
-                    <select name="dance_group_id" id="dance_group_id" required
+                    <select name="dance_group_id" id="dance_group_id" required data-group-filter
                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm border p-2">
                         <option value="">{{ __('Select group') }}</option>
                         @foreach($groups as $group)
@@ -33,19 +33,19 @@
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 <div>
-                    <label for="pass_type" class="block text-sm font-medium text-gray-700">{{ __('Pass Type') }}</label>
-                    <select name="pass_type" id="pass_type" required
+                    <label for="pass_type_id" class="block text-sm font-medium text-gray-700">{{ __('Pass Type') }}</label>
+                    <select name="pass_type_id" id="pass_type_id" required
                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm border p-2">
-                        <option value="monthly" {{ old('pass_type') == 'monthly' ? 'selected' : '' }}>{{ __('Monthly Pass (150 PLN)') }}</option>
-                        <option value="single" {{ old('pass_type') == 'single' ? 'selected' : '' }}>{{ __('Single Class Pass (25 PLN)') }}</option>
+                        @foreach($passTypes as $passType)
+                            <option value="{{ $passType->id }}" data-price="{{ $passType->price }}" {{ old('pass_type_id') == $passType->id ? 'selected' : '' }}>{{ $passType->display_name }} ({{ number_format($passType->price, 2) }} zł)</option>
+                        @endforeach
                     </select>
-                    @error('pass_type') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
+                    @error('pass_type_id') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
                 </div>
                 <div>
                     <label for="amount" class="block text-sm font-medium text-gray-700">{{ __('Amount (PLN)') }}</label>
-                    <input type="number" name="amount" id="amount" step="0.01" min="0" value="{{ old('amount', '150.00') }}" required
-                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm border p-2">
-                    @error('amount') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
+                    <input type="number" name="amount" id="amount" step="0.01" min="0" readonly
+                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm border p-2 bg-gray-50">
                 </div>
             </div>
             <div class="mb-4">
@@ -53,6 +53,14 @@
                 <input type="date" name="valid_from" id="valid_from" value="{{ old('valid_from', date('Y-m-d')) }}" required
                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm border p-2">
                 @error('valid_from') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
+            </div>
+            <div class="mb-4">
+                <label for="is_paid" class="block text-sm font-medium text-gray-700">{{ __('Payment') }}</label>
+                <select name="is_paid" id="is_paid"
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm border p-2">
+                    <option value="1" {{ old('is_paid', 1) == 1 ? 'selected' : '' }}>{{ __('Paid') }}</option>
+                    <option value="0" {{ old('is_paid') === '0' ? 'selected' : '' }}>{{ __('Unpaid') }}</option>
+                </select>
             </div>
             <div class="mb-6">
                 <label for="notes" class="block text-sm font-medium text-gray-700">{{ __('Notes') }}</label>
@@ -72,11 +80,22 @@ $studentData = $students->map(fn($s) => (object) [
     'id' => $s->id,
     'full_name' => $s->full_name,
     'email' => $s->email,
-    'pesel' => $s->pesel,
     'phone' => $s->phone_number,
     'parent_phone' => $s->parent_phone_number,
+    'group_ids' => $s->enrolledGroups->pluck('id')->all(),
 ])->values();
 @endphp
 
 <script>window.studentSearchData = @json($studentData);</script>
+
+<script>
+    const passTypeSelect = document.getElementById('pass_type_id');
+    const amountField = document.getElementById('amount');
+    const updateAmount = () => {
+        const opt = passTypeSelect.selectedOptions[0];
+        amountField.value = opt ? Number(opt.dataset.price).toFixed(2) : '';
+    };
+    passTypeSelect.addEventListener('change', updateAmount);
+    updateAmount();
+</script>
 @endsection
