@@ -104,7 +104,7 @@ class TeacherAttendanceController extends Controller
         $user = auth()->user();
         abort_unless($group->teacher_id === $user->id, 403);
 
-        $attendances = Attendance::with(['student', 'recordedBy'])
+        $attendances = Attendance::with(['student', 'recordedBy', 'payment'])
             ->where('dance_group_id', $group->id)
             ->orderBy('date', 'desc')
             ->orderBy('student_id')

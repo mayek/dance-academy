@@ -14,7 +14,7 @@ class AttendanceController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Attendance::with(['student', 'danceGroup.category', 'recordedBy']);
+        $query = Attendance::with(['student', 'danceGroup.category', 'recordedBy', 'payment']);
 
         if ($request->filled('dance_group_id')) {
             $query->where('dance_group_id', $request->dance_group_id);
