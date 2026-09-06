@@ -35,7 +35,8 @@ class DanceGroup extends Model
 
     public function students(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'dance_group_student', 'dance_group_id', 'student_id');
+        return $this->belongsToMany(User::class, 'dance_group_student', 'dance_group_id', 'student_id')
+            ->withPivot('joined_at', 'left_at', 'created_at');
     }
 
     public function payments(): HasMany

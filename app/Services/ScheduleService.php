@@ -58,15 +58,20 @@ class ScheduleService
             return null;
         }
 
-        $session = ClassSession::where('dance_group_id', $group->id)
-            ->whereDate('date', $date)
-            ->first();
+        $session = $this->sessionRow($group, $date);
 
         if ($session && !$session->isCancelled()) {
             return $session;
         }
 
         return null;
+    }
+
+    public function sessionRow(DanceGroup $group, Carbon $date): ?ClassSession
+    {
+        return ClassSession::where('dance_group_id', $group->id)
+            ->whereDate('date', $date)
+            ->first();
     }
 
     public function durationFor(ClassSession $session): float

@@ -32,19 +32,42 @@ class MonthlyPassService
         $total = 0.0;
 
         foreach ($student->enrolledGroups()->with('sessions')->get() as $group) {
-            $joinedAt = $group->pivot?->created_at ? Carbon::parse($group->pivot->created_at) : $monthStart;
-            $from = $joinedAt->lt($monthStart) ? $monthStart->copy() : $joinedAt->copy()->startOfDay();
+            $joinedAt = $group->pivot?->joined_at ?? $group->pivot?->created_at;
+            $leftAt = $group->pivot?->left_at;
+
+            $from = $monthStart->copy();
+            if ($joinedAt) {
+                $joined = Carbon::parse($joinedAt)->startOfDay();
+                if ($joined->gt($from)) {
+                    $from = $joined;
+                }
+            }
+
+            $to = $monthEnd->copy();
+            if ($leftAt) {
+                $left = Carbon::parse($leftAt)->startOfDay();
+                if ($left->lte($monthStart)) {
+                    continue;
+                }
+                if ($left->lt($to)) {
+                    $to = $left->copy()->subDay()->endOfDay();
+                }
+            }
+
+            if ($from->gt($to)) {
+                continue;
+            }
 
             $sessions = $group->sessions
                 ->where('status', '!=', 'cancelled')
-                ->filter(fn (ClassSession $s) => $s->date->between($from, $monthEnd));
+                ->filter(fn (ClassSession $s) => $s->date->between($from, $to));
 
             if ($sessions->isNotEmpty()) {
                 foreach ($sessions as $session) {
                     $total += (float) $session->durationHours();
                 }
             } else {
-                $total += app(ScheduleService::class)->hoursForGroup($group, $from, $monthEnd);
+                $total += app(ScheduleService::class)->hoursForGroup($group, $from, $to);
             }
         }
 
@@ -86,11 +109,7 @@ class MonthlyPassService
         $monthStart = $month->copy()->startOfMonth();
         $monthEnd = $month->copy()->endOfMonth();
 
-        $hasEnrollment = $student->enrolledGroups()
-            ->where(fn ($q) => $q->whereNull('end_date')->orWhere('end_date', '>=', $monthStart->toDateString()))
-            ->exists();
-
-        if (!$hasEnrollment) {
+        if (!$this->isEnrolledInMonth($student, $month)) {
             return null;
         }
 
@@ -223,6 +242,98 @@ class MonthlyPassService
         $this->recomputeUsedHours($payment);
     }
 
+    public function refreshTotalsForMonth(Carbon $month, ?int $groupId = null): int
+    {
+        $monthStart = $month->copy()->startOfMonth()->toDateString();
+
+        $query = Payment::query()
+            ->where('pass_type', 'monthly')
+            ->whereNull('dance_group_id')
+            ->whereDate('valid_from', $monthStart)
+            ->where('status', '!=', 'cancelled')
+            ->with('student.enrolledGroups');
+
+        if ($groupId) {
+            $query->whereHas('student.enrolledGroups', fn ($q) => $q->where('dance_groups.id', $groupId));
+        }
+
+        $count = 0;
+
+        foreach ($query->get() as $payment) {
+            $this->refreshTotalHours($payment);
+            $count++;
+        }
+
+        return $count;
+    }
+
+    public function isEnrolledInMonth(User $student, Carbon $month): bool
+    {
+        $monthStart = $month->copy()->startOfMonth();
+        $monthEnd = $month->copy()->endOfMonth();
+
+        return $student->enrolledGroups()
+            ->get()
+            ->contains(function ($group) use ($monthStart, $monthEnd) {
+                $joinedAt = $group->pivot?->joined_at ?? $group->pivot?->created_at;
+                $leftAt = $group->pivot?->left_at;
+
+                if ($joinedAt && Carbon::parse($joinedAt)->gt($monthEnd)) {
+                    return false;
+                }
+
+                if ($leftAt && Carbon::parse($leftAt)->lte($monthStart)) {
+                    return false;
+                }
+
+                return true;
+            });
+    }
+
+    public function purgeFutureObligations(User $student): int
+    {
+        $count = 0;
+        $nowMonth = now()->startOfMonth();
+
+        $obligations = Payment::query()
+            ->where('student_id', $student->id)
+            ->where('pass_type', 'monthly')
+            ->whereNull('dance_group_id')
+            ->where('status', 'active')
+            ->where('is_paid', false)
+            ->whereDate('valid_from', '>', $nowMonth->toDateString())
+            ->get();
+
+        foreach ($obligations as $obligation) {
+            $month = $obligation->valid_from->copy()->startOfMonth();
+
+            if ($this->isEnrolledInMonth($student, $month)) {
+                continue;
+            }
+
+            $obligation->update(['status' => 'cancelled']);
+            $count++;
+        }
+
+        return $count;
+    }
+
+    public function refreshAllForStudent(User $student): int
+    {
+        $obligations = Payment::query()
+            ->where('student_id', $student->id)
+            ->where('pass_type', 'monthly')
+            ->whereNull('dance_group_id')
+            ->where('status', '!=', 'cancelled')
+            ->get();
+
+        foreach ($obligations as $obligation) {
+            $this->refreshTotalHours($obligation);
+        }
+
+        return $obligations->count();
+    }
+
     private function sessionDurationFor($group, Carbon $date): float
     {
         $schedule = app(ScheduleService::class);
@@ -230,6 +341,10 @@ class MonthlyPassService
         $session = $schedule->sessionForGroupOnDate($group, $date);
         if ($session !== null) {
             return (float) $session->durationHours();
+        }
+
+        if ($schedule->sessionRow($group, $date)?->isCancelled()) {
+            return 0.0;
         }
 
         return $schedule->hoursForGroupOnDate($group, $date) ?? 1.0;
