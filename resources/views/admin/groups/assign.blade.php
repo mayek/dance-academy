@@ -16,6 +16,7 @@
             @csrf @method('PUT')
             <div class="space-y-2 mb-6" id="assign_student_list">
                 @forelse($students as $student)
+                @php $enrol = $enrolled[$student->id] ?? null; @endphp
                 <label class="assign-student-item flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-50 border border-gray-200 cursor-pointer"
                        data-name="{{ mb_strtolower($student->full_name) }}"
                        data-first="{{ mb_strtolower($student->first_name) }}"
@@ -32,6 +33,22 @@
                             {{ $student->email }}
                             @if($student->phone_number) &middot; {{ $student->phone_number }} @endif
                             @if($student->parent_phone_number) &middot; {{ $student->parent_phone_number }} @endif
+                        </div>
+                        <div class="grid grid-cols-2 gap-2 mt-2" onclick="event.stopPropagation();">
+                            <div>
+                                <span class="text-xs text-gray-400">Zapis od</span>
+                                <input type="date" name="joined_at[{{ $student->id }}]"
+                                       value="{{ $enrol['joined_at'] ?? now()->format('Y-m-d') }}"
+                                       class="assign-date block w-full rounded-md border-gray-300 text-xs shadow-sm focus:border-indigo-500 focus:ring-indigo-500 border p-1.5"
+                                       {{ !in_array($student->id, $enrolledIds) ? 'disabled' : '' }}>
+                            </div>
+                            <div>
+                                <span class="text-xs text-gray-400">Wypisz od (opcjonalne)</span>
+                                <input type="date" name="left_at[{{ $student->id }}]"
+                                       value="{{ $enrol['left_at'] ?? '' }}"
+                                       class="assign-date block w-full rounded-md border-gray-300 text-xs shadow-sm focus:border-indigo-500 focus:ring-indigo-500 border p-1.5"
+                                       {{ !in_array($student->id, $enrolledIds) ? 'disabled' : '' }}>
+                            </div>
                         </div>
                     </div>
                 </label>
@@ -64,6 +81,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 item.dataset.parentPhone
             ].filter(Boolean).join(' ');
             item.style.display = !q || searchable.includes(q) ? '' : 'none';
+        });
+    });
+
+    items.forEach(function (item) {
+        const checkbox = item.querySelector('input[type="checkbox"]');
+        const dates = item.querySelectorAll('.assign-date');
+        checkbox.addEventListener('change', function () {
+            dates.forEach(function (d) { d.disabled = !checkbox.checked; });
         });
     });
 });

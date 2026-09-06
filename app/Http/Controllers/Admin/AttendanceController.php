@@ -9,6 +9,7 @@ use App\Models\Payment;
 use App\Models\User;
 use App\Services\AttendanceAccounting;
 use App\Services\MonthlyPassService;
+use App\Services\RosterService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -40,18 +41,23 @@ class AttendanceController extends Controller
         $selectedGroup = $request->get('group_id');
         $selectedDate = $request->get('date', now()->format('Y-m-d'));
 
+        $roster = collect();
         $existingRecords = collect();
         $activePassByStudent = collect();
+        $makeupAbsences = collect();
+
         if ($selectedGroup) {
             $group = DanceGroup::findOrFail($selectedGroup);
+            $passDate = Carbon::parse($selectedDate);
+
+            $roster = app(RosterService::class)->for($group, $passDate);
+
             $existingRecords = Attendance::where('dance_group_id', $selectedGroup)
                 ->whereDate('date', $selectedDate)
                 ->pluck('status', 'student_id');
 
-            $studentIds = $group->students->pluck('id');
+            $studentIds = $roster->pluck('id');
             if ($studentIds->isNotEmpty()) {
-                $passDate = Carbon::parse($selectedDate);
-
                 $monthlyPasses = Payment::query()
                     ->where('pass_type', 'monthly')
                     ->whereNull('dance_group_id')
@@ -80,9 +86,21 @@ class AttendanceController extends Controller
                     ->mapWithKeys(fn ($id) => [$id => $monthlyPasses->get($id) ?? $singlePasses->get($id)])
                     ->filter();
             }
+
+            $makeupAbsences = app(RosterService::class)
+                ->makeupAbsences(Carbon::parse($selectedDate))
+                ->whereNotIn('student_id', $roster->pluck('id'));
         }
 
-        return view('admin.attendance.create', compact('groups', 'selectedGroup', 'selectedDate', 'existingRecords', 'activePassByStudent'));
+        return view('admin.attendance.create', compact(
+            'groups',
+            'selectedGroup',
+            'selectedDate',
+            'roster',
+            'existingRecords',
+            'activePassByStudent',
+            'makeupAbsences'
+        ));
     }
 
     public function store(Request $request)
@@ -97,15 +115,23 @@ class AttendanceController extends Controller
         ]);
 
         $group = DanceGroup::findOrFail($validated['dance_group_id']);
-        $studentIds = $group->students->pluck('id');
+        $passDate = Carbon::parse($validated['date']);
+
+        $roster = app(RosterService::class)->for($group, $passDate);
+        $rosterTypes = $roster->pluck('roster_type', 'id');
+
         $recordedBy = auth()->id();
         $accounting = app(AttendanceAccounting::class);
+        $monthly = app(MonthlyPassService::class);
+        $singlePassGroups = $group->id;
         $warnings = [];
 
         foreach ($validated['statuses'] as $studentId => $status) {
-            if (!in_array((int) $studentId, $studentIds->toArray())) {
+            if (!$rosterTypes->has((int) $studentId)) {
                 continue;
             }
+
+            $type = $rosterTypes[(int) $studentId];
 
             $attendance = Attendance::updateOrCreate(
                 [
@@ -120,6 +146,33 @@ class AttendanceController extends Controller
                 ]
             );
 
+            $isOneTime = $type === 'one_time' || $attendance->made_up_for_attendance_id !== null;
+
+            if ($isOneTime) {
+                if ($attendance->made_up_for_attendance_id !== null) {
+                    continue;
+                }
+
+                $hasSinglePass = Payment::where('student_id', $studentId)
+                    ->where('dance_group_id', $singlePassGroups)
+                    ->where('status', 'active')
+                    ->where('valid_until', '>=', now()->startOfDay())
+                    ->whereNotNull('total_hours')
+                    ->whereColumn('used_hours', '<', 'total_hours')
+                    ->exists();
+
+                if ($hasSinglePass) {
+                    $warnings = array_merge($warnings, $accounting->apply($attendance));
+                } else {
+                    $attendance->update([
+                        'payment_id' => null,
+                        'hours_consumed' => 0,
+                    ]);
+                }
+
+                continue;
+            }
+
             $warnings = array_merge($warnings, $accounting->apply($attendance));
         }
 
@@ -133,6 +186,56 @@ class AttendanceController extends Controller
         }
 
         return $result;
+    }
+
+    public function addSingle(Request $request)
+    {
+        $validated = $request->validate([
+            'dance_group_id' => ['required', 'exists:dance_groups,id'],
+            'date' => ['required', 'date'],
+            'student_id' => ['required', 'exists:users,id'],
+            'type' => ['required', 'in:one_time,makeup'],
+            'absence_id' => ['nullable', 'exists:attendances,id'],
+        ]);
+
+        $group = DanceGroup::findOrFail($validated['dance_group_id']);
+        $date = Carbon::parse($validated['date']);
+        $student = User::findOrFail($validated['student_id']);
+        $roster = app(RosterService::class);
+        $monthly = app(MonthlyPassService::class);
+
+        if ($validated['type'] === 'one_time') {
+            $errors = $roster->addOneTime($group, $date, $student, $request->get('notes'));
+
+            return redirect()->route('admin.attendance.create', [
+                'group_id' => $group->id,
+                'date' => $date->toDateString(),
+            ])->with(empty($errors) ? 'success' : 'warning', empty($errors)
+                ? __('Dodano wejście jednorazowe dla :name', ['name' => $student->full_name])
+                : $errors);
+        }
+
+        $absence = Attendance::where('id', $validated['absence_id'])
+            ->where('student_id', $student->id)
+            ->where('status', 'absent')
+            ->where('made_up', false)
+            ->first();
+
+        if ($absence === null) {
+            return redirect()->route('admin.attendance.create', [
+                'group_id' => $group->id,
+                'date' => $date->toDateString(),
+            ])->with('warning', __('Wybierz nieodrobioną nieobecność ucznia.'));
+        }
+
+        $warnings = $monthly->markMadeUp($absence, $group->id, $date);
+
+        return redirect()->route('admin.attendance.create', [
+            'group_id' => $group->id,
+            'date' => $date->toDateString(),
+        ])->with(empty($warnings) ? 'success' : 'warning', empty($warnings)
+            ? __('Nieobecność odrobiona — odnotowano jako odrabianie.')
+            : $warnings);
     }
 
     public function studentAbsences(User $student)

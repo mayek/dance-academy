@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Services\MonthlyPassService;
 use App\Services\ScheduleService;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
@@ -12,7 +13,7 @@ class SyncMonthlySchedule extends Command
 
     protected $description = 'Materialize class_sessions for a given month from each group weekly class_times template';
 
-    public function handle(ScheduleService $schedule): int
+    public function handle(ScheduleService $schedule, MonthlyPassService $monthly): int
     {
         $month = $this->option('month')
             ? Carbon::parse($this->option('month'))
@@ -22,7 +23,10 @@ class SyncMonthlySchedule extends Command
 
         $count = $schedule->syncMonth($month, $groupId);
 
+        $refreshed = $monthly->refreshTotalsForMonth($month->copy()->startOfMonth(), $groupId);
+
         $this->info("Synced {$count} class sessions for " . $month->format('Y-m'));
+        $this->info("Refreshed {$refreshed} monthly pass(es) totals");
 
         return Command::SUCCESS;
     }

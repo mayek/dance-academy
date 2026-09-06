@@ -78,7 +78,14 @@ class User extends Authenticatable
 
     public function enrolledGroups(): BelongsToMany
     {
-        return $this->belongsToMany(DanceGroup::class, 'dance_group_student', 'student_id', 'dance_group_id');
+        return $this->belongsToMany(DanceGroup::class, 'dance_group_student', 'student_id', 'dance_group_id')
+            ->withPivot('joined_at', 'left_at', 'created_at');
+    }
+
+    public function sessionAttendances(): BelongsToMany
+    {
+        return $this->belongsToMany(ClassSession::class, 'class_session_user', 'student_id', 'class_session_id')
+            ->withPivot('type', 'notes');
     }
 
     public function events(): BelongsToMany
