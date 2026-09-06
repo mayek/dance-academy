@@ -348,7 +348,7 @@
     "Search by event name or assigned student...": "Szukaj po nazwie wydarzenia lub nazwisku ucznia...",
     "How passes work": "Jak działają karnety",
     "Manually added passes": "Karnety dodawane ręcznie",
-    "A pass created here defines a fixed pool of hours that can be used during its validity period. When you sell this pass to a student, each attended lesson deducts its duration from the pool.": "Karnet utworzony tutaj określa stałą pulę godzin, z której można korzystać przez cały okres ważności. Gdy sprzedasz ten karnet uczniowi, każda odbębna lekcja odejmuje swój czas trwania z puli.",
+    "A pass created here defines a fixed pool of hours that can be used during its validity period. When you sell this pass to a student, each attended lesson deducts its duration from the pool.": "Karnet utworzony tutaj określa stałą pulę godzin, z której można korzystać przez cały okres ważności. Gdy sprzedasz ten karnet uczniowi, każda odbyta lekcja odejmuje swój czas trwania z puli.",
     "The \u201cTotal hours\u201d value is the whole pool for the entire pass period, not per week or per month.": "Wartość \u201eŁączna liczba godzin\u201d to cała pula na cały okres ważności karnetu, a nie na tydzień ani na miesiąc.",
     "The pool lasts as long as the chosen duration (e.g. 1, 3, 6 or 12 months).": "Pula obowiązuje przez cały wybrany okres ważności (np. 1, 3, 6 lub 12 miesięcy).",
     "Once the pool is used up, the pass no longer covers lessons, even if the period has not ended.": "Po wykorzystaniu puli karnet przestaje pokrywać zajęcia, nawet jeśli okres ważności jeszcze się nie zakończył.",
