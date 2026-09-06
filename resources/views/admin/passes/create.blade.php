@@ -34,11 +34,12 @@
                 @error('price') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
             </div>
             <div class="mb-6">
-                <label for="hours" class="block text-sm font-medium text-gray-700">{{ __('Hours') }}</label>
+                <label for="hours" class="block text-sm font-medium text-gray-700">{{ __('Total hours') }}</label>
                 <input type="number" name="hours" id="hours" step="0.5" min="0" value="{{ old('hours') }}"
+                       placeholder="{{ __('e.g. 2h/week × 4 weeks = 8') }}"
                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 sm:text-sm border p-2">
                 @error('hours') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
-                <p class="mt-1 text-xs text-gray-500">{{ __('Number of hours included in the pass.') }}</p>
+                <p class="mt-1 text-xs text-gray-500">{{ __('Total hours for the entire pass duration. E.g. 2h/week × 4 weeks = 8.') }}</p>
             </div>
             <div class="flex space-x-3">
                 <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg">{{ __('Create Pass') }}</button>
