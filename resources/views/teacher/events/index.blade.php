@@ -13,6 +13,12 @@
         <livewire:event-calendar :teacher-id="auth()->id()" :key="'teacher-event-calendar'" />
     </div>
 
+    <form method="GET" action="{{ route('teacher.events.index') }}" class="mb-6">
+        <input type="text" name="search" value="{{ request('search') }}"
+            placeholder="{{ __('Search by event name or assigned student...') }}"
+            class="w-full sm:max-w-md rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500">
+    </form>
+
     <div class="bg-white shadow rounded-lg overflow-x-auto">
         <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
@@ -27,7 +33,7 @@
             </thead>
             <tbody class="divide-y divide-gray-200">
                 @forelse($events as $event)
-                <tr>
+                <tr class="{{ $event->students->count() > 0 && $event->isFullyPaid() ? 'bg-green-50' : 'bg-red-50' }}">
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $event->name }}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $event->date->format('d.m.Y') }}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ \Carbon\Carbon::parse($event->start_time)->format('H:i') }}</td>

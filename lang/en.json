@@ -331,5 +331,6 @@
     "Room": "Room",
     "Upper": "Upper",
     "Lower": "Lower",
-    "Select room": "Select room"
+    "Select room": "Select room",
+    "Search by event name or assigned student...": "Search by event name or assigned student..."
 }

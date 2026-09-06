@@ -340,5 +340,6 @@
     "Room": "Sala",
     "Upper": "Górna",
     "Lower": "Dolna",
-    "Select room": "Wybierz salę"
+    "Select room": "Wybierz salę",
+    "Search by event name or assigned student...": "Szukaj po nazwie wydarzenia lub nazwisku ucznia..."
 }

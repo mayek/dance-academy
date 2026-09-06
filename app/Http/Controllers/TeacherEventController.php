@@ -10,12 +10,23 @@ use Illuminate\Http\Request;
 
 class TeacherEventController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $search = trim((string) $request->query('search'));
+
         $events = Event::with(['creator', 'teacher', 'students'])
             ->where('teacher_id', auth()->id())
+            ->when($search !== '', function ($query) use ($search) {
+                $query->where('name', 'like', "%{$search}%")
+                    ->orWhereHas('students', function ($q) use ($search) {
+                        $q->where('first_name', 'like', "%{$search}%")
+                            ->orWhere('last_name', 'like', "%{$search}%")
+                            ->orWhere('name', 'like', "%{$search}%");
+                    });
+            })
             ->latest('date')
-            ->paginate(15);
+            ->paginate(15)
+            ->withQueryString();
 
         $students = User::where('role', 'student')->with('enrolledGroups')->orderBy('first_name')->get();
         $passTypes = PassType::where('type', 'single')->orderBy('price')->get();
@@ -79,11 +90,12 @@ class TeacherEventController extends Controller
             ->with('success', __('Event deleted successfully.'));
     }
 
-    public function assignStudents(Event $event)
+public function assignStudents(Event $event)
     {
         abort_unless($event->teacher_id === auth()->id(), 403);
-        $students = User::where('role', 'student')->get();
+        $students = User::where('role', 'student')->orderBy('first_name')->get();
         $enrolledIds = $event->students->pluck('id')->toArray();
+        $students = $students->sortByDesc(fn (User $student) => in_array($student->id, $enrolledIds))->values();
         return view('teacher.events.assign', compact('event', 'students', 'enrolledIds'));
     }
 

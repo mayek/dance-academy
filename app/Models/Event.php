@@ -55,4 +55,15 @@ class Event extends Model
             ])
             ->toArray();
     }
+
+    public function isFullyPaid(): bool
+    {
+        $statuses = $this->passStatusByStudent();
+
+        if (empty($statuses) || count($statuses) !== $this->students->count()) {
+            return false;
+        }
+
+        return collect($statuses)->every(fn (array $s) => $s['is_paid']);
+    }
 }
