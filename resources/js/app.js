@@ -3,10 +3,23 @@ import { Chart, BarController, CategoryScale, LinearScale, BarElement, Title, To
 Chart.register(BarController, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 document.addEventListener('DOMContentLoaded', function () {
+    initMobileMenu();
     initStudentSearch();
     initPassTypeAutoAmount();
     initRevenueChart();
 });
+
+function initMobileMenu() {
+    const button = document.getElementById('mobile-menu-button');
+    const menu = document.getElementById('mobile-menu');
+    if (!button || !menu) return;
+
+    button.addEventListener('click', function () {
+        const expanded = button.getAttribute('aria-expanded') === 'true';
+        menu.classList.toggle('hidden', expanded);
+        button.setAttribute('aria-expanded', String(!expanded));
+    });
+}
 
 function initStudentSearch() {
     const searchInput = document.getElementById('student_search');

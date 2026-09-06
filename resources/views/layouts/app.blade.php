@@ -1,3 +1,44 @@
+@php
+    $user = auth()->user();
+    if ($user->isAdmin()) {
+        $navLinks = [
+            ['route' => 'admin.dashboard', 'label' => __('Dashboard'), 'pattern' => 'admin.dashboard'],
+            ['route' => 'admin.staff.index', 'label' => __('Staff'), 'pattern' => 'admin.staff.*'],
+            ['route' => 'admin.students.index', 'label' => __('Students'), 'pattern' => 'admin.students.*'],
+            ['route' => 'admin.categories.index', 'label' => __('Categories'), 'pattern' => 'admin.categories.*'],
+            ['route' => 'admin.payments.index', 'label' => __('Payments'), 'pattern' => 'admin.payments.*'],
+            ['route' => 'admin.passes.index', 'label' => __('Passes'), 'pattern' => 'admin.passes.*'],
+            ['route' => 'admin.attendance.index', 'label' => __('Attendance'), 'pattern' => 'admin.attendance.*'],
+            ['route' => 'admin.sessions.index', 'label' => __('Sessions'), 'pattern' => 'admin.sessions.*'],
+            ['route' => 'admin.groups.index', 'label' => __('Groups'), 'pattern' => 'admin.groups.*'],
+            ['route' => 'admin.events.index', 'label' => __('Events'), 'pattern' => 'admin.events.*'],
+        ];
+    } elseif ($user->isReception()) {
+        $navLinks = [
+            ['route' => 'admin.dashboard', 'label' => __('Dashboard'), 'pattern' => 'admin.dashboard'],
+            ['route' => 'admin.students.index', 'label' => __('Students'), 'pattern' => 'admin.students.*'],
+            ['route' => 'admin.payments.index', 'label' => __('Payments'), 'pattern' => 'admin.payments.*'],
+            ['route' => 'admin.passes.index', 'label' => __('Passes'), 'pattern' => 'admin.passes.*'],
+            ['route' => 'admin.attendance.index', 'label' => __('Attendance'), 'pattern' => 'admin.attendance.*'],
+            ['route' => 'admin.sessions.index', 'label' => __('Sessions'), 'pattern' => 'admin.sessions.*'],
+            ['route' => 'admin.groups.index', 'label' => __('Groups'), 'pattern' => 'admin.groups.*'],
+            ['route' => 'admin.events.index', 'label' => __('Events'), 'pattern' => 'admin.events.*'],
+        ];
+    } elseif ($user->isTeacher()) {
+        $navLinks = [
+            ['route' => 'teacher.dashboard', 'label' => __('My Groups'), 'pattern' => 'teacher.dashboard'],
+            ['route' => 'teacher.events.index', 'label' => __('Events'), 'pattern' => 'teacher.events.*'],
+            ['route' => 'teacher.attendance.create', 'label' => __('Attendance'), 'pattern' => 'teacher.attendance.*'],
+        ];
+    } elseif ($user->isStudent()) {
+        $navLinks = [
+            ['route' => 'student.dashboard', 'label' => __('My Groups'), 'pattern' => 'student.dashboard'],
+            ['route' => 'student.payments.index', 'label' => __('My Passes'), 'pattern' => 'student.payments.*'],
+        ];
+    } else {
+        $navLinks = [];
+    }
+@endphp
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
@@ -12,55 +53,52 @@
 <body class="bg-gray-50 min-h-screen">
     <nav class="bg-white shadow">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
+            <div class="flex items-center justify-between h-16">
                 <div class="flex items-center">
                     <span class="text-xl font-bold text-purple-700">{{ __('Dance Academy') }}</span>
-                    <div class="hidden sm:ml-6 sm:flex sm:space-x-4">
-                        @if(auth()->user()->isAdmin())
-                            <a href="{{ route('admin.dashboard') }}" class="inline-flex items-center px-1 pt-1 text-sm font-medium {{ request()->routeIs('admin.dashboard') ? 'text-gray-900 underline' : 'text-gray-500 hover:text-gray-900' }}">{{ __('Dashboard') }}</a>
-                            <a href="{{ route('admin.staff.index') }}" class="inline-flex items-center px-1 pt-1 text-sm font-medium {{ request()->routeIs('admin.staff.*') ? 'text-gray-900 underline' : 'text-gray-500 hover:text-gray-900' }}">{{ __('Staff') }}</a>
-                            <a href="{{ route('admin.students.index') }}" class="inline-flex items-center px-1 pt-1 text-sm font-medium {{ request()->routeIs('admin.students.*') ? 'text-gray-900 underline' : 'text-gray-500 hover:text-gray-900' }}">{{ __('Students') }}</a>
-                            <a href="{{ route('admin.categories.index') }}" class="inline-flex items-center px-1 pt-1 text-sm font-medium {{ request()->routeIs('admin.categories.*') ? 'text-gray-900 underline' : 'text-gray-500 hover:text-gray-900' }}">{{ __('Categories') }}</a>
-                            <a href="{{ route('admin.payments.index') }}" class="inline-flex items-center px-1 pt-1 text-sm font-medium {{ request()->routeIs('admin.payments.*') ? 'text-gray-900 underline' : 'text-gray-500 hover:text-gray-900' }}">{{ __('Payments') }}</a>
-                            <a href="{{ route('admin.passes.index') }}" class="inline-flex items-center px-1 pt-1 text-sm font-medium {{ request()->routeIs('admin.passes.*') ? 'text-gray-900 underline' : 'text-gray-500 hover:text-gray-900' }}">{{ __('Passes') }}</a>
-                            <a href="{{ route('admin.attendance.index') }}" class="inline-flex items-center px-1 pt-1 text-sm font-medium {{ request()->routeIs('admin.attendance.*') ? 'text-gray-900 underline' : 'text-gray-500 hover:text-gray-900' }}">{{ __('Attendance') }}</a>
-                            <a href="{{ route('admin.sessions.index') }}" class="inline-flex items-center px-1 pt-1 text-sm font-medium {{ request()->routeIs('admin.sessions.*') ? 'text-gray-900 underline' : 'text-gray-500 hover:text-gray-900' }}">{{ __('Sessions') }}</a>
-                            <a href="{{ route('admin.groups.index') }}" class="inline-flex items-center px-1 pt-1 text-sm font-medium {{ request()->routeIs('admin.groups.*') ? 'text-gray-900 underline' : 'text-gray-500 hover:text-gray-900' }}">{{ __('Groups') }}</a>
-                            <a href="{{ route('admin.events.index') }}" class="inline-flex items-center px-1 pt-1 text-sm font-medium {{ request()->routeIs('admin.events.*') ? 'text-gray-900 underline' : 'text-gray-500 hover:text-gray-900' }}">{{ __('Events') }}</a>
-                        @elseif(auth()->user()->isReception())
-                            <a href="{{ route('admin.dashboard') }}" class="inline-flex items-center px-1 pt-1 text-sm font-medium {{ request()->routeIs('admin.dashboard') ? 'text-gray-900 underline' : 'text-gray-500 hover:text-gray-900' }}">{{ __('Dashboard') }}</a>
-                            <a href="{{ route('admin.students.index') }}" class="inline-flex items-center px-1 pt-1 text-sm font-medium {{ request()->routeIs('admin.students.*') ? 'text-gray-900 underline' : 'text-gray-500 hover:text-gray-900' }}">{{ __('Students') }}</a>
-                            <a href="{{ route('admin.payments.index') }}" class="inline-flex items-center px-1 pt-1 text-sm font-medium {{ request()->routeIs('admin.payments.*') ? 'text-gray-900 underline' : 'text-gray-500 hover:text-gray-900' }}">{{ __('Payments') }}</a>
-                            <a href="{{ route('admin.passes.index') }}" class="inline-flex items-center px-1 pt-1 text-sm font-medium {{ request()->routeIs('admin.passes.*') ? 'text-gray-900 underline' : 'text-gray-500 hover:text-gray-900' }}">{{ __('Passes') }}</a>
-                            <a href="{{ route('admin.attendance.index') }}" class="inline-flex items-center px-1 pt-1 text-sm font-medium {{ request()->routeIs('admin.attendance.*') ? 'text-gray-900 underline' : 'text-gray-500 hover:text-gray-900' }}">{{ __('Attendance') }}</a>
-                            <a href="{{ route('admin.sessions.index') }}" class="inline-flex items-center px-1 pt-1 text-sm font-medium {{ request()->routeIs('admin.sessions.*') ? 'text-gray-900 underline' : 'text-gray-500 hover:text-gray-900' }}">{{ __('Sessions') }}</a>
-                            <a href="{{ route('admin.groups.index') }}" class="inline-flex items-center px-1 pt-1 text-sm font-medium {{ request()->routeIs('admin.groups.*') ? 'text-gray-900 underline' : 'text-gray-500 hover:text-gray-900' }}">{{ __('Groups') }}</a>
-                            <a href="{{ route('admin.events.index') }}" class="inline-flex items-center px-1 pt-1 text-sm font-medium {{ request()->routeIs('admin.events.*') ? 'text-gray-900 underline' : 'text-gray-500 hover:text-gray-900' }}">{{ __('Events') }}</a>
-                        @elseif(auth()->user()->isTeacher())
-                            <a href="{{ route('teacher.dashboard') }}" class="inline-flex items-center px-1 pt-1 text-sm font-medium {{ request()->routeIs('teacher.dashboard') ? 'text-gray-900 underline' : 'text-gray-500 hover:text-gray-900' }}">{{ __('My Groups') }}</a>
-                            <a href="{{ route('teacher.events.index') }}" class="inline-flex items-center px-1 pt-1 text-sm font-medium {{ request()->routeIs('teacher.events.*') ? 'text-gray-900 underline' : 'text-gray-500 hover:text-gray-900' }}">{{ __('Events') }}</a>
-                            <a href="{{ route('teacher.attendance.create') }}" class="inline-flex items-center px-1 pt-1 text-sm font-medium {{ request()->routeIs('teacher.attendance.*') ? 'text-gray-900 underline' : 'text-gray-500 hover:text-gray-900' }}">{{ __('Attendance') }}</a>
-                        @elseif(auth()->user()->isStudent())
-                            <a href="{{ route('student.dashboard') }}" class="inline-flex items-center px-1 pt-1 text-sm font-medium {{ request()->routeIs('student.dashboard') ? 'text-gray-900 underline' : 'text-gray-500 hover:text-gray-900' }}">{{ __('My Groups') }}</a>
-                            <a href="{{ route('student.payments.index') }}" class="inline-flex items-center px-1 pt-1 text-sm font-medium {{ request()->routeIs('student.payments.*') ? 'text-gray-900 underline' : 'text-gray-500 hover:text-gray-900' }}">{{ __('My Passes') }}</a>
-                        @endif
+                    <div class="hidden lg:ml-8 lg:flex lg:space-x-4">
+                        @foreach($navLinks as $link)
+                            <a href="{{ route($link['route']) }}" class="inline-flex items-center px-1 pt-1 text-sm font-medium {{ request()->routeIs($link['pattern']) ? 'text-gray-900 underline' : 'text-gray-500 hover:text-gray-900' }}">{{ $link['label'] }}</a>
+                        @endforeach
                     </div>
                 </div>
-                <div class="flex items-center space-x-4">
+                <div class="flex items-center space-x-3 sm:space-x-4">
                     <a href="{{ route('language.switch', 'en') }}" class="text-sm {{ app()->getLocale() === 'en' ? 'text-purple-700 font-semibold' : 'text-gray-500 hover:text-gray-700' }}">EN</a>
                     <a href="{{ route('language.switch', 'pl') }}" class="text-sm {{ app()->getLocale() === 'pl' ? 'text-purple-700 font-semibold' : 'text-gray-500 hover:text-gray-700' }}">PL</a>
-                    <a href="{{ route('profile.edit') }}" class="text-sm text-gray-600 hover:text-gray-900">{{ auth()->user()->full_name }}</a>
-                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">{{ __(ucfirst(auth()->user()->role)) }}</span>
-                    <form method="POST" action="{{ route('logout') }}">
+                    <a href="{{ route('profile.edit') }}" class="hidden sm:block text-sm text-gray-600 hover:text-gray-900">{{ $user->full_name }}</a>
+                    <span class="hidden md:inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">{{ __(ucfirst($user->role)) }}</span>
+                    <form method="POST" action="{{ route('logout') }}" class="hidden md:block">
                         @csrf
                         <button type="submit" class="text-sm text-gray-500 hover:text-gray-700 cursor-pointer">{{ __('Logout') }}</button>
+                    </form>
+                    <button id="mobile-menu-button" type="button" aria-expanded="false" aria-controls="mobile-menu" class="lg:hidden inline-flex items-center justify-center p-2 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100">
+                        <span class="sr-only">{{ __('Menu') }}</span>
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="mobile-menu" class="hidden lg:hidden border-t border-gray-200 bg-white">
+            <div class="px-2 pt-2 pb-3 space-y-1">
+                @foreach($navLinks as $link)
+                    <a href="{{ route($link['route']) }}"
+                       class="block px-3 py-2 rounded-md text-base font-medium {{ request()->routeIs($link['pattern']) ? 'bg-purple-50 text-purple-700' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900' }}">{{ $link['label'] }}</a>
+                @endforeach
+                <div class="pt-3 mt-3 border-t border-gray-200">
+                    <a href="{{ route('profile.edit') }}" class="block px-3 py-2 text-sm text-gray-600 hover:text-gray-900">{{ $user->full_name }}</a>
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit" class="w-full text-left px-3 py-2 text-sm text-gray-500 hover:text-gray-700 cursor-pointer">{{ __('Logout') }}</button>
                     </form>
                 </div>
             </div>
         </div>
     </nav>
 
-    <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+    <main class="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
         @if(session('success'))
             <div class="mb-4 p-4 bg-green-100 border border-green-300 text-green-800 rounded-lg">
                 {{ session('success') }}
