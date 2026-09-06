@@ -34,6 +34,15 @@ class DashboardController extends Controller
             ->orderBy('valid_until')
             ->get();
 
+        $unpaidMonthly = Payment::with(['student'])
+            ->where('pass_type', 'monthly')
+            ->whereNull('dance_group_id')
+            ->where('status', 'active')
+            ->where('is_paid', false)
+            ->whereDate('valid_from', now()->startOfMonth()->toDateString())
+            ->orderBy('created_at')
+            ->get();
+
         $months = 12;
         $revenue = [];
         $labels = [];
@@ -56,6 +65,6 @@ class DashboardController extends Controller
         $students = User::where('role', 'student')->with('enrolledGroups')->orderBy('first_name')->get();
         $groups = DanceGroup::with('category')->orderBy('name')->get();
 
-        return view('admin.dashboard', compact('stats', 'expiringPasses', 'revenue', 'labels', 'passTypes', 'students', 'groups'));
+        return view('admin.dashboard', compact('stats', 'expiringPasses', 'unpaidMonthly', 'revenue', 'labels', 'passTypes', 'students', 'groups'));
     }
 }

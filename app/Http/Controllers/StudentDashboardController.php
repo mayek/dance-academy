@@ -10,12 +10,15 @@ class StudentDashboardController extends Controller
         $groups = $user->enrolledGroups()->with(['category', 'teacher'])->get();
         $events = $user->events()->with('teacher')->orderBy('date')->orderBy('start_time')->get();
 
-        $activePassByGroup = $user->payments()
+        $currentMonthPass = $user->payments()
             ->active()
-            ->where('dance_group_id', '!=', null)
-            ->get()
-            ->keyBy('dance_group_id');
+            ->where('pass_type', 'monthly')
+            ->whereNull('dance_group_id')
+            ->whereDate('valid_from', '<=', now())
+            ->whereDate('valid_until', '>=', now())
+            ->latest('valid_from')
+            ->first();
 
-        return view('student.dashboard', compact('groups', 'events', 'activePassByGroup'));
+        return view('student.dashboard', compact('groups', 'events', 'currentMonthPass'));
     }
 }

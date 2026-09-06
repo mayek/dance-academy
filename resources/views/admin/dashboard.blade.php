@@ -71,6 +71,49 @@
     </div>
     @endif
 
+    @if($unpaidMonthly->isNotEmpty())
+    <div class="mt-8">
+        <div class="flex items-center gap-2 mb-4">
+            <div class="w-2.5 h-2.5 bg-red-500 rounded-full animate-pulse"></div>
+            <h2 class="text-lg font-semibold text-gray-900">{{ __('Nieopłacone karnety miesięczne') }} ({{ $unpaidMonthly->first()->valid_from->translatedFormat('F Y') }})</h2>
+            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">{{ $unpaidMonthly->count() }}</span>
+        </div>
+        <div class="bg-white shadow rounded-lg overflow-hidden border border-red-200">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-red-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ __('Student') }}</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ __('Amount') }}</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ __('Hours') }}</th>
+                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">{{ __('Actions') }}</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200">
+                    @foreach($unpaidMonthly as $payment)
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $payment->student->full_name }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ number_format((float) $payment->amount, 2, ',', ' ') }} zł</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $payment->used_hours ?? 0 }} / {{ $payment->total_hours ?? '-' }}h</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm">
+                            <form method="POST" action="{{ route('admin.payments.pay', $payment) }}" class="inline">
+                                @csrf
+                                @method('PATCH')
+                                <button type="submit" class="inline-flex items-center px-2.5 py-1 rounded text-xs font-medium bg-emerald-600 hover:bg-emerald-700 text-white transition cursor-pointer">
+                                    {{ __('Zapłać') }}
+                                </button>
+                            </form>
+                            <a href="{{ route('admin.students.payments', $payment->student) }}" class="ml-2 inline-flex items-center px-2.5 py-1 rounded text-xs font-medium bg-gray-100 hover:bg-gray-200 text-gray-700 transition">
+                                {{ __('Karta ucznia') }}
+                            </a>
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
+    @endif
+
     <div id="buy-pass-modal" class="hidden fixed inset-0 z-50 overflow-y-auto" role="dialog" aria-modal="true">
         <div class="flex items-end sm:items-center justify-center min-h-screen p-4 sm:p-6">
             <div class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm" onclick="closeBuyPassModal()"></div>

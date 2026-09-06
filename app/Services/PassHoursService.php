@@ -101,7 +101,7 @@ class PassHoursService
             $end = Carbon::parse($slot['end']);
 
             if ($end > $start) {
-                return round($end->diffInMinutes($start) / 60, 2);
+                return round($end->diffInMinutes($start, true) / 60, 2);
             }
         }
 

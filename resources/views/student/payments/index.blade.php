@@ -44,7 +44,7 @@
                             {{ $payment->danceGroup->name }}
                             <span class="text-xs text-gray-400 ml-1">({{ $payment->danceGroup->category->name }})</span>
                         @else
-                            -
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-50 text-blue-700">{{ __('Karnet ucznia') }}</span>
                         @endif
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
