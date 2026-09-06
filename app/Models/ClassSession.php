@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class ClassSession extends Model
 {
@@ -25,6 +26,12 @@ class ClassSession extends Model
     public function danceGroup(): BelongsTo
     {
         return $this->belongsTo(DanceGroup::class, 'dance_group_id');
+    }
+
+    public function attendees(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'class_session_user', 'class_session_id', 'student_id')
+            ->withPivot('type', 'notes');
     }
 
     public function isCancelled(): bool

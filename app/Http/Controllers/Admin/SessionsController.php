@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\ClassSession;
 use App\Models\DanceGroup;
+use App\Services\MonthlyPassService;
 use App\Services\ScheduleService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -49,6 +50,11 @@ class SessionsController extends Controller
             $validated['group_id'] ?? null
         );
 
+        app(MonthlyPassService::class)->refreshTotalsForMonth(
+            Carbon::parse($validated['month'])->startOfMonth(),
+            $validated['group_id'] ?? null
+        );
+
         return redirect()->route('admin.sessions.index', [
             'month' => $validated['month'],
             'group_id' => $validated['group_id'] ?? null,
@@ -75,6 +81,11 @@ class SessionsController extends Controller
         }
 
         $session->update($validated);
+
+        app(MonthlyPassService::class)->refreshTotalsForMonth(
+            Carbon::parse($session->date)->startOfMonth(),
+            $session->dance_group_id
+        );
 
         return redirect()->route('admin.sessions.index', [
             'month' => Carbon::parse($session->date)->format('Y-m'),

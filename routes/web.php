@@ -59,6 +59,7 @@ Route::middleware(['auth', 'role:admin,reception'])->prefix('admin')->name('admi
     Route::get('/attendance/makeup', [AttendanceController::class, 'makeup'])->name('attendance.makeup');
     Route::get('/attendance/create', [AttendanceController::class, 'create'])->name('attendance.create');
     Route::post('/attendance', [AttendanceController::class, 'store'])->name('attendance.store');
+    Route::post('/attendance/add-single', [AttendanceController::class, 'addSingle'])->name('attendance.add-single');
     Route::get('/students/{student}/absences', [AttendanceController::class, 'studentAbsences'])->name('students.absences');
     Route::get('/students/{student}/payments', [PaymentController::class, 'studentPayments'])->name('students.payments');
     Route::patch('/attendance/{attendance}/made-up', [AttendanceController::class, 'markMadeUp'])->name('attendance.made-up');
@@ -78,6 +79,7 @@ Route::middleware(['auth', 'role:teacher'])->prefix('teacher')->name('teacher.')
     Route::post('/groups/{group}/students/{student}/pass', [TeacherDashboardController::class, 'storePass'])->name('passes.store');
     Route::get('/attendance/create', [TeacherAttendanceController::class, 'create'])->name('attendance.create');
     Route::post('/attendance', [TeacherAttendanceController::class, 'store'])->name('attendance.store');
+    Route::post('/attendance/add-single', [TeacherAttendanceController::class, 'addSingle'])->name('attendance.add-single');
     Route::get('/groups/{group}/attendance', [TeacherAttendanceController::class, 'history'])->name('attendance.history');
     Route::resource('events', TeacherEventController::class)->except(['show']);
     Route::get('/events/{event}/assign', [TeacherEventController::class, 'assignStudents'])->name('events.assign');

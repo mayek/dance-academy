@@ -90,7 +90,13 @@ class DanceGroupController extends Controller
         $students = User::where('role', 'student')
             ->orderByRaw('FIELD(id, ' . implode(',', $enrolledIds ?: [0]) . ') DESC')
             ->get();
-        return view('admin.groups.assign', compact('group', 'students', 'enrolledIds'));
+        $enrolled = $group->students()->get()
+            ->keyBy('id')
+            ->map(fn ($student) => [
+                'joined_at' => $student->pivot->joined_at ? \Illuminate\Support\Carbon::parse($student->pivot->joined_at)->format('Y-m-d') : ($student->pivot->created_at ? \Illuminate\Support\Carbon::parse($student->pivot->created_at)->format('Y-m-d') : null),
+                'left_at' => $student->pivot->left_at ? \Illuminate\Support\Carbon::parse($student->pivot->left_at)->format('Y-m-d') : null,
+            ]);
+        return view('admin.groups.assign', compact('group', 'students', 'enrolledIds', 'enrolled'));
     }
 
     public function updateStudents(Request $request, DanceGroup $group)
@@ -98,22 +104,34 @@ class DanceGroupController extends Controller
         $validated = $request->validate([
             'student_ids' => ['array'],
             'student_ids.*' => ['exists:users,id'],
+            'joined_at' => ['nullable', 'array'],
+            'joined_at.*' => ['nullable', 'date'],
+            'left_at' => ['nullable', 'array'],
+            'left_at.*' => ['nullable', 'date'],
         ]);
 
+        $prevIds = $group->students->pluck('id')->all();
         $studentIds = $validated['student_ids'] ?? [];
-        $group->students()->sync($studentIds);
+
+        $syncData = [];
+        foreach ($studentIds as $id) {
+            $joined = $validated['joined_at'][$id] ?? null;
+
+            $syncData[$id] = [
+                'joined_at' => $joined ?: now()->toDateString(),
+                'left_at' => $validated['left_at'][$id] ?? null,
+            ];
+        }
+
+        $group->students()->sync($syncData);
 
         $monthlyPasses = app(\App\Services\MonthlyPassService::class);
         $month = now()->startOfMonth();
 
-        foreach (User::whereIn('id', $studentIds)->get() as $student) {
-            $obligation = $monthlyPasses->obligationFor($student, $month);
-
-            if ($obligation !== null) {
-                $monthlyPasses->refreshTotalHours($obligation);
-            } else {
-                $monthlyPasses->ensureObligation($student, $month);
-            }
+        foreach (User::whereIn('id', array_values(array_unique(array_merge($prevIds, $studentIds))))->get() as $student) {
+            $monthlyPasses->refreshAllForStudent($student);
+            $monthlyPasses->purgeFutureObligations($student);
+            $monthlyPasses->ensureObligation($student, $month);
         }
 
         return redirect()->route('admin.groups.index')
