@@ -67,48 +67,58 @@
                             <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">{{ __('Odbywa się') }}</span>
                         @endif
                     </td>
-                    <td class="px-4 py-3 text-right whitespace-nowrap relative">
-                        <details class="inline-block align-middle relative z-40">
-                            <summary class="cursor-pointer select-none text-sm text-orange-600 hover:text-orange-800">{{ __('Edytuj') }}</summary>
-                            <div class="absolute right-0 mt-2 w-96 max-w-[calc(100vw-2rem)] bg-white border border-gray-300 rounded-lg shadow-xl p-5 z-[9999] text-left">
-                                <form method="POST" action="{{ route('admin.sessions.update', $session) }}" class="space-y-2">
+                    <td class="px-4 py-3 text-right whitespace-nowrap">
+                        <button type="button" data-open-session-modal="{{ $session->id }}"
+                                class="cursor-pointer select-none text-sm text-orange-600 hover:text-orange-800">{{ __('Edytuj') }}</button>
+
+                        <div id="session-modal-{{ $session->id }}" class="hidden fixed inset-0 z-[10000] flex items-center justify-center p-4">
+                            <div data-close-session-modal="{{ $session->id }}" class="absolute inset-0 bg-black/50"></div>
+                            <div class="relative w-full max-w-lg bg-white rounded-xl shadow-2xl p-6 text-left">
+                                <div class="flex items-center justify-between mb-4">
+                                    <h3 class="text-base font-semibold text-gray-900">{{ __('Edytuj zajęcia') }}</h3>
+                                    <button type="button" data-close-session-modal="{{ $session->id }}"
+                                            class="text-gray-400 hover:text-gray-600 text-xl leading-none cursor-pointer">&times;</button>
+                                </div>
+                                <form method="POST" action="{{ route('admin.sessions.update', $session) }}" class="space-y-4">
                                     @csrf
                                     @method('PATCH')
-                                    <div class="grid grid-cols-2 gap-2">
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                         <div>
-                                            <label class="block text-xs font-medium text-gray-700">{{ __('Data') }}</label>
-                                            <input type="date" name="date" value="{{ $session->date->format('Y-m-d') }}" class="w-full rounded-md border border-gray-300 px-2 py-1.5 text-sm">
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('Data') }}</label>
+                                            <input type="date" name="date" value="{{ $session->date->format('Y-m-d') }}" class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm">
                                         </div>
                                         <div>
-                                            <label class="block text-xs font-medium text-gray-700">{{ __('Sala') }}</label>
-                                            <select name="room" class="w-full rounded-md border border-gray-300 px-2 py-1.5 text-sm">
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('Sala') }}</label>
+                                            <select name="room" class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm">
                                                 <option value="">-</option>
                                                 <option value="górna" @selected($session->room === 'górna')>{{ __('Górna') }}</option>
                                                 <option value="dolna" @selected($session->room === 'dolna')>{{ __('Dolna') }}</option>
                                             </select>
                                         </div>
                                         <div>
-                                            <label class="block text-xs font-medium text-gray-700">{{ __('Start') }}</label>
-                                            <input type="time" name="start_time" value="{{ $session->start_time }}" class="w-full rounded-md border border-gray-300 px-2 py-1.5 text-sm">
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('Start') }}</label>
+                                            <input type="time" name="start_time" value="{{ $session->start_time }}" class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm">
                                         </div>
                                         <div>
-                                            <label class="block text-xs font-medium text-gray-700">{{ __('Koniec') }}</label>
-                                            <input type="time" name="end_time" value="{{ $session->end_time }}" class="w-full rounded-md border border-gray-300 px-2 py-1.5 text-sm">
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('Koniec') }}</label>
+                                            <input type="time" name="end_time" value="{{ $session->end_time }}" class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm">
                                         </div>
                                     </div>
                                     <div>
-                                        <label class="block text-xs font-medium text-gray-700">{{ __('Status') }}</label>
-                                        <select name="status" class="w-full rounded-md border border-gray-300 px-2 py-1.5 text-sm">
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('Status') }}</label>
+                                        <select name="status" class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm">
                                             <option value="planned" @selected(!$session->isCancelled())>{{ __('Odbywa się') }}</option>
                                             <option value="cancelled" @selected($session->isCancelled())>{{ __('Odwołane') }}</option>
                                         </select>
                                     </div>
-                                    <div class="flex justify-end space-x-2 pt-1">
-                                        <button type="submit" class="px-3 py-1.5 text-xs bg-orange-600 hover:bg-orange-700 text-white rounded-md cursor-pointer">{{ __('Zapisz') }}</button>
+                                    <div class="flex justify-end space-x-2 pt-2">
+                                        <button type="button" data-close-session-modal="{{ $session->id }}"
+                                                class="px-4 py-2 text-sm bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-md cursor-pointer">{{ __('Anuluj') }}</button>
+                                        <button type="submit" class="px-4 py-2 text-sm bg-orange-600 hover:bg-orange-700 text-white rounded-md cursor-pointer">{{ __('Zapisz') }}</button>
                                     </div>
                                 </form>
                             </div>
-                        </details>
+                        </div>
                     </td>
                 </tr>
                 @endforeach
@@ -121,4 +131,17 @@
     </div>
     @endforelse
 </div>
+<script>
+document.addEventListener('click', function (e) {
+    const open = e.target.closest('[data-open-session-modal]');
+    if (open) {
+        document.getElementById('session-modal-' + open.dataset.openSessionModal).classList.remove('hidden');
+        return;
+    }
+    const close = e.target.closest('[data-close-session-modal]');
+    if (close) {
+        close.closest('#session-modal-' + close.dataset.closeSessionModal).classList.add('hidden');
+    }
+});
+</script>
 @endsection
