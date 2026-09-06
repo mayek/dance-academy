@@ -36,7 +36,7 @@
         <h1 class="text-2xl font-bold text-gray-900">{{ __('Passes') }}</h1>
         <a href="{{ route('admin.passes.create') }}" class="bg-green-600 hover:bg-green-700 text-white text-sm font-medium py-2 px-4 rounded-lg">{{ __('+ Add Pass') }}</a>
     </div>
-    <div class="bg-white shadow rounded-lg overflow-hidden">
+    <div class="bg-white shadow rounded-lg overflow-x-auto">
         <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
                 <tr>
@@ -45,7 +45,7 @@
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ __('Hours') }}</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ __('Price') }}</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ __('Payments') }}</th>
-                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">{{ __('Actions') }}</th>
+                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase sticky right-0 bg-gray-50" style="box-shadow: -4px 0 6px rgba(0,0,0,0.05);">{{ __('Actions') }}</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-200">
@@ -58,7 +58,7 @@
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $pass->hours !== null ? $pass->hours . 'h' : '-' }}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ number_format($pass->price, 2) }} zł</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $pass->payments_count }}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm space-x-2">
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm space-x-2 sticky right-0 bg-white" style="box-shadow: -4px 0 6px rgba(0,0,0,0.05);">
                         <a href="{{ route('admin.passes.edit', $pass) }}" class="text-green-600 hover:text-green-800 inline-flex align-middle">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                         </a>
