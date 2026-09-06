@@ -1,6 +1,35 @@
 @extends('layouts.app')
 @section('title', __('Manage Passes'))
 
+@push('styles')
+<style>
+    .pass-name {
+        display: inline-block;
+        max-width: 320px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        vertical-align: middle;
+        cursor: help;
+    }
+    .pass-name-tooltip {
+        position: fixed;
+        z-index: 50;
+        max-width: 360px;
+        padding: 6px 10px;
+        background: #1f2937;
+        color: #ffffff;
+        font-size: 12px;
+        line-height: 1.4;
+        border-radius: 6px;
+        pointer-events: none;
+        white-space: normal;
+        word-wrap: break-word;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.15);
+    }
+</style>
+@endpush
+
 @section('content')
 <div class="px-4 sm:px-0">
     <div class="flex justify-between items-center mb-6">
@@ -22,7 +51,9 @@
             <tbody class="divide-y divide-gray-200">
                 @forelse($passTypes as $pass)
                 <tr>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $pass->display_name }}</td>
+                    <td class="px-6 py-4 text-sm font-medium text-gray-900">
+                        <span class="pass-name" data-full="{{ $pass->display_name }}">{{ mb_strimwidth($pass->display_name, 0, 50, '…') }}</span>
+                    </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $pass->duration_label ?? '-' }}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $pass->hours !== null ? $pass->hours . 'h' : '-' }}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ number_format($pass->price, 2) }} zł</td>
@@ -48,3 +79,43 @@
     <div class="mt-4">{{ $passTypes->links() }}</div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const names = document.querySelectorAll('.pass-name');
+        let tip = document.createElement('div');
+        tip.className = 'pass-name-tooltip';
+        tip.style.display = 'none';
+        document.body.appendChild(tip);
+
+        names.forEach(function (el) {
+            el.addEventListener('mouseenter', function () {
+                tip.textContent = el.getAttribute('data-full') || el.textContent;
+                tip.style.display = 'block';
+                positionTooltip(el, tip);
+            });
+            el.addEventListener('mousemove', function (e) {
+                positionTooltip(e.clientX, e.clientY, tip);
+            });
+            el.addEventListener('mouseleave', function () {
+                tip.style.display = 'none';
+            });
+        });
+
+        function positionTooltip(x, y, tip) {
+            let left = typeof x === 'number' ? x + 12 : x.getBoundingClientRect().left;
+            let top = typeof y === 'number' ? y + 12 : x.getBoundingClientRect().bottom + 6;
+            const rect = tip.getBoundingClientRect();
+            if (left + rect.width > window.innerWidth - 8) {
+                left = window.innerWidth - rect.width - 8;
+            }
+            if (top + rect.height > window.innerHeight - 8) {
+                top = window.innerHeight - rect.height - 8;
+            }
+            tip.style.left = left + 'px';
+            tip.style.top = top + 'px';
+        }
+    });
+</script>
+@endpush
