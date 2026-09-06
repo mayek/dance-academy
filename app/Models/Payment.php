@@ -12,7 +12,7 @@ class Payment extends Model
 
     protected $fillable = [
         'student_id', 'dance_group_id', 'event_id', 'pass_type', 'pass_type_id',
-        'amount', 'total_hours', 'used_hours', 'valid_from', 'valid_until', 'status', 'is_paid', 'notes', 'recorded_by',
+        'amount', 'total_hours', 'used_hours', 'valid_from', 'valid_until', 'status', 'is_paid', 'notes', 'recorded_by', 'source',
     ];
 
     protected function casts(): array

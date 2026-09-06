@@ -45,10 +45,29 @@
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm">
                         @if(!$absence->made_up && $absence->date->diffInDays(now()) < 14)
-                            <form method="POST" action="{{ route('admin.attendance.made-up', $absence) }}" class="inline">
-                                @csrf @method('PATCH')
-                                <button type="submit" class="text-green-600 hover:text-green-800 font-medium" style="cursor: pointer;">{{ __('Mark made up') }}</button>
-                            </form>
+                            <details class="inline-block align-middle relative">
+                                <summary class="cursor-pointer select-none text-green-600 hover:text-green-800 font-medium">{{ __('Mark made up') }}</summary>
+                                <div class="absolute right-0 mt-2 w-72 bg-white border border-gray-200 rounded-lg shadow-lg p-3 z-10 text-left space-y-2">
+                                    <form method="POST" action="{{ route('admin.attendance.made-up', $absence) }}">
+                                        @csrf @method('PATCH')
+                                        <div>
+                                            <label class="block text-xs font-medium text-gray-700 mb-1">{{ __('Grupa zajęć odrabianych') }}</label>
+                                            <select name="group_id" required class="w-full rounded-md border border-gray-300 px-2 py-1.5 text-sm">
+                                                @foreach($groups as $group)
+                                                    <option value="{{ $group->id }}">{{ $group->name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <div class="mt-2">
+                                            <label class="block text-xs font-medium text-gray-700 mb-1">{{ __('Data zajęć odrabianych') }}</label>
+                                            <input type="date" name="date" required min="{{ $absence->date->format('Y-m-d') }}" max="{{ $absence->date->copy()->addDays(13)->format('Y-m-d') }}" class="w-full rounded-md border border-gray-300 px-2 py-1.5 text-sm">
+                                        </div>
+                                        <div class="flex justify-end pt-1">
+                                            <button type="submit" class="px-3 py-1.5 text-xs bg-green-600 hover:bg-green-700 text-white rounded-md cursor-pointer">{{ __('Odnotuj odrobienie') }}</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </details>
                         @elseif(!$absence->made_up)
                             <span class="text-gray-400 text-xs">{{ __('Expired') }}</span>
                         @endif

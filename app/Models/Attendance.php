@@ -13,7 +13,7 @@ class Attendance extends Model
 
     protected $fillable = [
         'student_id', 'dance_group_id', 'date', 'status', 'notes', 'recorded_by', 'made_up', 'date_of_made_up',
-        'payment_id', 'hours_consumed',
+        'payment_id', 'hours_consumed', 'made_up_for_attendance_id',
     ];
 
     protected function casts(): array
@@ -44,6 +44,11 @@ class Attendance extends Model
     public function payment(): BelongsTo
     {
         return $this->belongsTo(Payment::class, 'payment_id');
+    }
+
+    public function madeUpFor(): BelongsTo
+    {
+        return $this->belongsTo(Attendance::class, 'made_up_for_attendance_id');
     }
 
     public function isAbsent(): bool
