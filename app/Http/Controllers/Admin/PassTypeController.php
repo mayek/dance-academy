@@ -11,7 +11,12 @@ class PassTypeController extends Controller
 {
     public function index()
     {
-        $passTypes = PassType::withCount('payments')->orderBy('type')->orderBy('duration_months')->paginate(10);
+        $passTypes = PassType::withCount('payments')
+            ->orderByRaw('name IS NULL')
+            ->orderBy('name')
+            ->orderBy('type')
+            ->orderBy('duration_months')
+            ->paginate(10);
         return view('admin.passes.index', compact('passTypes'));
     }
 
