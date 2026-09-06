@@ -345,5 +345,20 @@
     "Upper": "Górna",
     "Lower": "Dolna",
     "Select room": "Wybierz salę",
-    "Search by event name or assigned student...": "Szukaj po nazwie wydarzenia lub nazwisku ucznia..."
+    "Search by event name or assigned student...": "Szukaj po nazwie wydarzenia lub nazwisku ucznia...",
+    "How passes work": "Jak działają karnety",
+    "Manually added passes": "Karnety dodawane ręcznie",
+    "A pass created here defines a fixed pool of hours that can be used during its validity period. When you sell this pass to a student, each attended lesson deducts its duration from the pool.": "Karnet utworzony tutaj określa stałą pulę godzin, z której można korzystać przez cały okres ważności. Gdy sprzedasz ten karnet uczniowi, każda odbębna lekcja odejmuje swój czas trwania z puli.",
+    "The \u201cTotal hours\u201d value is the whole pool for the entire pass period, not per week or per month.": "Wartość \u201eŁączna liczba godzin\u201d to cała pula na cały okres ważności karnetu, a nie na tydzień ani na miesiąc.",
+    "The pool lasts as long as the chosen duration (e.g. 1, 3, 6 or 12 months).": "Pula obowiązuje przez cały wybrany okres ważności (np. 1, 3, 6 lub 12 miesięcy).",
+    "Once the pool is used up, the pass no longer covers lessons, even if the period has not ended.": "Po wykorzystaniu puli karnet przestaje pokrywać zajęcia, nawet jeśli okres ważności jeszcze się nie zakończył.",
+    "Examples": "Przykłady",
+    "2 hours per week, 1 month \u2192 enter \u201cTotal hours\u201d = 8 (2h \u00d7 4 weeks) or 10 (2h \u00d7 5 weeks).": "2 godziny tygodniowo, 1 miesiąc \u2192 wpisz \u201eŁączną liczbę godzin\u201d = 8 (2h \u00d7 4 tygodnie) lub 10 (2h \u00d7 5 tygodni).",
+    "1.5 hours per week, 3 months \u2192 enter \u201cTotal hours\u201d = 18 (1.5h \u00d7 4 weeks \u00d7 3 months) or 22.5 (1.5h \u00d7 5 weeks \u00d7 3 months).": "1,5 godziny tygodniowo, 3 miesiące \u2192 wpisz \u201eŁączną liczbę godzin\u201d = 18 (1,5h \u00d7 4 tygodnie \u00d7 3 miesiące) lub 22,5 (1,5h \u00d7 5 tygodni \u00d7 3 miesiące).",
+    "Automatic monthly passes": "Karnety miesięczne automatyczne",
+    "If you use the automatic monthly pass system, you do NOT enter hours here. The system calculates the number of hours automatically from the student\u2019s real schedule for each calendar month: it sums up every scheduled lesson in the month (excluding cancelled ones) times its duration.": "Jeśli korzystasz z automatycznego systemu karnetów miesięcznych, NIE wpisujesz tutaj godzin. System oblicza liczbę godzin automatycznie na podstawie prawdziwego grafiku ucznia dla każdego miesiąca kalendarzowego: sumuje każdą zaplanowaną lekcję w miesiącu (z wyłączeniem odwołanych) pomnożoną przez jej czas trwania.",
+    "Hours are recalculated per month, so months with 4 vs 5 weeks are handled automatically.": "Godziny są przeliczane co miesiąc, więc miesiące z 4 i 5 tygodniami są obsługiwane automatycznie.",
+    "The pass is linked to the student and not to a manually set pool here.": "Karnet jest przypisany do ucznia, a nie do ręcznie ustawionej puli godzin w tym miejscu.",
+    "You do not need to create these pass types here \u2013 they are generated automatically for enrolled students.": "Nie musisz tworzyć tych typów karnetów tutaj \u2013 są generowane automatycznie dla zapisanych uczniów.",
+    "A group meets 1 hour every Monday. In a 4-week month the automatic pass has 4 hours, in a 5-week month it has 5 hours.": "Grupa spotyka się 1 godzinę w każdy poniedziałek. W miesiącu z 4 tygodniami automatyczny karnet ma 4 godziny, a w miesiącu z 5 tygodniami \u2013 5 godzin."
 }
