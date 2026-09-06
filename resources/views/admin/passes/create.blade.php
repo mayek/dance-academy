@@ -83,6 +83,27 @@
                 <li>{{ __('A group meets 1 hour every Monday. In a 4-week month the automatic pass has 4 hours, in a 5-week month it has 5 hours.') }}</li>
             </ul>
         </div>
+
+        <div class="mt-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-2">{{ __('Make-up lessons') }}</h3>
+            <p class="text-sm text-gray-600 mb-3">
+                {{ __('A student who records an unexcused absence (status “Absent”) can make the lesson up. This is only possible:') }}
+            </p>
+            <ul class="text-sm text-gray-600 list-disc pl-5 space-y-1">
+                <li>{{ __('Within 14 days of the original absence.') }}</li>
+                <li>{{ __('When the student had an active pass on the day of the absence.') }}</li>
+                <li>{{ __('The absence must not have been already made up or excused.') }}</li>
+            </ul>
+            <p class="text-sm text-gray-600 mt-3 mb-1">
+                {{ __('How it works in the system:') }}
+            </p>
+            <ul class="text-sm text-gray-600 list-disc pl-5 space-y-1">
+                <li>{{ __('The make-up lessons can be attended in a different group’s class, not necessarily the student’s own group.') }}</li>
+                <li>{{ __('The original absence is changed from “Absent” to “Excused” and marked as made up.') }}</li>
+                <li>{{ __('The made-up lesson is recorded as “Present” and its hours are deducted from the student’s pass.') }}</li>
+                <li>{{ __('Cancelled lessons cannot be used for a make-up.') }}</li>
+            </ul>
+        </div>
     </div>
 </div>
 

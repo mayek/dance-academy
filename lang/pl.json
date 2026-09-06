@@ -361,5 +361,15 @@
     "Hours are recalculated per month, so months with 4 vs 5 weeks are handled automatically.": "Godziny są przeliczane co miesiąc, więc miesiące z 4 i 5 tygodniami są obsługiwane automatycznie.",
     "The pass is linked to the student and not to a manually set pool here.": "Karnet jest przypisany do ucznia, a nie do ręcznie ustawionej puli godzin w tym miejscu.",
     "You do not need to create these pass types here \u2013 they are generated automatically for enrolled students.": "Nie musisz tworzyć tych typów karnetów tutaj \u2013 są generowane automatycznie dla zapisanych uczniów.",
-    "A group meets 1 hour every Monday. In a 4-week month the automatic pass has 4 hours, in a 5-week month it has 5 hours.": "Grupa spotyka się 1 godzinę w każdy poniedziałek. W miesiącu z 4 tygodniami automatyczny karnet ma 4 godziny, a w miesiącu z 5 tygodniami \u2013 5 godzin."
+    "A group meets 1 hour every Monday. In a 4-week month the automatic pass has 4 hours, in a 5-week month it has 5 hours.": "Grupa spotyka się 1 godzinę w każdy poniedziałek. W miesiącu z 4 tygodniami automatyczny karnet ma 4 godziny, a w miesiącu z 5 tygodniami \u2013 5 godzin.",
+    "Make-up lessons": "Odrabianie zajęć",
+    "A student who records an unexcused absence (status “Absent”) can make the lesson up. This is only possible:": "Uczeń, który ma nieusprawiedliwioną nieobecność (status \u201eNieobecny\u201d), może odrobić zajęcia. Jest to możliwe tylko, gdy:",
+    "Within 14 days of the original absence.": "Odrodzenie nastąpi w ciągu 14 dni od dnia nieobecności.",
+    "When the student had an active pass on the day of the absence.": "Uczeń miał aktywny karnet w dniu nieobecności.",
+    "The absence must not have been already made up or excused.": "Nieobecność nie została jeszcze odrobiona ani usprawiedliwiona.",
+    "How it works in the system:": "Jak to działa w systemie:",
+    "The make-up lessons can be attended in a different group’s class, not necessarily the student’s own group.": "Odrabiane zajęcia mogą odbyć się w grupie innych zajęć, niekoniecznie w grupie ucznia.",
+    "The original absence is changed from “Absent” to “Excused” and marked as made up.": "Pierwotna nieobecność zmienia się z \u201eNieobecny\u201d na \u201eUsprawiedliwiony\u201d i jest oznaczana jako odrobiona.",
+    "The made-up lesson is recorded as “Present” and its hours are deducted from the student’s pass.": "Odrobione zajęcia są zapisywane jako \u201eObecny\u201d, a ich godziny są odliczane z karnetu ucznia.",
+    "Cancelled lessons cannot be used for a make-up.": "Odwołane zajęcia nie mogą być wykorzystane do odrabiania."
 }
