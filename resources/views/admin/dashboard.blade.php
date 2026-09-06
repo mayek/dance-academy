@@ -35,7 +35,7 @@
                     @foreach($expiringPasses as $payment)
                     <tr>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $payment->student->full_name }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $payment->danceGroup->name }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $payment->danceGroup->name ?? __('Karnet ucznia') }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm">
                             @if($payment->isMonthly())
                                 <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">{{ __('Monthly') }}</span>
@@ -58,8 +58,7 @@
                             <button type="button"
                                 class="open-buy-pass inline-flex items-center px-2.5 py-1 rounded text-xs font-medium bg-emerald-600 hover:bg-emerald-700 text-white transition cursor-pointer"
                                 data-student-id="{{ $payment->student_id }}"
-                                data-student-name="{{ $payment->student->full_name }}"
-                                data-group-id="{{ $payment->dance_group_id }}">
+                                data-student-name="{{ $payment->student->full_name }}">
                                 {{ __('Buy Pass') }}
                             </button>
                         </td>
@@ -146,17 +145,6 @@
                         @error('student_id') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
                     </div>
                     <div class="mt-4">
-                        <label for="buy-pass-group" class="block text-sm font-medium text-gray-700 mb-1">{{ __('Group') }}</label>
-                        <select id="buy-pass-group" name="dance_group_id" data-group-filter
-                            class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500">
-                            <option value="">{{ __('Select group...') }}</option>
-                            @foreach($groups as $group)
-                            <option value="{{ $group->id }}">{{ $group->name }}</option>
-                            @endforeach
-                        </select>
-                        @error('dance_group_id') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
-                    </div>
-                    <div class="mt-4">
                         <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('Pass Type') }}</label>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             @foreach($passTypes as $passType)
@@ -213,18 +201,14 @@
             const hidden = document.getElementById('student_id');
             const search = document.getElementById('student_search');
             const clear = document.getElementById('student_clear');
-            const group = document.getElementById('buy-pass-group');
             const subtitle = document.getElementById('buy-pass-subtitle');
 
             hidden.value = studentId || '';
             search.value = studentName;
-            group.value = groupId || '';
             clear.classList.toggle('hidden', !studentId);
             if (window.filterStudentGroups) window.filterStudentGroups(studentId || '');
 
-            const groupName = group.selectedOptions.length && group.value
-                ? group.selectedOptions[0].textContent.trim() : '';
-            subtitle.textContent = studentName ? (studentName + (groupName ? ' \u2014 ' + groupName : '')) : '';
+            subtitle.textContent = studentName || '';
 
             modal.classList.remove('hidden');
             if (!studentId) search.focus();
@@ -239,13 +223,6 @@
                 btn.addEventListener('click', function () {
                     openBuyPassModal(btn.dataset.studentId, btn.dataset.studentName, btn.dataset.groupId);
                 });
-            });
-            document.getElementById('buy-pass-group').addEventListener('change', function () {
-                const search = document.getElementById('student_search');
-                const groupName = this.selectedOptions.length && this.value
-                    ? this.selectedOptions[0].textContent.trim() : '';
-                document.getElementById('buy-pass-subtitle').textContent =
-                    search.value ? (search.value + (groupName ? ' \u2014 ' + groupName : '')) : '';
             });
         });
     </script>

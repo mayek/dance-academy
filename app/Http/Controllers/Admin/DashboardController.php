@@ -63,8 +63,7 @@ class DashboardController extends Controller
 
         $passTypes = PassType::orderBy('type')->orderBy('duration_months')->get();
         $students = User::where('role', 'student')->with('enrolledGroups')->orderBy('first_name')->get();
-        $groups = DanceGroup::with('category')->orderBy('name')->get();
 
-        return view('admin.dashboard', compact('stats', 'expiringPasses', 'unpaidMonthly', 'revenue', 'labels', 'passTypes', 'students', 'groups'));
+        return view('admin.dashboard', compact('stats', 'expiringPasses', 'unpaidMonthly', 'revenue', 'labels', 'passTypes', 'students'));
     }
 }

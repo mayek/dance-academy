@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\DanceGroup;
 use App\Models\PassType;
 use App\Models\Payment;
 use App\Models\User;
@@ -18,13 +17,9 @@ class PaymentController extends Controller
             ->orderBy('valid_from', 'desc')
             ->paginate(20);
 
-        $studentGroups = $student->enrolledGroups()->with('category')->orderBy('name')->get();
-        $groups = $studentGroups->isEmpty()
-            ? DanceGroup::with('category')->orderBy('name')->get()
-            : $studentGroups;
         $passTypes = PassType::orderBy('type')->orderBy('duration_months')->get();
 
-        return view('admin.payments.student', compact('student', 'payments', 'groups', 'passTypes'));
+        return view('admin.payments.student', compact('student', 'payments', 'passTypes'));
     }
 
     public function index()
@@ -53,19 +48,16 @@ class PaymentController extends Controller
     public function create(Request $request)
     {
         $students = User::where('role', 'student')->with('enrolledGroups')->orderBy('first_name')->get();
-        $groups = DanceGroup::with(['category', 'teacher'])->orderBy('name')->get();
         $passTypes = PassType::orderBy('type')->orderBy('duration_months')->get();
         $selectedStudent = $request->get('student_id');
-        $selectedGroup = $request->get('group_id');
 
-        return view('admin.payments.create', compact('students', 'groups', 'passTypes', 'selectedStudent', 'selectedGroup'));
+        return view('admin.payments.create', compact('students', 'passTypes', 'selectedStudent'));
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
             'student_id' => ['required', 'exists:users,id'],
-            'dance_group_id' => ['nullable', 'exists:dance_groups,id'],
             'pass_type_id' => ['required', 'exists:pass_types,id'],
             'valid_from' => ['required', 'date'],
             'total_hours' => ['nullable', 'numeric', 'min:0', 'max:9999'],
@@ -87,6 +79,7 @@ class PaymentController extends Controller
         $validated['status'] = $validated['valid_until']->lt(now()->startOfDay()) ? 'expired' : 'active';
         $validated['recorded_by'] = auth()->id();
         $validated['is_paid'] = $request->boolean('is_paid', true);
+        $validated['dance_group_id'] = null;
 
         Payment::create($validated);
 
@@ -98,7 +91,6 @@ class PaymentController extends Controller
     {
         $validated = $request->validate([
             'student_id' => ['required', 'exists:users,id'],
-            'dance_group_id' => ['nullable', 'exists:dance_groups,id'],
             'pass_type_id' => ['required', 'exists:pass_types,id'],
             'total_hours' => ['nullable', 'numeric', 'min:0', 'max:9999'],
             'is_paid' => ['nullable', 'boolean'],
@@ -118,6 +110,7 @@ class PaymentController extends Controller
         $validated['status'] = 'active';
         $validated['recorded_by'] = auth()->id();
         $validated['is_paid'] = $request->boolean('is_paid', true);
+        $validated['dance_group_id'] = null;
 
         Payment::create($validated);
 
@@ -128,16 +121,14 @@ class PaymentController extends Controller
     public function edit(Payment $payment)
     {
         $students = User::where('role', 'student')->orderBy('first_name')->get();
-        $groups = DanceGroup::with(['category', 'teacher'])->orderBy('name')->get();
 
-        return view('admin.payments.edit', compact('payment', 'students', 'groups'));
+        return view('admin.payments.edit', compact('payment', 'students'));
     }
 
     public function update(Request $request, Payment $payment)
     {
         $validated = $request->validate([
             'student_id' => ['required', 'exists:users,id'],
-            'dance_group_id' => ['nullable', 'exists:dance_groups,id'],
             'pass_type' => ['required', 'in:monthly,single'],
             'amount' => ['required', 'numeric', 'min:0'],
             'valid_from' => ['required', 'date'],
@@ -149,6 +140,7 @@ class PaymentController extends Controller
         ]);
 
         $validated['is_paid'] = $request->boolean('is_paid', $payment->is_paid);
+        $validated['dance_group_id'] = null;
 
         if ($validated['pass_type'] === 'monthly') {
             $validated['valid_until'] = \Carbon\Carbon::parse($validated['valid_from'])->endOfMonth();

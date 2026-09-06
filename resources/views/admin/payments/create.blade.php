@@ -19,17 +19,6 @@
                     <div id="student_dropdown" class="absolute z-50 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto hidden"></div>
                     @error('student_id') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
                 </div>
-                <div>
-                    <label for="dance_group_id" class="block text-sm font-medium text-gray-700">{{ __('Dance Group') }}</label>
-                    <select name="dance_group_id" id="dance_group_id" required data-group-filter
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm border p-2">
-                        <option value="">{{ __('Select group') }}</option>
-                        @foreach($groups as $group)
-                            <option value="{{ $group->id }}" {{ old('dance_group_id', $selectedGroup) == $group->id ? 'selected' : '' }}>{{ $group->name }} ({{ $group->category->name }})</option>
-                        @endforeach
-                    </select>
-                    @error('dance_group_id') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
-                </div>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 <div>

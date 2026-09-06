@@ -32,7 +32,7 @@
                     @foreach($expiringPasses as $payment)
                     <tr>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $payment->student->full_name }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $payment->danceGroup->name }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $payment->danceGroup->name ?? __('Karnet ucznia') }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm">
                             @if($payment->isMonthly())
                                 <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">{{ __('Monthly') }}</span>
@@ -84,7 +84,6 @@
                     @foreach($group->students as $student)
                     @php
                         $pass = $student->payments
-                            ->where('dance_group_id', $group->id)
                             ->where('status', 'active')
                             ->filter(fn ($p) => $p->valid_until && $p->valid_until->gte(now()->startOfDay()))
                             ->sortByDesc('valid_until')
@@ -139,7 +138,6 @@
                             <form method="POST" action="{{ route('teacher.passes.store', [$group, $student]) }}" class="px-5 py-4">
                                 @csrf
                                 <input type="hidden" name="student_id" value="{{ $student->id }}">
-                                <input type="hidden" name="dance_group_id" value="{{ $group->id }}">
                                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     @foreach($passTypes as $passType)
                                     <label class="relative border rounded-lg p-4 cursor-pointer hover:border-emerald-500 has-[:checked]:border-emerald-500 has-[:checked]:bg-emerald-50 transition">

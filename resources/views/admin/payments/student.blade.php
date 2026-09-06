@@ -126,16 +126,6 @@
                     @csrf
                     <input type="hidden" name="student_id" value="{{ $student->id }}">
                     <div>
-                        <label for="buy_pass_group_id" class="block text-sm font-medium text-gray-700">{{ __('Dance Group') }}</label>
-                        <select name="dance_group_id" id="buy_pass_group_id"
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm border p-2">
-                            <option value="">{{ __('Karnet ucznia (wszystkie grupy)') }}</option>
-                            @foreach($groups as $group)
-                                <option value="{{ $group->id }}">{{ \Illuminate\Support\Str::limit($group->name, 60) }} ({{ $group->category->name }})</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div>
                         <label for="buy_pass_pass_type_id" class="block text-sm font-medium text-gray-700">{{ __('Pass Type') }}</label>
                         <select name="pass_type_id" id="buy_pass_pass_type_id" required
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm border p-2">

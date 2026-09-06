@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\DanceGroup;
 use App\Models\PassType;
 use App\Models\Payment;
 use Illuminate\Http\Request;
@@ -24,12 +23,9 @@ class StudentPaymentController extends Controller
     public function create(Request $request)
     {
         $user = auth()->user();
-        $groups = $user->enrolledGroups()->with(['category', 'teacher'])->get();
         $passTypes = PassType::orderBy('type')->orderBy('duration_months')->get();
 
-        $selectedGroup = $request->get('group_id');
-
-        return view('student.payments.create', compact('groups', 'passTypes', 'selectedGroup'));
+        return view('student.payments.create', compact('passTypes'));
     }
 
     public function store(Request $request)
@@ -37,12 +33,8 @@ class StudentPaymentController extends Controller
         $user = auth()->user();
 
         $validated = $request->validate([
-            'dance_group_id' => ['required', 'exists:dance_groups,id'],
             'pass_type_id' => ['required', 'exists:pass_types,id'],
         ]);
-
-        $group = DanceGroup::findOrFail($validated['dance_group_id']);
-        abort_unless($user->enrolledGroups()->where('dance_group_id', $group->id)->exists(), 403);
 
         $passType = PassType::findOrFail($validated['pass_type_id']);
         $validity = $passType->computeValidity(Carbon::now());
@@ -55,6 +47,7 @@ class StudentPaymentController extends Controller
         $validated['valid_until'] = $validity['valid_until'];
 
         $validated['student_id'] = $user->id;
+        $validated['dance_group_id'] = null;
         $validated['recorded_by'] = $user->id;
         $validated['status'] = 'active';
 

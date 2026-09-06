@@ -18,15 +18,6 @@
                     <div id="student_clear" class="absolute right-2 top-8 cursor-pointer text-gray-400 hover:text-gray-600 text-sm">{{ __('clear') }}</div>
                     <div id="student_dropdown" class="absolute z-50 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto hidden"></div>
                 </div>
-                <div>
-                    <label for="dance_group_id" class="block text-sm font-medium text-gray-700">{{ __('Dance Group') }}</label>
-                    <select name="dance_group_id" id="dance_group_id" required
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm border p-2">
-                        @foreach($groups as $group)
-                            <option value="{{ $group->id }}" {{ old('dance_group_id', $payment->dance_group_id) == $group->id ? 'selected' : '' }}>{{ $group->name }} ({{ $group->category->name }})</option>
-                        @endforeach
-                    </select>
-                </div>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                 <div>

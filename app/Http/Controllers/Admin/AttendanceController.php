@@ -71,7 +71,6 @@ class AttendanceController extends Controller
                     ->keyBy('student_id');
 
                 $singlePasses = Payment::query()
-                    ->where('dance_group_id', $selectedGroup)
                     ->whereIn('student_id', $studentIds)
                     ->where('status', 'active')
                     ->whereDate('valid_from', '<=', $passDate->toDateString())
@@ -123,7 +122,6 @@ class AttendanceController extends Controller
         $recordedBy = auth()->id();
         $accounting = app(AttendanceAccounting::class);
         $monthly = app(MonthlyPassService::class);
-        $singlePassGroups = $group->id;
         $warnings = [];
 
         foreach ($validated['statuses'] as $studentId => $status) {
@@ -154,7 +152,6 @@ class AttendanceController extends Controller
                 }
 
                 $hasSinglePass = Payment::where('student_id', $studentId)
-                    ->where('dance_group_id', $singlePassGroups)
                     ->where('status', 'active')
                     ->where('valid_until', '>=', now()->startOfDay())
                     ->whereNotNull('total_hours')

@@ -24,7 +24,7 @@ class TeacherDashboardController extends Controller
             ->where('status', 'active')
             ->where('valid_until', '>=', now()->startOfDay())
             ->where('valid_until', '<=', now()->addDays(7))
-            ->whereIn('dance_group_id', $groupIds)
+            ->whereIn('student_id', $studentIds)
             ->orderBy('valid_until')
             ->get();
 
@@ -93,7 +93,7 @@ class TeacherDashboardController extends Controller
         $validated['valid_until'] = $validity['valid_until'];
 
         $validated['student_id'] = $student->id;
-        $validated['dance_group_id'] = $group->id;
+        $validated['dance_group_id'] = null;
         $validated['recorded_by'] = $user->id;
         $validated['status'] = 'active';
         $validated['is_paid'] = $request->boolean('is_paid', true);

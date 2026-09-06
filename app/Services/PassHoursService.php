@@ -77,7 +77,6 @@ class PassHoursService
     {
         return Payment::query()
             ->where('student_id', $attendance->student_id)
-            ->where('dance_group_id', $attendance->dance_group_id)
             ->where('status', 'active')
             ->where('valid_until', '>=', now()->startOfDay())
             ->whereNotNull('total_hours')
