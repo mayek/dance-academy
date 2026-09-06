@@ -46,8 +46,8 @@
 
     @forelse($sessions as $date => $daySessions)
     @php $day = \Carbon\Carbon::parse($date); @endphp
-    <div class="bg-white shadow rounded-lg overflow-hidden mb-4">
-        <div class="px-4 py-3 bg-gray-50 flex items-center justify-between">
+    <div class="bg-white shadow rounded-lg mb-4">
+        <div class="px-4 py-3 bg-gray-50 rounded-t-lg flex items-center justify-between">
             <div>
                 <span class="font-semibold text-gray-900">{{ $day->translatedFormat('l') }}</span>
                 <span class="text-gray-500 ml-2">{{ $day->format('d.m.Y') }}</span>
@@ -68,9 +68,9 @@
                         @endif
                     </td>
                     <td class="px-4 py-3 text-right whitespace-nowrap relative">
-                        <details class="inline-block align-middle">
+                        <details class="inline-block align-middle relative z-40">
                             <summary class="cursor-pointer select-none text-sm text-orange-600 hover:text-orange-800">{{ __('Edytuj') }}</summary>
-                            <div class="absolute right-0 mt-2 w-80 bg-white border border-gray-200 rounded-lg shadow-lg p-4 z-10 text-left">
+                            <div class="absolute right-0 mt-2 w-96 max-w-[calc(100vw-2rem)] bg-white border border-gray-300 rounded-lg shadow-xl p-5 z-[9999] text-left">
                                 <form method="POST" action="{{ route('admin.sessions.update', $session) }}" class="space-y-2">
                                     @csrf
                                     @method('PATCH')
