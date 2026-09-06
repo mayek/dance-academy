@@ -57,26 +57,26 @@
                 {{ __('A pass created here defines a fixed pool of hours that can be used during its validity period. When you sell this pass to a student, each attended lesson deducts its duration from the pool.') }}
             </p>
             <ul class="text-sm text-gray-600 list-disc pl-5 space-y-1">
-                <li>{{ __('The \u201cTotal hours\u201d value is the whole pool for the entire pass period, not per week or per month.') }}</li>
+                <li>{{ __('The “Total hours” value is the whole pool for the entire pass period, not per week or per month.') }}</li>
                 <li>{{ __('The pool lasts as long as the chosen duration (e.g. 1, 3, 6 or 12 months).') }}</li>
                 <li>{{ __('Once the pool is used up, the pass no longer covers lessons, even if the period has not ended.') }}</li>
             </ul>
             <h4 class="text-sm font-semibold text-gray-700 mt-3 mb-1">{{ __('Examples') }}</h4>
             <ul class="text-sm text-gray-600 list-disc pl-5 space-y-1">
-                <li>{{ __('2 hours per week, 1 month \u2192 enter \u201cTotal hours\u201d = 8 (2h \u00d7 4 weeks) or 10 (2h \u00d7 5 weeks).') }}</li>
-                <li>{{ __('1.5 hours per week, 3 months \u2192 enter \u201cTotal hours\u201d = 18 (1.5h \u00d7 4 weeks \u00d7 3 months) or 22.5 (1.5h \u00d7 5 weeks \u00d7 3 months).') }}</li>
+                <li>{{ __('2 hours per week, 1 month → enter “Total hours” = 8 (2h × 4 weeks) or 10 (2h × 5 weeks).') }}</li>
+                <li>{{ __('1.5 hours per week, 3 months → enter “Total hours” = 18 (1.5h × 4 weeks × 3 months) or 22.5 (1.5h × 5 weeks × 3 months).') }}</li>
             </ul>
         </div>
 
         <div>
             <h3 class="text-lg font-semibold text-gray-900 mb-2">{{ __('Automatic monthly passes') }}</h3>
             <p class="text-sm text-gray-600 mb-3">
-                {{ __('If you use the automatic monthly pass system, you do NOT enter hours here. The system calculates the number of hours automatically from the student\u2019s real schedule for each calendar month: it sums up every scheduled lesson in the month (excluding cancelled ones) times its duration.') }}
+                {{ __('If you use the automatic monthly pass system, you do NOT enter hours here. The system calculates the number of hours automatically from the student’s real schedule for each calendar month: it sums up every scheduled lesson in the month (excluding cancelled ones) times its duration.') }}
             </p>
             <ul class="text-sm text-gray-600 list-disc pl-5 space-y-1">
                 <li>{{ __('Hours are recalculated per month, so months with 4 vs 5 weeks are handled automatically.') }}</li>
                 <li>{{ __('The pass is linked to the student and not to a manually set pool here.') }}</li>
-                <li>{{ __('You do not need to create these pass types here \u2013 they are generated automatically for enrolled students.') }}</li>
+                <li>{{ __('You do not need to create these pass types here – they are generated automatically for enrolled students.') }}</li>
             </ul>
             <h4 class="text-sm font-semibold text-gray-700 mt-3 mb-1">{{ __('Example') }}</h4>
             <ul class="text-sm text-gray-600 list-disc pl-5 space-y-1">

@@ -353,6 +353,7 @@
     "The pool lasts as long as the chosen duration (e.g. 1, 3, 6 or 12 months).": "Pula obowiązuje przez cały wybrany okres ważności (np. 1, 3, 6 lub 12 miesięcy).",
     "Once the pool is used up, the pass no longer covers lessons, even if the period has not ended.": "Po wykorzystaniu puli karnet przestaje pokrywać zajęcia, nawet jeśli okres ważności jeszcze się nie zakończył.",
     "Examples": "Przykłady",
+    "Example": "Przykład",
     "2 hours per week, 1 month \u2192 enter \u201cTotal hours\u201d = 8 (2h \u00d7 4 weeks) or 10 (2h \u00d7 5 weeks).": "2 godziny tygodniowo, 1 miesiąc \u2192 wpisz \u201eŁączną liczbę godzin\u201d = 8 (2h \u00d7 4 tygodnie) lub 10 (2h \u00d7 5 tygodni).",
     "1.5 hours per week, 3 months \u2192 enter \u201cTotal hours\u201d = 18 (1.5h \u00d7 4 weeks \u00d7 3 months) or 22.5 (1.5h \u00d7 5 weeks \u00d7 3 months).": "1,5 godziny tygodniowo, 3 miesiące \u2192 wpisz \u201eŁączną liczbę godzin\u201d = 18 (1,5h \u00d7 4 tygodnie \u00d7 3 miesiące) lub 22,5 (1,5h \u00d7 5 tygodni \u00d7 3 miesiące).",
     "Automatic monthly passes": "Karnety miesięczne automatyczne",
