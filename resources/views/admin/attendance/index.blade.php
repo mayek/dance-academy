@@ -5,7 +5,10 @@
 <div class="px-4 sm:px-0">
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-2xl font-bold text-gray-900">{{ __('Attendance Records') }}</h1>
-        <a href="{{ route('admin.attendance.create') }}" class="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium py-2 px-4 rounded-lg">{{ __('+ Record Attendance') }}</a>
+        <div class="flex space-x-2">
+            <a href="{{ route('admin.attendance.makeup') }}" class="bg-green-600 hover:bg-green-700 text-white text-sm font-medium py-2 px-4 rounded-lg">{{ __('Odrabianie zajęć') }}</a>
+            <a href="{{ route('admin.attendance.create') }}" class="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium py-2 px-4 rounded-lg">{{ __('+ Record Attendance') }}</a>
+        </div>
     </div>
 
     <div class="bg-white shadow rounded-lg p-4 mb-6">

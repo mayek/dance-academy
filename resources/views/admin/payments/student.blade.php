@@ -42,7 +42,7 @@
                         @elseif($payment->danceGroup)
                             {{ $payment->danceGroup->name }}
                         @else
-                            -
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-50 text-blue-700">{{ __('Karnet ucznia') }}</span>
                         @endif
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -127,8 +127,9 @@
                     <input type="hidden" name="student_id" value="{{ $student->id }}">
                     <div>
                         <label for="buy_pass_group_id" class="block text-sm font-medium text-gray-700">{{ __('Dance Group') }}</label>
-                        <select name="dance_group_id" id="buy_pass_group_id" required
+                        <select name="dance_group_id" id="buy_pass_group_id"
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm border p-2">
+                            <option value="">{{ __('Karnet ucznia (wszystkie grupy)') }}</option>
                             @foreach($groups as $group)
                                 <option value="{{ $group->id }}">{{ \Illuminate\Support\Str::limit($group->name, 60) }} ({{ $group->category->name }})</option>
                             @endforeach

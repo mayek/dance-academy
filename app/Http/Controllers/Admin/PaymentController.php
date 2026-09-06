@@ -65,7 +65,7 @@ class PaymentController extends Controller
     {
         $validated = $request->validate([
             'student_id' => ['required', 'exists:users,id'],
-            'dance_group_id' => ['required', 'exists:dance_groups,id'],
+            'dance_group_id' => ['nullable', 'exists:dance_groups,id'],
             'pass_type_id' => ['required', 'exists:pass_types,id'],
             'valid_from' => ['required', 'date'],
             'total_hours' => ['nullable', 'numeric', 'min:0', 'max:9999'],
@@ -98,7 +98,7 @@ class PaymentController extends Controller
     {
         $validated = $request->validate([
             'student_id' => ['required', 'exists:users,id'],
-            'dance_group_id' => ['required', 'exists:dance_groups,id'],
+            'dance_group_id' => ['nullable', 'exists:dance_groups,id'],
             'pass_type_id' => ['required', 'exists:pass_types,id'],
             'total_hours' => ['nullable', 'numeric', 'min:0', 'max:9999'],
             'is_paid' => ['nullable', 'boolean'],
@@ -137,7 +137,7 @@ class PaymentController extends Controller
     {
         $validated = $request->validate([
             'student_id' => ['required', 'exists:users,id'],
-            'dance_group_id' => ['required', 'exists:dance_groups,id'],
+            'dance_group_id' => ['nullable', 'exists:dance_groups,id'],
             'pass_type' => ['required', 'in:monthly,single'],
             'amount' => ['required', 'numeric', 'min:0'],
             'valid_from' => ['required', 'date'],
@@ -178,5 +178,12 @@ class PaymentController extends Controller
         $payment->delete();
         return redirect()->route('admin.payments.index')
             ->with('success', __('Payment deleted successfully.'));
+    }
+
+    public function markPaid(Payment $payment)
+    {
+        $payment->update(['is_paid' => true]);
+
+        return redirect()->back()->with('success', __('Payment marked as paid.'));
     }
 }

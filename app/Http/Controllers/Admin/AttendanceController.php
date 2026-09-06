@@ -7,7 +7,9 @@ use App\Models\Attendance;
 use App\Models\DanceGroup;
 use App\Models\Payment;
 use App\Models\User;
-use App\Services\PassHoursService;
+use App\Services\AttendanceAccounting;
+use App\Services\MonthlyPassService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class AttendanceController extends Controller
@@ -48,17 +50,35 @@ class AttendanceController extends Controller
 
             $studentIds = $group->students->pluck('id');
             if ($studentIds->isNotEmpty()) {
-                $activePassByStudent = Payment::query()
+                $passDate = Carbon::parse($selectedDate);
+
+                $monthlyPasses = Payment::query()
+                    ->where('pass_type', 'monthly')
+                    ->whereNull('dance_group_id')
+                    ->whereIn('student_id', $studentIds)
+                    ->where('status', 'active')
+                    ->whereDate('valid_from', '<=', $passDate->toDateString())
+                    ->whereDate('valid_until', '>=', $passDate->toDateString())
+                    ->orderBy('valid_from')
+                    ->orderBy('id')
+                    ->get()
+                    ->keyBy('student_id');
+
+                $singlePasses = Payment::query()
                     ->where('dance_group_id', $selectedGroup)
                     ->whereIn('student_id', $studentIds)
                     ->where('status', 'active')
-                    ->where('valid_until', '>=', now()->startOfDay())
+                    ->whereDate('valid_from', '<=', $passDate->toDateString())
+                    ->whereDate('valid_until', '>=', $passDate->toDateString())
                     ->whereNotNull('total_hours')
                     ->orderBy('valid_from')
                     ->orderBy('id')
                     ->get()
-                    ->groupBy('student_id')
-                    ->map->first();
+                    ->keyBy('student_id');
+
+                $activePassByStudent = $studentIds
+                    ->mapWithKeys(fn ($id) => [$id => $monthlyPasses->get($id) ?? $singlePasses->get($id)])
+                    ->filter();
             }
         }
 
@@ -79,7 +99,7 @@ class AttendanceController extends Controller
         $group = DanceGroup::findOrFail($validated['dance_group_id']);
         $studentIds = $group->students->pluck('id');
         $recordedBy = auth()->id();
-        $passHours = app(PassHoursService::class);
+        $accounting = app(AttendanceAccounting::class);
         $warnings = [];
 
         foreach ($validated['statuses'] as $studentId => $status) {
@@ -100,7 +120,7 @@ class AttendanceController extends Controller
                 ]
             );
 
-            $warnings = array_merge($warnings, $passHours->apply($attendance));
+            $warnings = array_merge($warnings, $accounting->apply($attendance));
         }
 
         $result = redirect()->route('admin.attendance.index', [
@@ -127,14 +147,53 @@ class AttendanceController extends Controller
             ->where('status', 'absent')
             ->count();
 
-        return view('admin.attendance.student-absences', compact('student', 'absences', 'totalAbsences'));
+        $groups = DanceGroup::with('category')
+            ->where(fn ($q) => $q->whereNull('end_date')->orWhere('end_date', '>=', now()->toDateString()))
+            ->orderBy('name')
+            ->get();
+
+        return view('admin.attendance.student-absences', compact('student', 'absences', 'totalAbsences', 'groups'));
     }
 
-    public function markMadeUp(Attendance $attendance)
+    public function makeup(Request $request)
     {
+        $absences = Attendance::with(['student', 'danceGroup.category'])
+            ->where('status', 'absent')
+            ->where('made_up', false)
+            ->whereDate('date', '<=', now()->toDateString())
+            ->orderBy('date', 'desc')
+            ->orderBy('id', 'desc')
+            ->paginate(20);
+
+        $groups = DanceGroup::with('category')
+            ->where(fn ($q) => $q->whereNull('end_date')->orWhere('end_date', '>=', now()->toDateString()))
+            ->orderBy('name')
+            ->get();
+
+        return view('admin.attendance.makeup', compact('absences', 'groups'));
+    }
+
+    public function markMadeUp(Request $request, Attendance $attendance)
+    {
+        $validated = $request->validate([
+            'group_id' => ['required', 'exists:dance_groups,id'],
+            'date' => ['required', 'date'],
+        ]);
+
+        $makeUpDate = Carbon::parse($validated['date']);
+
+        $monthly = app(MonthlyPassService::class);
+
+        if ($monthly->activePassFor($attendance->student, $attendance->date) !== null) {
+            $warnings = $monthly->markMadeUp($attendance, $validated['group_id'], $makeUpDate);
+
+            return redirect()->back()
+                ->with(empty($warnings) ? 'success' : 'warning', empty($warnings) ? __('Absence marked as made up') : array_unique($warnings));
+        }
+
         $attendance->update([
             'made_up' => true,
-            'date_of_made_up' => now(),
+            'date_of_made_up' => $makeUpDate,
         ]);
 
         return redirect()->back()->with('success', __('Absence marked as made up'));

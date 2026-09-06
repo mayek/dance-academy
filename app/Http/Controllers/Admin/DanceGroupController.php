@@ -103,6 +103,19 @@ class DanceGroupController extends Controller
         $studentIds = $validated['student_ids'] ?? [];
         $group->students()->sync($studentIds);
 
+        $monthlyPasses = app(\App\Services\MonthlyPassService::class);
+        $month = now()->startOfMonth();
+
+        foreach (User::whereIn('id', $studentIds)->get() as $student) {
+            $obligation = $monthlyPasses->obligationFor($student, $month);
+
+            if ($obligation !== null) {
+                $monthlyPasses->refreshTotalHours($obligation);
+            } else {
+                $monthlyPasses->ensureObligation($student, $month);
+            }
+        }
+
         return redirect()->route('admin.groups.index')
             ->with('success', __('Students assigned successfully.'));
     }

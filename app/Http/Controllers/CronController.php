@@ -19,4 +19,18 @@ class CronController extends Controller
 
         return response(Artisan::output())->header('Content-Type', 'text/plain');
     }
+
+    public function generateMonthlyPasses(Request $request)
+    {
+        $token = config('cron.token');
+
+        if (! $token || ! hash_equals((string) $token, (string) $request->query('token', ''))) {
+            abort(404);
+        }
+
+        Artisan::call('schedule:sync-month');
+        Artisan::call('passes:generate-month');
+
+        return response(Artisan::output())->header('Content-Type', 'text/plain');
+    }
 }

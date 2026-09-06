@@ -123,4 +123,19 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Monthly Pass Fee (PLN)
+    |--------------------------------------------------------------------------
+    |
+    | Flat fee of the per-student monthly pass ("karnet miesięczny"), which
+    | covers all groups the student is enrolled in. When null, the cheapest
+    | monthly PassType price is used instead.
+    |
+    */
+
+    'monthly_pass_fee' => env('MONTHLY_PASS_FEE') !== null && env('MONTHLY_PASS_FEE') !== ''
+        ? (float) env('MONTHLY_PASS_FEE')
+        : null,
+
 ];

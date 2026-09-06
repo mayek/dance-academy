@@ -5,7 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Attendance;
 use App\Models\DanceGroup;
 use App\Models\Payment;
-use App\Services\PassHoursService;
+use App\Services\AttendanceAccounting;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class TeacherAttendanceController extends Controller
@@ -28,17 +29,35 @@ class TeacherAttendanceController extends Controller
 
                 $studentIds = $group->students->pluck('id');
                 if ($studentIds->isNotEmpty()) {
-                    $activePassByStudent = Payment::query()
+                    $passDate = Carbon::parse($selectedDate);
+
+                    $monthlyPasses = Payment::query()
+                        ->where('pass_type', 'monthly')
+                        ->whereNull('dance_group_id')
+                        ->whereIn('student_id', $studentIds)
+                        ->where('status', 'active')
+                        ->whereDate('valid_from', '<=', $passDate->toDateString())
+                        ->whereDate('valid_until', '>=', $passDate->toDateString())
+                        ->orderBy('valid_from')
+                        ->orderBy('id')
+                        ->get()
+                        ->keyBy('student_id');
+
+                    $singlePasses = Payment::query()
                         ->where('dance_group_id', $selectedGroup)
                         ->whereIn('student_id', $studentIds)
                         ->where('status', 'active')
-                        ->where('valid_until', '>=', now()->startOfDay())
+                        ->whereDate('valid_from', '<=', $passDate->toDateString())
+                        ->whereDate('valid_until', '>=', $passDate->toDateString())
                         ->whereNotNull('total_hours')
                         ->orderBy('valid_from')
                         ->orderBy('id')
                         ->get()
-                        ->groupBy('student_id')
-                        ->map->first();
+                        ->keyBy('student_id');
+
+                    $activePassByStudent = $studentIds
+                        ->mapWithKeys(fn ($id) => [$id => $monthlyPasses->get($id) ?? $singlePasses->get($id)])
+                        ->filter();
                 }
             }
         }
@@ -63,7 +82,7 @@ class TeacherAttendanceController extends Controller
         abort_unless($group->teacher_id === $user->id, 403);
 
         $studentIds = $group->students->pluck('id');
-        $passHours = app(PassHoursService::class);
+        $accounting = app(AttendanceAccounting::class);
         $warnings = [];
 
         foreach ($validated['statuses'] as $studentId => $status) {
@@ -84,7 +103,7 @@ class TeacherAttendanceController extends Controller
                 ]
             );
 
-            $warnings = array_merge($warnings, $passHours->apply($attendance));
+            $warnings = array_merge($warnings, $accounting->apply($attendance));
         }
 
         $result = redirect()->route('teacher.attendance.create', [
