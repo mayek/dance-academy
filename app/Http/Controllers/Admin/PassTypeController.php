@@ -75,12 +75,6 @@ class PassTypeController extends Controller
         } else {
             $validated['type'] = 'monthly';
             $validated['duration_months'] = (int) $validated['duration'];
-
-            if (($validated['hours'] ?? null) === null || $validated['hours'] === '') {
-                throw ValidationException::withMessages([
-                    'hours' => __('Podaj liczbę godzin dla karnetu miesięcznego.'),
-                ]);
-            }
         }
 
         $validated['hours'] = $validated['hours'] === null || $validated['hours'] === ''
