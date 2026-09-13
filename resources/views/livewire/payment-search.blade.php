@@ -46,10 +46,30 @@
         </div>
     </div>
 
+    @if($flashMessage)
+        <div class="mb-4 bg-emerald-50 text-emerald-800 text-sm p-3 rounded-lg">{{ $flashMessage }}</div>
+    @endif
+
+    @if($selectedCount > 0)
+        <div class="mb-4 flex items-center justify-between bg-blue-50 border border-blue-200 rounded-lg p-3">
+            <span class="text-sm text-blue-800">{{ __(':count payment(s) selected.', ['count' => $selectedCount]) }}</span>
+            <button type="button" wire:click="deleteSelected"
+                    wire:confirm="{{ __('Delete the selected payments?') }}"
+                    class="bg-red-600 hover:bg-red-700 text-white text-sm font-medium py-2 px-4 rounded-lg">
+                {{ __('Delete selected') }}
+            </button>
+        </div>
+    @endif
+
     <div class="bg-white shadow rounded-lg overflow-x-auto">
         <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
                 <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase w-px">
+                        <input type="checkbox" wire:click="toggleSelectAllOnPage" @checked($allOnPageSelected)
+                               title="{{ __('Select all') }}"
+                               class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                    </th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ __('Student') }}</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ __('Made by') }}</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ __('Group') }}</th>
@@ -64,6 +84,10 @@
             <tbody class="divide-y divide-gray-200">
                 @forelse($payments as $payment)
                 <tr class="{{ $payment->is_paid ? 'bg-green-50' : 'bg-red-50' }}">
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <input type="checkbox" value="{{ $payment->id }}" wire:model.live="selected"
+                               class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                    </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $payment->student->full_name }}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $payment->recordedBy?->full_name ?? '-' }}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -136,7 +160,7 @@
                     </td>
                 </tr>
                 @empty
-                <tr><td colspan="9" class="px-6 py-4 text-center text-sm text-gray-500">{{ __('No payments found.') }}</td></tr>
+                <tr><td colspan="10" class="px-6 py-4 text-center text-sm text-gray-500">{{ __('No payments found.') }}</td></tr>
                 @endforelse
             </tbody>
         </table>

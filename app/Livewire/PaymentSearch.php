@@ -17,6 +17,10 @@ class PaymentSearch extends Component
     public $status = '';
     public $is_paid = '';
 
+    public array $selected = [];
+
+    public $flashMessage = '';
+
     public function updatingSearch()
     {
         $this->resetPage();
@@ -42,7 +46,36 @@ class PaymentSearch extends Component
         $this->resetPage();
     }
 
-    public function render()
+    public function toggleSelectAllOnPage()
+    {
+        $ids = $this->pagePaymentIds();
+
+        if ($ids === []) {
+            return;
+        }
+
+        $allSelected = count(array_diff($ids, $this->selected)) === 0;
+
+        $this->selected = $allSelected
+            ? array_values(array_diff($this->selected, $ids))
+            : array_values(array_unique(array_merge($this->selected, $ids)));
+    }
+
+    public function deleteSelected()
+    {
+        $ids = array_values(array_unique(array_filter(array_map('intval', $this->selected))));
+
+        if ($ids === []) {
+            return;
+        }
+
+        $deleted = Payment::whereIn('id', $ids)->delete();
+
+        $this->selected = [];
+        $this->flashMessage = __('Deleted :count payment(s).', ['count' => $deleted]);
+    }
+
+    private function paymentQuery()
     {
         $query = Payment::with(['student', 'danceGroup.category', 'recordedBy', 'passType', 'event']);
 
@@ -72,9 +105,25 @@ class PaymentSearch extends Component
             $query->where('is_paid', (bool) $this->is_paid);
         }
 
-        $payments = $query->latest()->paginate(15);
+        return $query;
+    }
+
+    private function pagePaymentIds(): array
+    {
+        $payments = $this->paymentQuery()->latest()->paginate(15);
+
+        return $payments->items() ? collect($payments->items())->pluck('id')->all() : [];
+    }
+
+    public function render()
+    {
+        $payments = $this->paymentQuery()->latest()->paginate(15);
         $groups = DanceGroup::with('category')->orderBy('name')->get();
 
-        return view('livewire.payment-search', compact('payments', 'groups'));
+        $pageIds = $payments->items() ? collect($payments->items())->pluck('id')->all() : [];
+        $selectedCount = count($this->selected);
+        $allOnPageSelected = $pageIds !== [] && count(array_diff($pageIds, $this->selected)) === 0;
+
+        return view('livewire.payment-search', compact('payments', 'groups', 'pageIds', 'selectedCount', 'allOnPageSelected'));
     }
 }
