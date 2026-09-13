@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\StudentController;
 use App\Http\Controllers\Admin\StaffController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CronController;
+use App\Http\Controllers\HelpController;
 use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StudentDashboardController;
@@ -32,6 +33,10 @@ Route::get('/register', [AuthController::class, 'showRegister'])->name('register
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::get('/forgot-password', [AuthController::class, 'showForgotPassword'])->name('password.request');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/help', [HelpController::class, 'index'])->name('help.index');
+});
 
 Route::middleware('auth')->prefix('profile')->name('profile.')->group(function () {
     Route::get('/', [ProfileController::class, 'edit'])->name('edit');

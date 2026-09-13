@@ -63,6 +63,11 @@
                     </div>
                 </div>
                 <div class="flex items-center space-x-3 sm:space-x-4">
+                    <a href="{{ route('help.index') }}" title="{{ __('Help / FAQ') }}" class="text-gray-500 hover:text-purple-700" aria-label="{{ __('Help / FAQ') }}">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </a>
                     <a href="{{ route('language.switch', 'en') }}" class="text-sm {{ app()->getLocale() === 'en' ? 'text-purple-700 font-semibold' : 'text-gray-500 hover:text-gray-700' }}">EN</a>
                     <a href="{{ route('language.switch', 'pl') }}" class="text-sm {{ app()->getLocale() === 'pl' ? 'text-purple-700 font-semibold' : 'text-gray-500 hover:text-gray-700' }}">PL</a>
                     <a href="{{ route('profile.edit') }}" class="hidden sm:block text-sm text-gray-600 hover:text-gray-900">{{ $user->full_name }}</a>
