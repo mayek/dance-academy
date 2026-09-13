@@ -18,8 +18,15 @@ class GroupPicker extends Component
 
     public function render()
     {
+        $selected = $this->selected;
+
         $groups = DanceGroup::with('category')
-            ->when($this->search, fn ($query) => $query->where('name', 'like', '%' . $this->search . '%'))
+            ->where(function ($query) use ($selected) {
+                $query->whereIn('id', $selected)->orWhere(function ($other) use ($selected) {
+                    $other->whereNotIn('id', $selected)
+                        ->when($this->search, fn ($q) => $q->where('name', 'like', '%' . $this->search . '%'));
+                });
+            })
             ->orderBy('name')
             ->limit(30)
             ->get();
