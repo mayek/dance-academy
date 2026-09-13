@@ -18,18 +18,27 @@ class GroupPicker extends Component
 
     public function render()
     {
-        $selected = $this->selected;
+        $selected = array_values(array_filter($this->selected, fn ($id) => is_numeric($id)));
 
-        $groups = DanceGroup::with('category')
-            ->where(function ($query) use ($selected) {
-                $query->whereIn('id', $selected)->orWhere(function ($other) use ($selected) {
-                    $other->whereNotIn('id', $selected)
-                        ->when($this->search, fn ($q) => $q->where('name', 'like', '%' . $this->search . '%'));
-                });
-            })
+        $groups = collect();
+
+        if (!empty($selected)) {
+            $groups = DanceGroup::with('category')
+                ->whereIn('id', $selected)
+                ->orderBy('name')
+                ->get();
+        }
+
+        $excluded = $groups->pluck('id')->all();
+
+        $others = DanceGroup::with('category')
+            ->whereNotIn('id', $excluded)
+            ->when($this->search, fn ($query) => $query->where('name', 'like', '%' . $this->search . '%'))
             ->orderBy('name')
-            ->limit(30)
+            ->limit(max(0, 30 - $groups->count()))
             ->get();
+
+        $groups = $groups->concat($others);
 
         return view('livewire.group-picker', compact('groups'));
     }
