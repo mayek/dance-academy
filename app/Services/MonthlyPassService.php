@@ -74,6 +74,66 @@ class MonthlyPassService
         return round($total, 2);
     }
 
+    public function computeHoursBetween(User $student, Carbon $from, Carbon $to): float
+    {
+        $from = $from->copy()->startOfDay();
+        $to = $to->copy()->endOfDay();
+
+        if ($from->isSameDay($to)) {
+            return $this->computeHoursOnDate($student, $from);
+        }
+
+        $total = 0.0;
+        $month = $from->copy()->startOfMonth();
+        $lastMonth = $to->copy()->startOfMonth();
+
+        while ($month->lte($lastMonth)) {
+            $total += $this->computeTotalHours($student, $month);
+            $month->addMonth();
+        }
+
+        return round($total, 2);
+    }
+
+    public function computeHoursOnDate(User $student, Carbon $date): float
+    {
+        $date = $date->copy()->startOfDay();
+        $schedule = app(ScheduleService::class);
+        $total = 0.0;
+
+        foreach ($student->enrolledGroups()->with('sessions')->get() as $group) {
+            $joinedAt = $group->pivot?->joined_at ?? $group->pivot?->created_at;
+            $leftAt = $group->pivot?->left_at;
+
+            if ($joinedAt && Carbon::parse($joinedAt)->startOfDay()->gt($date)) {
+                continue;
+            }
+
+            if ($leftAt && Carbon::parse($leftAt)->startOfDay()->lte($date)) {
+                continue;
+            }
+
+            if ($group->start_date && $date->lt(Carbon::parse($group->start_date)->startOfDay())) {
+                continue;
+            }
+
+            if ($group->end_date && $date->gt(Carbon::parse($group->end_date)->endOfDay())) {
+                continue;
+            }
+
+            $session = $schedule->sessionForGroupOnDate($group, $date);
+
+            if ($session !== null) {
+                $total += (float) $session->durationHours();
+                continue;
+            }
+
+            $total += $schedule->hoursForGroupOnDate($group, $date) ?? 0.0;
+        }
+
+        return round($total, 2);
+    }
+
     public function activePassFor(User $student, Carbon $date): ?Payment
     {
         return Payment::query()

@@ -89,6 +89,20 @@ class TeacherDashboardController extends Controller
         $validated['pass_type'] = $passType->type;
         $validated['pass_type_id'] = $passType->id;
         $validated['amount'] = $passType->price;
+        $validated['total_hours'] = $passType->hours;
+
+        if ($validated['total_hours'] === null && $passType->isMonthly()) {
+            $computed = app(\App\Services\MonthlyPassService::class)->computeHoursBetween(
+                $student,
+                $validity['valid_from'],
+                $validity['valid_until']
+            );
+
+            if ($computed > 0) {
+                $validated['total_hours'] = $computed;
+            }
+        }
+
         $validated['valid_from'] = $validity['valid_from'];
         $validated['valid_until'] = $validity['valid_until'];
 

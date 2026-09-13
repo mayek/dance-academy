@@ -40,7 +40,7 @@
                     <li>{{ __('Student card → “+ Record Payment” modal.') }}</li>
                 </ul>
                 <p><strong>{{ __('Example:') }}</strong> {{ __('A student trains 2 hours a week for a month. In the pass type “Total hours” you set 8 (2h × 4 weeks) or 10 (2h × 5 weeks). When you sell the pass, every attended lesson subtracts its duration from that pool. When the pool runs out, the pass no longer covers lessons even if the month has not ended.') }}</p>
-                <p>{{ __('If you leave “Total hours” empty, the value from the pass type definition is used. If that is also empty, the pass has no hour limit (legacy behaviour), only the validity period counts.') }}</p>
+                <p>{{ __('If you leave “Total hours” empty when selling a monthly pass and the pass type also has no hours, the system calculates the hours automatically from the student’s schedule for the whole validity period and saves them on the pass.') }}</p>
             </div>
         </details>
 

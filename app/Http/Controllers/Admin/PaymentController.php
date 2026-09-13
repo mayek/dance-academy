@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\PassType;
 use App\Models\Payment;
 use App\Models\User;
+use App\Services\MonthlyPassService;
 use Illuminate\Http\Request;
 
 class PaymentController extends Controller
@@ -74,6 +75,19 @@ class PaymentController extends Controller
         $validated['total_hours'] = $request->filled('total_hours')
             ? (float) $validated['total_hours']
             : $passType->hours;
+
+        if ($validated['total_hours'] === null && $passType->isMonthly()) {
+            $computed = app(MonthlyPassService::class)->computeHoursBetween(
+                User::findOrFail($validated['student_id']),
+                $validity['valid_from'],
+                $validity['valid_until']
+            );
+
+            if ($computed > 0) {
+                $validated['total_hours'] = $computed;
+            }
+        }
+
         $validated['valid_from'] = $validity['valid_from'];
         $validated['valid_until'] = $validity['valid_until'];
         $validated['status'] = $validated['valid_until']->lt(now()->startOfDay()) ? 'expired' : 'active';
@@ -105,6 +119,19 @@ class PaymentController extends Controller
         $validated['total_hours'] = $request->filled('total_hours')
             ? (float) $validated['total_hours']
             : $passType->hours;
+
+        if ($validated['total_hours'] === null && $passType->isMonthly()) {
+            $computed = app(MonthlyPassService::class)->computeHoursBetween(
+                User::findOrFail($validated['student_id']),
+                $validity['valid_from'],
+                $validity['valid_until']
+            );
+
+            if ($computed > 0) {
+                $validated['total_hours'] = $computed;
+            }
+        }
+
         $validated['valid_from'] = $validity['valid_from'];
         $validated['valid_until'] = $validity['valid_until'];
         $validated['status'] = 'active';

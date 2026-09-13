@@ -60,6 +60,7 @@
                 <li>{{ __('The “Total hours” value is the whole pool for the entire pass period, not per week or per month.') }}</li>
                 <li>{{ __('The pool lasts as long as the chosen duration (e.g. 1, 3, 6 or 12 months).') }}</li>
                 <li>{{ __('Once the pool is used up, the pass no longer covers lessons, even if the period has not ended.') }}</li>
+                <li>{{ __('When selling a monthly pass whose “Total hours” is empty, the system calculates the hours automatically from the student’s schedule and saves them on the pass.') }}</li>
             </ul>
             <h4 class="text-sm font-semibold text-gray-700 mt-3 mb-1">{{ __('Examples') }}</h4>
             <ul class="text-sm text-gray-600 list-disc pl-5 space-y-1">

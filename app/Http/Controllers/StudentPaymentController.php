@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\PassType;
 use App\Models\Payment;
+use App\Services\MonthlyPassService;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
@@ -43,6 +44,19 @@ class StudentPaymentController extends Controller
         $validated['pass_type_id'] = $passType->id;
         $validated['amount'] = $passType->price;
         $validated['total_hours'] = $passType->hours;
+
+        if ($validated['total_hours'] === null && $passType->isMonthly()) {
+            $computed = app(MonthlyPassService::class)->computeHoursBetween(
+                $user,
+                $validity['valid_from'],
+                $validity['valid_until']
+            );
+
+            if ($computed > 0) {
+                $validated['total_hours'] = $computed;
+            }
+        }
+
         $validated['valid_from'] = $validity['valid_from'];
         $validated['valid_until'] = $validity['valid_until'];
 
