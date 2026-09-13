@@ -51,11 +51,12 @@
     @endif
 
     @if($selectedCount > 0)
-        <div class="mb-4 flex items-center justify-between bg-blue-50 border border-blue-200 rounded-lg p-3">
-            <span class="text-sm text-blue-800">{{ __(':count payment(s) selected.', ['count' => $selectedCount]) }}</span>
+        <div class="mb-4 flex flex-wrap items-center justify-between gap-3 bg-white border border-blue-200 rounded-lg p-4 shadow-sm">
+            <span class="text-sm font-medium text-gray-800">{{ __(':count payment(s) selected.', ['count' => $selectedCount]) }}</span>
             <button type="button" wire:click="deleteSelected"
                     wire:confirm="{{ __('Delete the selected payments?') }}"
-                    class="bg-red-600 hover:bg-red-700 text-white text-sm font-medium py-2 px-4 rounded-lg">
+                    class="inline-flex items-center gap-2 shrink-0 bg-red-600 hover:bg-red-700 text-white text-sm font-semibold py-2.5 px-5 rounded-md shadow">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                 {{ __('Delete selected') }}
             </button>
         </div>
@@ -66,9 +67,10 @@
             <thead class="bg-gray-50">
                 <tr>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase w-px">
-                        <input type="checkbox" wire:click="toggleSelectAllOnPage" @checked($allOnPageSelected)
-                               title="{{ __('Select all') }}"
-                               class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                        <input type="checkbox" wire:key="select-all-{{ $allOnPageSelected ? 'checked' : 'unchecked' }}"
+                       wire:click="toggleSelectAllOnPage" @checked($allOnPageSelected)
+                       title="{{ __('Select all') }}"
+                       class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
                     </th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ __('Student') }}</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ __('Made by') }}</th>
